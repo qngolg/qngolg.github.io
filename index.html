@@ -160,6 +160,140 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/" class="post-title-link" itemprop="url">git命令小记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-07-30 10:01:50 / Modified: 10:17:47" itemprop="dateCreated datePublished" datetime="2021-07-30T10:01:50+08:00">2021-07-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Git命令小记"><a href="#Git命令小记" class="headerlink" title="Git命令小记"></a>Git命令小记</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 本地分支与远程分支关联</span></span><br><span class="line">git remote add origin https://github.com/qngolg/qngolg-blog-source.git</span><br><span class="line">/Users/qgl/Library/Application Support/typora-user-images/image-20210730101503550.png</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><ol>
+<li>git status后 不显示中文</li>
+</ol>
+<p><img src="../images/image-git-1.png" alt="image-20210730101503550"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">使用github Action 自动部署博客</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-07-30 09:30:16 / Modified: 10:58:53" itemprop="dateCreated datePublished" datetime="2021-07-30T09:30:16+08:00">2021-07-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="使用github-Action-自动部署博客"><a href="#使用github-Action-自动部署博客" class="headerlink" title="使用github Action 自动部署博客"></a>使用github Action 自动部署博客</h1><p><code>github Action</code> 是github的自动化工作流程,GitHub Actions使得自动化你的所有软件工作流程变得容易，现在有了世界级的CI/CD。直接从GitHub构建、测试和部署代码。正如我们平时项目中用的jenkins,可以帮助你自动跑测试，跑代码检测，最终部署到环境上去。我们现在要实现的是当我们博客push到github源仓库上去后，它可以自动把我们的blog自动部署到github的博客中去，而不用每次使用<code>hexo d</code>去自己部署。</p>
+<h2 id="新建github-博客的源仓库"><a href="#新建github-博客的源仓库" class="headerlink" title="新建github 博客的源仓库"></a>新建github 博客的源仓库</h2><h2 id="1-新建源仓库"><a href="#1-新建源仓库" class="headerlink" title="1. 新建源仓库"></a>1. 新建源仓库</h2><ol>
+<li><p>在github建立自己的新仓库-我搭建了一个私有源仓库：<a target="_blank" rel="noopener" href="https://github.com/qngolg/qngolg-blog-source.git">https://github.com/qngolg/qngolg-blog-source.git</a></p>
+</li>
+<li><p>本地仓库与github仓库连接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin https://github.com/qngolg/qngolg-blog-source.git</span><br></pre></td></tr></table></figure></li>
+<li><p>推送代码到github上去</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u orgin master #第一次push到master仓库</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="配置action"><a href="#配置action" class="headerlink" title="配置action"></a>配置action</h2><h2 id="实现自动部署"><a href="#实现自动部署" class="headerlink" title="实现自动部署"></a>实现自动部署</h2><p>具体详细参考摘自<a target="_blank" rel="noopener" href="https://sanonz.github.io/2020/deploy-a-hexo-blog-from-github-actions/">利用 Github Actions 自动部署 Hexo 博客</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -183,10 +317,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-07-29 11:06:00 / Modified: 16:04:06" itemprop="dateCreated datePublished" datetime="2021-07-29T11:06:00+08:00">2021-07-29</time>
+              <time title="Created: 2021-07-29 11:06:00" itemprop="dateCreated datePublished" datetime="2021-07-29T11:06:00+08:00">2021-07-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-07-30 09:32:02" itemprop="dateModified" datetime="2021-07-30T09:32:02+08:00">2021-07-30</time>
+              </span>
 
           
 
@@ -229,7 +369,7 @@
 </li>
 </ul>
 <p>使用命令<code>hexo clean</code> 和 <code>hexo d -g</code>重新部署，用<code>shift + F5</code>刷新页面解决。</p>
-
+<h2 id="hexo写博客的命令总结"><a href="#hexo写博客的命令总结" class="headerlink" title="hexo写博客的命令总结"></a>hexo写博客的命令总结</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hexo new &#x27;tilte&#x27; # 新建一个博客</span><br><span class="line">hexo g # 生成博客网页</span><br><span class="line">hexo s # 启动hexo</span><br><span class="line">hexo d # 部署hexo</span><br><span class="line">hexo clean # 清除hexo网页</span><br><span class="line">hexo d -g # 部署重新生成网页</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -381,7 +521,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
