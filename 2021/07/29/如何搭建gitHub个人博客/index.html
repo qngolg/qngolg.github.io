@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://example.com/2021/07/29/images/image-3.png">
 <meta property="og:image" content="http://example.com/2021/07/29/images/image-1.png">
 <meta property="article:published_time" content="2021-07-29T03:06:00.000Z">
-<meta property="article:modified_time" content="2023-11-12T15:19:40.089Z">
+<meta property="article:modified_time" content="2023-11-13T15:47:47.233Z">
 <meta property="article:author" content="菜鸟程序员">
 <meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
@@ -185,7 +185,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-12 23:19:40" itemprop="dateModified" datetime="2023-11-12T23:19:40+08:00">2023-11-12</time>
+                <time title="Modified: 2023-11-13 23:47:47" itemprop="dateModified" datetime="2023-11-13T23:47:47+08:00">2023-11-13</time>
               </span>
 
           
@@ -230,6 +230,12 @@
 </ul>
 <p>使用命令<code>hexo clean</code> 和 <code>hexo d -g</code>重新部署，用<code>shift + F5</code>刷新页面解决。</p>
 <h2 id="hexo写博客的命令总结"><a href="#hexo写博客的命令总结" class="headerlink" title="hexo写博客的命令总结"></a>hexo写博客的命令总结</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hexo new &#x27;tilte&#x27; # 新建一个博客</span><br><span class="line">hexo g # 生成博客网页</span><br><span class="line">hexo s # 启动hexo</span><br><span class="line">hexo d # 部署hexo</span><br><span class="line">hexo clean # 清除hexo网页</span><br><span class="line">hexo d -g # 部署重新生成网页</span><br></pre></td></tr></table></figure>
+
+<h2 id="问题小记"><a href="#问题小记" class="headerlink" title="问题小记"></a>问题小记</h2><ol>
+<li>WARN No layout index.html<br>执行hexo g或hexo s时，可能会出现如下情况，导致访问时出现异常</li>
+</ol>
+<p>问题原因：主题未下载<br>theme/next下文件夹是空的 ，执行如下命令后，可恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br><span class="line">hexo g</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -309,7 +315,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo%E6%90%AD%E5%BB%BAGithub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2"><span class="nav-number">1.</span> <span class="nav-text">Hexo搭建Github个人博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">1.1.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E4%B8%BB%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">选择主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8EgitHub%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.</span> <span class="nav-text">与gitHub的个人博客连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E5%96%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E9%A1%B5"><span class="nav-number">1.4.</span> <span class="nav-text">完善博客网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%AF%BC%E8%88%AA%E4%BE%A7%E8%BE%B9%E6%A0%8F"><span class="nav-number">1.4.1.</span> <span class="nav-text">增加导航侧边栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%BA%95%E6%A0%8F"><span class="nav-number">1.4.2.</span> <span class="nav-text">增加底栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%B8%8Egithub%E6%98%AF%E4%B8%8A%E5%B1%95%E7%A4%BA%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-number">1.4.3.</span> <span class="nav-text">本地与github是上展示不一致</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo%E5%86%99%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">hexo写博客的命令总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo%E6%90%AD%E5%BB%BAGithub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2"><span class="nav-number">1.</span> <span class="nav-text">Hexo搭建Github个人博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">1.1.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E4%B8%BB%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">选择主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8EgitHub%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.</span> <span class="nav-text">与gitHub的个人博客连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E5%96%84%E5%8D%9A%E5%AE%A2%E7%BD%91%E9%A1%B5"><span class="nav-number">1.4.</span> <span class="nav-text">完善博客网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%AF%BC%E8%88%AA%E4%BE%A7%E8%BE%B9%E6%A0%8F"><span class="nav-number">1.4.1.</span> <span class="nav-text">增加导航侧边栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%BA%95%E6%A0%8F"><span class="nav-number">1.4.2.</span> <span class="nav-text">增加底栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%B8%8Egithub%E6%98%AF%E4%B8%8A%E5%B1%95%E7%A4%BA%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-number">1.4.3.</span> <span class="nav-text">本地与github是上展示不一致</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo%E5%86%99%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">hexo写博客的命令总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%B0%8F%E8%AE%B0"><span class="nav-number">1.6.</span> <span class="nav-text">问题小记</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
