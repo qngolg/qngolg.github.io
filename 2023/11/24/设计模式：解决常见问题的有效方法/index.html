@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -17,23 +17,23 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="设计模式：解决常见问题的有效方法设计模式是软件开发中常用的一种解决方案，它是对特定问题的可重用解决方案的抽象描述。通过使用设计模式，开发人员可以提高代码的可维护性、可读性和可扩展性，同时减少代码的重复编写。在软件开发中，我们经常会遇到一些常见的问题，例如对象之间的通信、代码的复用、系统的扩展等等。设计模式提供了一些经过验证的解决方案，帮助我们解决这些问题。 设计模式6大原则在设计模式中，有 6 大">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式：解决常见问题的有效方法">
-<meta property="og:url" content="http://example.com/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:url" content="https://qngolg.github.io/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="设计模式：解决常见问题的有效方法设计模式是软件开发中常用的一种解决方案，它是对特定问题的可重用解决方案的抽象描述。通过使用设计模式，开发人员可以提高代码的可维护性、可读性和可扩展性，同时减少代码的重复编写。在软件开发中，我们经常会遇到一些常见的问题，例如对象之间的通信、代码的复用、系统的扩展等等。设计模式提供了一些经过验证的解决方案，帮助我们解决这些问题。 设计模式6大原则在设计模式中，有 6 大">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-11-24T15:54:16.000Z">
-<meta property="article:modified_time" content="2023-11-24T16:02:26.016Z">
+<meta property="article:modified_time" content="2026-06-29T15:38:51.322Z">
 <meta property="article:author" content="菜鸟程序员">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
+<link rel="canonical" href="https://qngolg.github.io/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
 
 
 <script id="page-configurations">
@@ -42,7 +42,7 @@
     sidebar: "",
     isHome : false,
     isPost : true,
-    lang   : 'en'
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -86,7 +86,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -104,6 +104,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -115,19 +116,61 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -150,8 +193,8 @@
     
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -172,19 +215,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2023-11-24 23:54:16" itemprop="dateCreated datePublished" datetime="2023-11-24T23:54:16+08:00">2023-11-24</time>
+              <time title="创建时间：2023-11-24 23:54:16" itemprop="dateCreated datePublished" datetime="2023-11-24T23:54:16+08:00">2023-11-24</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-25 00:02:26" itemprop="dateModified" datetime="2023-11-25T00:02:26+08:00">2023-11-25</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式：解决常见问题的有效方法" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -225,7 +310,7 @@
 <td>解释器模式（Interpreter）、模板方法模式（Template Method）、责任链模式（Chain of Responsibility）、命令模式（Command）、迭代器模式（Iterator）、调解器模式（Mediator）、备忘录模式（Memento）、观察者模式（Observer）、状态模式（State）、策略模式（Strategy）、访问者模式（Visitor）</td>
 </tr>
 </tbody></table>
-<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a target="_blank" rel="noopener" href="https://github.com/qngolg/design-patterns%EF%BC%8C%E9%87%8C%E9%9D%A2%E5%8C%85%E5%90%AB%E4%BA%86%E5%90%84%E7%B1%BB%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%A1%88%E4%BE%8B%E5%92%8C%E6%A0%B7%E4%BE%8B%E4%BB%A3%E7%A0%81">https://github.com/qngolg/design-patterns，里面包含了各类设计模式的案例和样例代码</a></p>
+<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a target="_blank" rel="noopener" href="https://github.com/qngolg/design-patterns">https://github.com/qngolg/design-patterns</a> ，里面包含了各类设计模式的案例和样例代码。</p>
 
     </div>
 
@@ -247,7 +332,10 @@
     <a href="/2023/11/13/python-%E5%B0%8F%E8%AE%B0/" rel="prev" title="python 小记">
       <i class="fa fa-chevron-left"></i> python 小记
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" rel="next" title="LangGraph 入门：核心组件与架构详解">
+      LangGraph 入门：核心组件与架构详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -260,6 +348,7 @@
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -297,10 +386,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -320,14 +409,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">5</span>
-        <span class="site-state-item-name">tags</span></a>
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -353,13 +449,23 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">39k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">35 分钟</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
         
@@ -385,7 +491,7 @@
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -398,6 +504,10 @@
 
 
 
+  
+<script src="/js/local-search.js"></script>
+
+
 
 
 
@@ -412,6 +522,35 @@
   
 
   
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
+      placeholder: "随便说点啥，欢迎吐槽",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : ,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>

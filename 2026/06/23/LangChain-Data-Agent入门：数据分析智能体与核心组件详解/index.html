@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="介绍 LangChain 生态中 Data Agent 的两种典型形态（SQL Agent 与 Data Analysis Agent），详解 SQLDatabaseToolkit、create_agent、Deep Agents 中间件与 Backend 等核心组件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LangChain Data Agent 入门：数据分析智能体与核心组件详解">
+<meta property="og:url" content="https://qngolg.github.io/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="介绍 LangChain 生态中 Data Agent 的两种典型形态（SQL Agent 与 Data Analysis Agent），详解 SQLDatabaseToolkit、create_agent、Deep Agents 中间件与 Backend 等核心组件。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-23T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-23T13:00:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="langchain">
+<meta property="article:tag" content="data-agent">
+<meta property="article:tag" content="sql">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://qngolg.github.io/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>LangChain Data Agent 入门：数据分析智能体与核心组件详解 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LangChain Data Agent 入门：数据分析智能体与核心组件详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-06-23 21:00:00" itemprop="dateCreated datePublished" datetime="2026-06-23T21:00:00+08:00">2026-06-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="LangChain Data Agent 入门：数据分析智能体与核心组件详解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>9.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>9 分钟</span>
+            </span>
+            <div class="post-description">介绍 LangChain 生态中 Data Agent 的两种典型形态（SQL Agent 与 Data Analysis Agent），详解 SQLDatabaseToolkit、create_agent、Deep Agents 中间件与 Backend 等核心组件。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="LangChain-Data-Agent-入门：数据分析智能体与核心组件详解"><a href="#LangChain-Data-Agent-入门：数据分析智能体与核心组件详解" class="headerlink" title="LangChain Data Agent 入门：数据分析智能体与核心组件详解"></a>LangChain Data Agent 入门：数据分析智能体与核心组件详解</h1><p>在数据工程和分析场景中，一个高频需求是：<strong>用自然语言提问，让 AI 自动查库、跑分析、出图表</strong>。</p>
+<p>LangChain 生态中的 <strong>Data Agent</strong>（数据智能体）正是为此设计的。它并不是单一类名，而是一类面向数据任务的 Agent 解决方案，官方文档中主要有两种典型形态：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>适用场景</th>
+<th>核心入口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SQL Agent</strong></td>
+<td>结构化数据库问答（NL → SQL）</td>
+<td><code>create_agent</code> + SQL 工具集</td>
+</tr>
+<tr>
+<td><strong>Data Analysis Agent</strong></td>
+<td>CSV/数据集探索、可视化、报告生成</td>
+<td><code>create_deep_agent</code> + 沙箱 Backend</td>
+</tr>
+</tbody></table>
+<p>本文将系统介绍 Data Agent 的架构思路、核心组件，以及如何在生产环境中安全使用。</p>
+<h2 id="一、Data-Agent-解决什么问题？"><a href="#一、Data-Agent-解决什么问题？" class="headerlink" title="一、Data Agent 解决什么问题？"></a>一、Data Agent 解决什么问题？</h2><p>传统 BI 流程是：业务提需求 → 数据分析师写 SQL → 跑数 → 做图 → 出报告。链路长、响应慢。</p>
+<p>Data Agent 把这个流程压缩成一次对话：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">用户：「上个月各品类收入是多少？画个柱状图。」</span><br><span class="line">  ↓</span><br><span class="line">Agent：理解意图 → 查 Schema → 写 SQL / Python → 执行 → 纠错 → 返回结果</span><br></pre></td></tr></table></figure>
+
+<p>与一次性 Prompt 不同，Data Agent 采用 <strong>ReAct 循环</strong>（推理 → 行动 → 观察 → 再推理），能根据数据库报错或执行结果自我修正，显著提升复杂查询的成功率。</p>
+<hr>
+<h2 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                     用户自然语言问题                       │</span><br><span class="line">└──────────────────────────┬──────────────────────────────┘</span><br><span class="line">                           ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                    LLM（推理引擎）                        │</span><br><span class="line">│         决定调用哪个工具、生成 SQL / Python 代码            │</span><br><span class="line">└──────────────────────────┬──────────────────────────────┘</span><br><span class="line">                           ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                      工具层（Tools）                      │</span><br><span class="line">│  SQL 工具集  │  代码执行  │  文件读写  │  自定义集成工具    │</span><br><span class="line">└──────────────────────────┬──────────────────────────────┘</span><br><span class="line">                           ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                    数据层（Data Layer）                   │</span><br><span class="line">│  PostgreSQL / DuckDB / SQLite  │  CSV / Parquet  │  沙箱  │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>底层运行时基于 <strong>LangGraph</strong>，因此天然支持流式输出、Checkpointer 持久化、Human-in-the-Loop 等人机协作能力。</p>
+<hr>
+<h2 id="三、SQL-Agent：数据库问答智能体"><a href="#三、SQL-Agent：数据库问答智能体" class="headerlink" title="三、SQL Agent：数据库问答智能体"></a>三、SQL Agent：数据库问答智能体</h2><p>SQL Agent 是最常见的 Data Agent 形态，适合对接已有关系型数据库或数据仓库。</p>
+<h3 id="3-1-工作流程"><a href="#3-1-工作流程" class="headerlink" title="3.1 工作流程"></a>3.1 工作流程</h3><p>官方推荐的 8 步执行链路：</p>
+<ol>
+<li>获取数据库中所有表名</li>
+<li>判断哪些表与问题相关</li>
+<li>拉取相关表的 Schema 和样例数据</li>
+<li>根据问题和 Schema 生成 SQL</li>
+<li>用 LLM 检查 SQL 常见错误</li>
+<li>执行查询并获取结果</li>
+<li>若数据库报错，将错误信息反馈给 LLM 并重试</li>
+<li>将查询结果组织成自然语言回答</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提问 → list_tables → schema → 生成 SQL → query_checker → 执行 → 纠错循环 → 回答</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-核心组件一：SQLDatabase"><a href="#3-2-核心组件一：SQLDatabase" class="headerlink" title="3.2 核心组件一：SQLDatabase"></a>3.2 核心组件一：SQLDatabase</h3><p><code>SQLDatabase</code> 是 LangChain 对 SQLAlchemy 的封装，负责数据库连接和元信息读取：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_community.utilities <span class="keyword">import</span> SQLDatabase</span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持 SQLite、PostgreSQL、MySQL 等所有 SQLAlchemy 兼容的数据库</span></span><br><span class="line">db = SQLDatabase.from_uri(<span class="string">&quot;postgresql://user:pass@localhost/analytics&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>它提供表名列表、Schema 信息、样例行等元数据，是 Agent 理解数据库结构的入口。</p>
+<h3 id="3-3-核心组件二：SQLDatabaseToolkit"><a href="#3-3-核心组件二：SQLDatabaseToolkit" class="headerlink" title="3.3 核心组件二：SQLDatabaseToolkit"></a>3.3 核心组件二：SQLDatabaseToolkit</h3><p>Toolkit 将数据库操作封装为一组标准工具，供 Agent 调用：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sql_db_list_tables</code></td>
+<td>列出所有可用表</td>
+</tr>
+<tr>
+<td><code>sql_db_schema</code></td>
+<td>获取指定表的 Schema 和样例行</td>
+</tr>
+<tr>
+<td><code>sql_db_query</code></td>
+<td>执行 SQL 并返回结果</td>
+</tr>
+<tr>
+<td><code>sql_db_query_checker</code></td>
+<td>LLM 辅助检查 SQL 语法和逻辑错误</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_community.agent_toolkits <span class="keyword">import</span> SQLDatabaseToolkit</span><br><span class="line"></span><br><span class="line">toolkit = SQLDatabaseToolkit(db=db, llm=llm)</span><br><span class="line">tools = toolkit.get_tools()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>安全提示</strong>：<code>sql_db_query</code> 会执行模型生成的 SQL，务必使用<strong>只读权限</strong>的数据库账号，并在应用层增加 SQL 白名单或审批机制。</p>
+</blockquote>
+<h3 id="3-4-核心组件三：create-agent"><a href="#3-4-核心组件三：create-agent" class="headerlink" title="3.4 核心组件三：create_agent"></a>3.4 核心组件三：create_agent</h3><p>LangChain v1 推荐使用 <code>create_agent</code> 构建 ReAct Agent，替代旧版 <code>create_sql_agent</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"></span><br><span class="line">model = init_chat_model(<span class="string">&quot;gpt-4o&quot;</span>)</span><br><span class="line">tools = toolkit.get_tools()</span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=model,</span><br><span class="line">    tools=tools,</span><br><span class="line">    system_prompt=<span class="string">&quot;&quot;&quot;你是一个 SQL 数据分析助手。</span></span><br><span class="line"><span class="string">    在查询前先检查表结构，只生成 SELECT 语句，不要执行任何修改数据的操作。&quot;&quot;&quot;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>Agent 的核心循环：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LLM 思考 → 选择工具 → 执行 → 观察结果 → 继续思考或给出最终答案</span><br></pre></td></tr></table></figure>
+
+<p>若 <code>sql_db_query</code> 返回错误（如表名写错、列不存在），错误信息会作为 Observation 反馈给 LLM，触发自动纠错。</p>
+<h3 id="3-5-核心组件四：Human-in-the-Loop-中间件"><a href="#3-5-核心组件四：Human-in-the-Loop-中间件" class="headerlink" title="3.5 核心组件四：Human-in-the-Loop 中间件"></a>3.5 核心组件四：Human-in-the-Loop 中间件</h3><p>对于生产环境，建议在执行 SQL 前加入人工审批：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> HumanInTheLoopMiddleware</span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=model,</span><br><span class="line">    tools=tools,</span><br><span class="line">    middleware=[</span><br><span class="line">        HumanInTheLoopMiddleware(</span><br><span class="line">            interrupt_on=&#123;<span class="string">&quot;sql_db_query&quot;</span>: <span class="literal">True</span>&#125;,  <span class="comment"># 执行 SQL 前暂停等待审批</span></span><br><span class="line">        )</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>审批通过后，用 <code>Command(resume=...)</code> 恢复执行——这与 <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/">LangGraph 的 Interrupt 机制</a> 一脉相承。</p>
+<h3 id="3-6-SQL-Agent-完整示例"><a href="#3-6-SQL-Agent-完整示例" class="headerlink" title="3.6 SQL Agent 完整示例"></a>3.6 SQL Agent 完整示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_community.utilities <span class="keyword">import</span> SQLDatabase</span><br><span class="line"><span class="keyword">from</span> langchain_community.agent_toolkits <span class="keyword">import</span> SQLDatabaseToolkit</span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 连接数据库</span></span><br><span class="line">db = SQLDatabase.from_uri(<span class="string">&quot;sqlite:///Chinook.db&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 初始化模型和工具</span></span><br><span class="line">model = init_chat_model(<span class="string">&quot;gpt-4o&quot;</span>)</span><br><span class="line">toolkit = SQLDatabaseToolkit(db=db, llm=model)</span><br><span class="line">tools = toolkit.get_tools()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 创建 Agent</span></span><br><span class="line">agent = create_agent(model=model, tools=tools)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 提问</span></span><br><span class="line">result = agent.invoke(&#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [(<span class="string">&quot;user&quot;</span>, <span class="string">&quot;哪个艺术家的专辑销量最高？列出前 5 名。&quot;</span>)]</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、Data-Analysis-Agent：文件分析与可视化智能体"><a href="#四、Data-Analysis-Agent：文件分析与可视化智能体" class="headerlink" title="四、Data Analysis Agent：文件分析与可视化智能体"></a>四、Data Analysis Agent：文件分析与可视化智能体</h2><p>当任务不只是查库，还需要<strong>读 CSV、写 Python 脚本、生成图表、输出报告</strong>时，就需要 Data Analysis Agent。官方推荐基于 <strong>Deep Agents</strong> 构建。</p>
+<h3 id="4-1-Deep-Agents-是什么？"><a href="#4-1-Deep-Agents-是什么？" class="headerlink" title="4.1 Deep Agents 是什么？"></a>4.1 Deep Agents 是什么？</h3><p>Deep Agents 是 LangChain 团队推出的「开箱即用」Agent 框架，内置了数据密集型任务所需的常见能力：</p>
+<ul>
+<li>任务规划（Todo List）</li>
+<li>虚拟文件系统（读写/搜索文件）</li>
+<li>子 Agent 委派（上下文隔离）</li>
+<li>长对话摘要（防止 Context 溢出）</li>
+<li>沙箱代码执行</li>
+</ul>
+<p>底层同样是 <strong>LangGraph StateGraph</strong>，因此 streaming、checkpoint、interrupt 等能力开箱即用。</p>
+<h3 id="4-2-核心组件一：create-deep-agent"><a href="#4-2-核心组件一：create-deep-agent" class="headerlink" title="4.2 核心组件一：create_deep_agent"></a>4.2 核心组件一：create_deep_agent</h3><p>一行代码创建功能完备的数据分析 Agent：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"></span><br><span class="line">checkpointer = InMemorySaver()</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    tools=[my_custom_tool],       <span class="comment"># 自定义工具（如发 Slack、上传报告）</span></span><br><span class="line">    backend=backend,               <span class="comment"># 沙箱执行环境</span></span><br><span class="line">    checkpointer=checkpointer,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [(<span class="string">&quot;user&quot;</span>, <span class="string">&quot;分析 sales_data.csv，生成收入趋势图&quot;</span>)]&#125;,</span><br><span class="line">    config=&#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="string">&quot;analysis-001&quot;</span>&#125;&#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><code>create_deep_agent</code> 会自动挂载以下中间件（可自定义增减）：</p>
+<table>
+<thead>
+<tr>
+<th>中间件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PlanningMiddleware</code> / <code>TodoListMiddleware</code></td>
+<td>任务拆解与进度跟踪（<code>write_todos</code> / <code>read_todos</code>）</td>
+</tr>
+<tr>
+<td><code>FilesystemMiddleware</code></td>
+<td>虚拟文件系统工具（<code>ls</code> / <code>read_file</code> / <code>write_file</code> / <code>edit_file</code> / <code>grep</code>）</td>
+</tr>
+<tr>
+<td><code>SubAgentMiddleware</code></td>
+<td>子 Agent 委派，隔离上下文</td>
+</tr>
+<tr>
+<td><code>SummarizationMiddleware</code></td>
+<td>对话历史自动摘要，管理 Token 上限</td>
+</tr>
+<tr>
+<td><code>SkillsMiddleware</code></td>
+<td>按需加载领域技能包</td>
+</tr>
+<tr>
+<td><code>HumanInTheLoopMiddleware</code></td>
+<td>工具调用前人工审批</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-核心组件二：Backend（执行环境）"><a href="#4-3-核心组件二：Backend（执行环境）" class="headerlink" title="4.3 核心组件二：Backend（执行环境）"></a>4.3 核心组件二：Backend（执行环境）</h3><p>Backend 决定 Agent 在哪里执行代码，是 Data Analysis Agent 的关键基础设施：</p>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>适用场景</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DaytonaSandbox</code></td>
+<td>云端沙箱</td>
+<td>隔离安全，适合生产</td>
+</tr>
+<tr>
+<td><code>ModalSandbox</code></td>
+<td>Serverless 沙箱</td>
+<td>按需扩缩容</td>
+</tr>
+<tr>
+<td><code>RunloopSandbox</code></td>
+<td>开发沙箱</td>
+<td>快速原型验证</td>
+</tr>
+<tr>
+<td><code>AgentCoreSandbox</code></td>
+<td>AWS Bedrock 环境</td>
+<td>与 AWS 生态集成</td>
+</tr>
+<tr>
+<td><code>LocalShellBackend</code></td>
+<td>本地开发</td>
+<td><strong>仅限受控环境</strong>，有安全风险</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_daytona <span class="keyword">import</span> DaytonaSandbox</span><br><span class="line"><span class="keyword">from</span> daytona <span class="keyword">import</span> Daytona</span><br><span class="line"></span><br><span class="line">sandbox = Daytona().create()</span><br><span class="line">backend = DaytonaSandbox(sandbox=sandbox)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传数据文件到沙箱</span></span><br><span class="line">backend.upload_files([(<span class="string">&quot;/data/sales.csv&quot;</span>, csv_bytes)])</span><br></pre></td></tr></table></figure>
+
+<p>Backend 实现了统一协议，因此 <code>FilesystemMiddleware</code> 可以透明地在不同环境间切换，无需修改 Agent 代码。</p>
+<h3 id="4-4-核心组件三：FilesystemMiddleware"><a href="#4-4-核心组件三：FilesystemMiddleware" class="headerlink" title="4.4 核心组件三：FilesystemMiddleware"></a>4.4 核心组件三：FilesystemMiddleware</h3><p>为 Agent 提供文件操作能力，是数据分析的基础：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ls</code></td>
+<td>列出目录内容</td>
+</tr>
+<tr>
+<td><code>read_file</code></td>
+<td>读取文件</td>
+</tr>
+<tr>
+<td><code>write_file</code></td>
+<td>写入文件</td>
+</tr>
+<tr>
+<td><code>edit_file</code></td>
+<td>编辑文件（diff 方式）</td>
+</tr>
+<tr>
+<td><code>grep</code></td>
+<td>搜索文件内容</td>
+</tr>
+<tr>
+<td><code>glob</code></td>
+<td>按模式匹配文件</td>
+</tr>
+<tr>
+<td><code>execute</code></td>
+<td>在沙箱中执行 Shell 命令（需 Backend 支持）</td>
+</tr>
+</tbody></table>
+<p>典型分析流程：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /data → read_file sales.csv → write_file analysis.py → execute python analysis.py → read_file chart.png</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-5-核心组件四：SubAgentMiddleware"><a href="#4-5-核心组件四：SubAgentMiddleware" class="headerlink" title="4.5 核心组件四：SubAgentMiddleware"></a>4.5 核心组件四：SubAgentMiddleware</h3><p>复杂分析任务适合委派给专门的子 Agent，避免污染主 Agent 的上下文：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"></span><br><span class="line">visualizer_subagent = &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;visualizer&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;专门负责数据可视化，生成 matplotlib/plotly 图表&quot;</span>,</span><br><span class="line">    <span class="string">&quot;system_prompt&quot;</span>: <span class="string">&quot;你是数据可视化专家，根据数据生成清晰的图表并保存为 PNG。&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tools&quot;</span>: [],  <span class="comment"># 可覆盖工具集</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    backend=backend,</span><br><span class="line">    subagents=[visualizer_subagent],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>主 Agent 通过 <code>task</code> 工具将图表生成委派给 <code>visualizer</code> 子 Agent，各自维护独立上下文，互不干扰。</p>
+<h3 id="4-6-核心组件五：自定义工具"><a href="#4-6-核心组件五：自定义工具" class="headerlink" title="4.6 核心组件五：自定义工具"></a>4.6 核心组件五：自定义工具</h3><p>Data Analysis Agent 通常需要与外部系统集成，通过 <code>@tool</code> 装饰器扩展：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">slack_send_report</span>(<span class="params">text: <span class="built_in">str</span>, file_path: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;将分析报告和图表发送到 Slack 频道。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 从 backend 下载文件，通过 Slack SDK 发送</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;报告已发送。&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>最佳实践：API 密钥和凭证放在工具层（沙箱外）管理，不要写入沙箱环境变量。</p>
+</blockquote>
+<h3 id="4-7-Data-Analysis-Agent-完整示例"><a href="#4-7-Data-Analysis-Agent-完整示例" class="headerlink" title="4.7 Data Analysis Agent 完整示例"></a>4.7 Data Analysis Agent 完整示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv, io</span><br><span class="line"><span class="keyword">from</span> deepagents <span class="keyword">import</span> create_deep_agent</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> deepagents.backends <span class="keyword">import</span> LocalShellBackend  <span class="comment"># 仅开发环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 准备数据和 Backend</span></span><br><span class="line">backend = LocalShellBackend(root_dir=<span class="string">&quot;.&quot;</span>)</span><br><span class="line">csv_bytes = io.StringIO()</span><br><span class="line">writer = csv.writer(csv_bytes)</span><br><span class="line">writer.writerows([</span><br><span class="line">    [<span class="string">&quot;Date&quot;</span>, <span class="string">&quot;Product&quot;</span>, <span class="string">&quot;Revenue&quot;</span>],</span><br><span class="line">    [<span class="string">&quot;2025-01-01&quot;</span>, <span class="string">&quot;Widget A&quot;</span>, <span class="number">250</span>],</span><br><span class="line">    [<span class="string">&quot;2025-01-02&quot;</span>, <span class="string">&quot;Widget B&quot;</span>, <span class="number">125</span>],</span><br><span class="line">])</span><br><span class="line">backend.upload_files([(<span class="string">&quot;./data/sales.csv&quot;</span>, csv_bytes.getvalue().encode())])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 创建 Agent</span></span><br><span class="line">agent = create_deep_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-4o&quot;</span>,</span><br><span class="line">    backend=backend,</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 执行分析</span></span><br><span class="line">config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="string">&quot;demo-analysis&quot;</span>&#125;&#125;</span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [(<span class="string">&quot;user&quot;</span>, <span class="string">&quot;分析 sales.csv，计算各产品总收入并生成柱状图&quot;</span>)]&#125;,</span><br><span class="line">    config,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、Middleware-架构：可插拔的-Agent-定制层"><a href="#五、Middleware-架构：可插拔的-Agent-定制层" class="headerlink" title="五、Middleware 架构：可插拔的 Agent 定制层"></a>五、Middleware 架构：可插拔的 Agent 定制层</h2><p>无论是 SQL Agent 还是 Data Analysis Agent，LangChain v1 都通过 <strong>Middleware</strong> 实现横切关注点的解耦：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">请求 → before_agent → before_model → wrap_model_call → LLM</span><br><span class="line">                                              ↓</span><br><span class="line">结果 ← after_agent ← after_model ← wrap_tool_call ← 工具执行</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>触发时机</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>before_model</code></td>
+<td>每次调用 LLM 前</td>
+<td>注入上下文、裁剪历史</td>
+</tr>
+<tr>
+<td><code>wrap_model_call</code></td>
+<td>包裹 LLM 调用</td>
+<td>缓存、重试、动态换模型</td>
+</tr>
+<tr>
+<td><code>wrap_tool_call</code></td>
+<td>包裹工具执行</td>
+<td>权限校验、结果拦截</td>
+</tr>
+<tr>
+<td><code>after_model</code></td>
+<td>LLM 响应后、工具执行前</td>
+<td>输出过滤、PII 脱敏</td>
+</tr>
+<tr>
+<td><code>before_agent</code> / <code>after_agent</code></td>
+<td>Agent 启停</td>
+<td>资源初始化与清理</td>
+</tr>
+</tbody></table>
+<p>这种设计与 Web 框架的中间件模式类似，让不同团队可以独立维护各自的业务逻辑，而不污染核心 Agent 代码。</p>
+<hr>
+<h2 id="六、SQL-Agent-vs-Data-Analysis-Agent-选型"><a href="#六、SQL-Agent-vs-Data-Analysis-Agent-选型" class="headerlink" title="六、SQL Agent vs Data Analysis Agent 选型"></a>六、SQL Agent vs Data Analysis Agent 选型</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">                 你的数据在哪里？</span><br><span class="line">                       │</span><br><span class="line">         ┌─────────────┴─────────────┐</span><br><span class="line">         ▼                           ▼</span><br><span class="line">  结构化数据库                   文件 / 数据集</span><br><span class="line">(PostgreSQL, DuckDB)           (CSV, Parquet)</span><br><span class="line">         │                           │</span><br><span class="line">         ▼                           ▼</span><br><span class="line">    SQL Agent               Data Analysis Agent</span><br><span class="line"> create_agent +            create_deep_agent +</span><br><span class="line"> SQLDatabaseToolkit        Backend + FilesystemMiddleware</span><br><span class="line">         │                           │</span><br><span class="line">         └─────────────┬─────────────┘</span><br><span class="line">                       ▼</span><br><span class="line">                需要人工审批？</span><br><span class="line">                       │</span><br><span class="line">                 HumanInTheLoopMiddleware</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">                需要持久化会话？</span><br><span class="line">                       │</span><br><span class="line">                 Checkpointer + thread_id</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>推荐方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>对接现有 BI 数据库，自然语言查数</td>
+<td>SQL Agent</td>
+</tr>
+<tr>
+<td>分析上传的 CSV/Excel，生成图表</td>
+<td>Data Analysis Agent</td>
+</tr>
+<tr>
+<td>复杂多步分析 + 报告生成</td>
+<td>Data Analysis Agent + SubAgent</td>
+</tr>
+<tr>
+<td>生产环境 SQL 执行</td>
+<td>SQL Agent + HITL + 只读 DB 账号</td>
+</tr>
+<tr>
+<td>长对话分析任务</td>
+<td>任意 Agent + Checkpointer + SummarizationMiddleware</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、生产环境最佳实践"><a href="#七、生产环境最佳实践" class="headerlink" title="七、生产环境最佳实践"></a>七、生产环境最佳实践</h2><h3 id="7-1-安全"><a href="#7-1-安全" class="headerlink" title="7.1 安全"></a>7.1 安全</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ✅ 使用只读数据库账号</span></span><br><span class="line">db = SQLDatabase.from_uri(<span class="string">&quot;postgresql://readonly:pass@host/db&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ✅ SQL 执行前人工审批</span></span><br><span class="line">middleware=[HumanInTheLoopMiddleware(interrupt_on=&#123;<span class="string">&quot;sql_db_query&quot;</span>: <span class="literal">True</span>&#125;)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># ✅ 沙箱隔离代码执行，不用 LocalShellBackend</span></span><br><span class="line">backend = DaytonaSandbox(sandbox=daytona.create())</span><br><span class="line"></span><br><span class="line"><span class="comment"># ❌ 避免：给 Agent 写权限、生产环境用 LocalShellBackend</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-可靠性"><a href="#7-2-可靠性" class="headerlink" title="7.2 可靠性"></a>7.2 可靠性</h3><ul>
+<li>在 System Prompt 中注入<strong>业务指标定义</strong>（如「收入 = 实付金额，不含退款」）</li>
+<li>设置 <code>max_iterations</code> 防止 Agent 无限循环</li>
+<li>用 Checkpointer + <code>thread_id</code> 实现多用户会话隔离</li>
+<li>通过 LangSmith 追踪每次工具调用，便于调试和审计</li>
+</ul>
+<h3 id="7-3-性能"><a href="#7-3-性能" class="headerlink" title="7.3 性能"></a>7.3 性能</h3><ul>
+<li>对大型数据库，预先过滤相关表，减少 Schema 注入的 Token 消耗</li>
+<li>开启 Prompt Caching（支持的模型）降低重复 Schema 读取成本</li>
+<li>子 Agent 委派耗时任务（如图表生成），主 Agent 并行推进其他步骤</li>
+</ul>
+<hr>
+<h2 id="八、与-LangChain-生态的关系"><a href="#八、与-LangChain-生态的关系" class="headerlink" title="八、与 LangChain 生态的关系"></a>八、与 LangChain 生态的关系</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">LangGraph（运行时）</span><br><span class="line">    ↑ 基于</span><br><span class="line">LangChain create_agent / create_deep_agent（Agent 框架）</span><br><span class="line">    ↑ 工具层</span><br><span class="line">SQLDatabaseToolkit / FilesystemMiddleware / 自定义 Tools</span><br><span class="line">    ↑ 数据层</span><br><span class="line">PostgreSQL / DuckDB / CSV / 沙箱 Backend</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>需要<strong>精细控制图结构</strong>（自定义 Node/Edge）→ 下沉到 <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/">LangGraph</a></li>
+<li>需要<strong>轻量 Agent</strong>，自己组装 Middleware → <code>create_agent</code></li>
+<li>需要<strong>开箱即用的数据 Agent</strong> → <code>create_deep_agent</code></li>
+</ul>
+<hr>
+<h2 id="九、组件速查表"><a href="#九、组件速查表" class="headerlink" title="九、组件速查表"></a>九、组件速查表</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>所属</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SQLDatabase</code></td>
+<td>SQL Agent</td>
+<td>数据库连接与元信息读取</td>
+</tr>
+<tr>
+<td><code>SQLDatabaseToolkit</code></td>
+<td>SQL Agent</td>
+<td>封装 list/schema/query/checker 四件套</td>
+</tr>
+<tr>
+<td><code>create_agent</code></td>
+<td>通用</td>
+<td>轻量 ReAct Agent 构建入口</td>
+</tr>
+<tr>
+<td><code>create_deep_agent</code></td>
+<td>Data Analysis</td>
+<td>开箱即用的深度 Agent</td>
+</tr>
+<tr>
+<td><code>Backend</code></td>
+<td>Data Analysis</td>
+<td>沙箱代码执行环境</td>
+</tr>
+<tr>
+<td><code>FilesystemMiddleware</code></td>
+<td>Deep Agents</td>
+<td>虚拟文件系统工具</td>
+</tr>
+<tr>
+<td><code>TodoListMiddleware</code></td>
+<td>Deep Agents</td>
+<td>任务规划与进度跟踪</td>
+</tr>
+<tr>
+<td><code>SubAgentMiddleware</code></td>
+<td>Deep Agents</td>
+<td>子 Agent 委派与上下文隔离</td>
+</tr>
+<tr>
+<td><code>SummarizationMiddleware</code></td>
+<td>Deep Agents</td>
+<td>长对话自动摘要</td>
+</tr>
+<tr>
+<td><code>HumanInTheLoopMiddleware</code></td>
+<td>通用</td>
+<td>工具调用前人工审批</td>
+</tr>
+<tr>
+<td><code>Checkpointer</code></td>
+<td>通用</td>
+<td>会话状态持久化</td>
+</tr>
+<tr>
+<td><code>thread_id</code></td>
+<td>通用</td>
+<td>多用户会话隔离标识</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>LangChain 的 Data Agent 将「自然语言 → 数据洞察」的链路标准化为可复用的组件体系：<strong>SQL Agent</strong> 专注数据库问答，<strong>Data Analysis Agent</strong> 覆盖文件分析与可视化。两者共享 LangGraph 运行时，通过 Middleware 灵活扩展，通过 Backend 和 HITL 保障生产安全。</p>
+<p>掌握这些组件后，你可以从简单的 NL2SQL 问答起步，逐步扩展到带审批、带可视化、带多 Agent 协作的完整数据分析工作流。</p>
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.langchain.com/oss/python/langchain/sql-agent">Build a SQL agent</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.langchain.com/oss/python/deepagents/data-analysis">Build a data analysis agent</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.langchain.com/oss/python/deepagents/overview">Deep Agents overview</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.langchain.com/blog/how-middleware-lets-you-customize-your-agent-harness">LangChain Middleware 架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/langchain-ai/deepagents">deepagents GitHub</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ai/" rel="tag"># ai</a>
+              <a href="/tags/langchain/" rel="tag"># langchain</a>
+              <a href="/tags/data-agent/" rel="tag"># data-agent</a>
+              <a href="/tags/sql/" rel="tag"># sql</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" rel="prev" title="LangGraph 入门：核心组件与架构详解">
+      <i class="fa fa-chevron-left"></i> LangGraph 入门：核心组件与架构详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" rel="next" title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill">
+      Agent Skills 编写最佳实践：如何写出高效可发现的 Skill <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LangChain-Data-Agent-%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">LangChain Data Agent 入门：数据分析智能体与核心组件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81Data-Agent-%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">一、Data Agent 解决什么问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">二、整体架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81SQL-Agent%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E9%97%AE%E7%AD%94%E6%99%BA%E8%83%BD%E4%BD%93"><span class="nav-number">1.3.</span> <span class="nav-text">三、SQL Agent：数据库问答智能体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%80%EF%BC%9ASQLDatabase"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 核心组件一：SQLDatabase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%BA%8C%EF%BC%9ASQLDatabaseToolkit"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 核心组件二：SQLDatabaseToolkit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%89%EF%BC%9Acreate-agent"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 核心组件三：create_agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E5%9B%9B%EF%BC%9AHuman-in-the-Loop-%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5 核心组件四：Human-in-the-Loop 中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-SQL-Agent-%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.6.</span> <span class="nav-text">3.6 SQL Agent 完整示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Data-Analysis-Agent%EF%BC%9A%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96%E6%99%BA%E8%83%BD%E4%BD%93"><span class="nav-number">1.4.</span> <span class="nav-text">四、Data Analysis Agent：文件分析与可视化智能体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Deep-Agents-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 Deep Agents 是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%80%EF%BC%9Acreate-deep-agent"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 核心组件一：create_deep_agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%BA%8C%EF%BC%9ABackend%EF%BC%88%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 核心组件二：Backend（执行环境）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%89%EF%BC%9AFilesystemMiddleware"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 核心组件三：FilesystemMiddleware</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E5%9B%9B%EF%BC%9ASubAgentMiddleware"><span class="nav-number">1.4.5.</span> <span class="nav-text">4.5 核心组件四：SubAgentMiddleware</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%BA%94%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7"><span class="nav-number">1.4.6.</span> <span class="nav-text">4.6 核心组件五：自定义工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-Data-Analysis-Agent-%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.7.</span> <span class="nav-text">4.7 Data Analysis Agent 完整示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Middleware-%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%8F%AF%E6%8F%92%E6%8B%94%E7%9A%84-Agent-%E5%AE%9A%E5%88%B6%E5%B1%82"><span class="nav-number">1.5.</span> <span class="nav-text">五、Middleware 架构：可插拔的 Agent 定制层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81SQL-Agent-vs-Data-Analysis-Agent-%E9%80%89%E5%9E%8B"><span class="nav-number">1.6.</span> <span class="nav-text">六、SQL Agent vs Data Analysis Agent 选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.7.</span> <span class="nav-text">七、生产环境最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E5%AE%89%E5%85%A8"><span class="nav-number">1.7.1.</span> <span class="nav-text">7.1 安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">1.7.2.</span> <span class="nav-text">7.2 可靠性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E6%80%A7%E8%83%BD"><span class="nav-number">1.7.3.</span> <span class="nav-text">7.3 性能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E4%B8%8E-LangChain-%E7%94%9F%E6%80%81%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.8.</span> <span class="nav-text">八、与 LangChain 生态的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E7%BB%84%E4%BB%B6%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="nav-number">1.9.</span> <span class="nav-text">九、组件速查表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.10.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.11.</span> <span class="nav-text">参考资源</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">菜鸟程序员</p>
+  <div class="site-description" itemprop="description">这个人很懒，不想写的太详细</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">39k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">35 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
+      placeholder: "随便说点啥，欢迎吐槽",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : ,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

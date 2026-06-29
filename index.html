@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -17,20 +17,20 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="这个人很懒，不想写的太详细">
 <meta property="og:type" content="website">
 <meta property="og:title" content="个人博客">
-<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:url" content="https://qngolg.github.io/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="这个人很懒，不想写的太详细">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="菜鸟程序员">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="https://qngolg.github.io/">
 
 
 <script id="page-configurations">
@@ -39,7 +39,7 @@
     sidebar: "",
     isHome : true,
     isPost : false,
-    lang   : 'en'
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -83,7 +83,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -101,6 +101,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -112,19 +113,61 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -146,8 +189,329 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" class="post-title-link" itemprop="url">Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-06-23 22:00:00" itemprop="dateCreated datePublished" datetime="2026-06-23T22:00:00+08:00">2026-06-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" class="post-meta-item leancloud_visitors" data-flag-title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>9.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>系统梳理 Agent Skills 的编写最佳实践，涵盖 SKILL.md 精简原则、YAML 规范、渐进式披露、工作流设计与常见反模式，帮助写出可被 Agent 高效发现与执行的 Skill。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">LangChain Data Agent 入门：数据分析智能体与核心组件详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-06-23 21:00:00" itemprop="dateCreated datePublished" datetime="2026-06-23T21:00:00+08:00">2026-06-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="LangChain Data Agent 入门：数据分析智能体与核心组件详解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>9.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍 LangChain 生态中 Data Agent 的两种典型形态（SQL Agent 与 Data Analysis Agent），详解 SQLDatabaseToolkit、create_agent、Deep Agents 中间件与 Backend 等核心组件。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">LangGraph 入门：核心组件与架构详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-06-23 20:00:00" itemprop="dateCreated datePublished" datetime="2026-06-23T20:00:00+08:00">2026-06-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="LangGraph 入门：核心组件与架构详解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>系统介绍 LangGraph 的核心概念与组件，包括 State、Node、Edge、Checkpointer、Interrupt、Subgraph 等，帮助快速构建有状态的 AI 智能体工作流。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -169,19 +533,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2023-11-24 23:54:16" itemprop="dateCreated datePublished" datetime="2023-11-24T23:54:16+08:00">2023-11-24</time>
+              <time title="创建时间：2023-11-24 23:54:16" itemprop="dateCreated datePublished" datetime="2023-11-24T23:54:16+08:00">2023-11-24</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-25 00:02:26" itemprop="dateModified" datetime="2023-11-25T00:02:26+08:00">2023-11-25</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式：解决常见问题的有效方法" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -222,7 +628,7 @@
 <td>解释器模式（Interpreter）、模板方法模式（Template Method）、责任链模式（Chain of Responsibility）、命令模式（Command）、迭代器模式（Iterator）、调解器模式（Mediator）、备忘录模式（Memento）、观察者模式（Observer）、状态模式（State）、策略模式（Strategy）、访问者模式（Visitor）</td>
 </tr>
 </tbody></table>
-<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a target="_blank" rel="noopener" href="https://github.com/qngolg/design-patterns%EF%BC%8C%E9%87%8C%E9%9D%A2%E5%8C%85%E5%90%AB%E4%BA%86%E5%90%84%E7%B1%BB%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%A1%88%E4%BE%8B%E5%92%8C%E6%A0%B7%E4%BE%8B%E4%BB%A3%E7%A0%81">https://github.com/qngolg/design-patterns，里面包含了各类设计模式的案例和样例代码</a></p>
+<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a target="_blank" rel="noopener" href="https://github.com/qngolg/design-patterns">https://github.com/qngolg/design-patterns</a> ，里面包含了各类设计模式的案例和样例代码。</p>
 
       
     </div>
@@ -241,8 +647,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/13/python-%E5%B0%8F%E8%AE%B0/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2023/11/13/python-%E5%B0%8F%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -264,19 +670,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2023-11-13 23:11:42" itemprop="dateCreated datePublished" datetime="2023-11-13T23:11:42+08:00">2023-11-13</time>
+              <time title="创建时间：2023-11-13 23:11:42" itemprop="dateCreated datePublished" datetime="2023-11-13T23:11:42+08:00">2023-11-13</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-14 00:04:00" itemprop="dateModified" datetime="2023-11-14T00:04:00+08:00">2023-11-14</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2023/11/13/python-%E5%B0%8F%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="python 小记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/11/13/python-%E5%B0%8F%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/11/13/python-%E5%B0%8F%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>2 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -320,13 +768,13 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> price &gt; <span class="number">10</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;价格超过 10 元。&quot;</span>)</span><br><span class="line"><span class="keyword">elif</span> price &gt; <span class="number">5</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;价格超过 5 元。&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;价格低于 5 元。&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;无限循环...&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">input</span>(<span class="string">&quot;是否退出？(y/n)&quot;</span>) == <span class="string">&quot;y&quot;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="3-函数"><a href="#3-函数" class="headerlink" title="3. 函数"></a>3. 函数</h2><p>函数是一种将代码块封装起来以便重复使用的方式。你可以定义自己的函数，并在程序中调用它们。例如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">multiply</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="keyword">return</span> a * b</span><br><span class="line"></span><br><span class="line">result = multiply(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(result)  <span class="comment"># 输出：6</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">multiply</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="keyword">return</span> a * b</span><br><span class="line"></span><br><span class="line">result = multiply(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(result)  <span class="comment"># 输出：6</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="4-模块和包"><a href="#4-模块和包" class="headerlink" title="4. 模块和包"></a>4. 模块和包</h2><p>模块是 Python 代码的组织单位，它包含了一些相关的函数和变量。包是一组模块的集合，用于组织更大的代码项目。你可以使用 import 语句来导入模块或包中的函数。例如：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(math.pi)  <span class="comment"># 输出：3.141592653589793</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="5-面向对象编程"><a href="#5-面向对象编程" class="headerlink" title="5. 面向对象编程"></a>5. 面向对象编程</h2><p>Python 支持面向对象编程（OOP），其中对象是数据和操作数据的函数的组合。你可以定义类来创建自己的对象，并使用继承和多态来扩展和复用代码。例如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, age</span>):</span></span><br><span class="line">        self.name = name</span><br><span class="line">        self.age = age</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">introduce</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;我是<span class="subst">&#123;self.name&#125;</span>，今年<span class="subst">&#123;self.age&#125;</span>岁。&quot;</span>)</span><br><span class="line"></span><br><span class="line">student = Student(<span class="string">&quot;张三&quot;</span>, <span class="number">20</span>)</span><br><span class="line">student.introduce()  <span class="comment"># 输出：我是张三，今年 20 岁。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, age</span>):</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        <span class="variable language_">self</span>.age = age</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">introduce</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;我是<span class="subst">&#123;self.name&#125;</span>，今年<span class="subst">&#123;self.age&#125;</span>岁。&quot;</span>)</span><br><span class="line"></span><br><span class="line">student = Student(<span class="string">&quot;张三&quot;</span>, <span class="number">20</span>)</span><br><span class="line">student.introduce()  <span class="comment"># 输出：我是张三，今年 20 岁。</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="6-Python-解释器"><a href="#6-Python-解释器" class="headerlink" title="6. Python 解释器"></a>6. Python 解释器</h2><p>Python 解释器是一种执行 Python 代码的程序。当你运行 Python 脚本时，解释器会逐行解析代码并执行相应的操作。Python 解释器有多种实现，包括 CPython、Jython 和 PyPy 等。</p>
 <p>这只是 Python 基础知识的一个简要概述。Python 是一门强大而灵活的语言，还有很多其他的特性和功能等待你去探索。希望这篇博客能为你提供一个良好的起点，祝你在 Python 编程的世界中玩得愉快！</p>
@@ -348,8 +796,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/12/hello-world/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2021/08/07/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -363,7 +811,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/11/12/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+            <a href="/2021/08/07/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
         </h2>
 
         <div class="post-meta">
@@ -371,12 +819,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2023-11-12 23:19:40" itemprop="dateCreated datePublished" datetime="2023-11-12T23:19:40+08:00">2023-11-12</time>
+              <time title="创建时间：2021-08-07 10:00:00" itemprop="dateCreated datePublished" datetime="2021-08-07T10:00:00+08:00">2021-08-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
+                </span>
             </span>
 
           
+            <span id="/2021/08/07/hello-world/" class="post-meta-item leancloud_visitors" data-flag-title="Hello World" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/07/hello-world/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/07/hello-world/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>363</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -418,8 +915,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -441,19 +938,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-08-05 09:49:04" itemprop="dateCreated datePublished" datetime="2021-08-05T09:49:04+08:00">2021-08-05</time>
+              <time title="创建时间：2021-08-05 09:49:04" itemprop="dateCreated datePublished" datetime="2021-08-05T09:49:04+08:00">2021-08-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-12 23:19:40" itemprop="dateModified" datetime="2023-11-12T23:19:40+08:00">2023-11-12</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/" class="post-meta-item leancloud_visitors" data-flag-title="微服务网关" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>508</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -559,8 +1098,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -582,19 +1121,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-07-30 10:01:50" itemprop="dateCreated datePublished" datetime="2021-07-30T10:01:50+08:00">2021-07-30</time>
+              <time title="创建时间：2021-07-30 10:01:50" itemprop="dateCreated datePublished" datetime="2021-07-30T10:01:50+08:00">2021-07-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-12 23:19:40" itemprop="dateModified" datetime="2023-11-12T23:19:40+08:00">2023-11-12</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="git命令小记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>192</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -605,7 +1186,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Git命令小记"><a href="#Git命令小记" class="headerlink" title="Git命令小记"></a>Git命令小记</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 本地分支与远程分支关联</span></span><br><span class="line">git remote add origin https://github.com/qngolg/qngolg-blog-source.git</span><br><span class="line">/Users/qgl/Library/Application Support/typora-user-images/image-20210730101503550.png</span><br></pre></td></tr></table></figure>
+          <h1 id="Git命令小记"><a href="#Git命令小记" class="headerlink" title="Git命令小记"></a>Git命令小记</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">本地分支与远程分支关联</span></span><br><span class="line">git remote add origin https://github.com/qngolg/qngolg-blog-source.git</span><br><span class="line">/Users/qgl/Library/Application Support/typora-user-images/image-20210730101503550.png</span><br></pre></td></tr></table></figure>
 
 
 
@@ -631,8 +1212,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -654,19 +1235,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-07-30 09:30:16" itemprop="dateCreated datePublished" datetime="2021-07-30T09:30:16+08:00">2021-07-30</time>
+              <time title="创建时间：2021-07-30 09:30:16" itemprop="dateCreated datePublished" datetime="2021-07-30T09:30:16+08:00">2021-07-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-12 23:19:40" itemprop="dateModified" datetime="2023-11-12T23:19:40+08:00">2023-11-12</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="使用github Action 自动部署博客" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/30/%E4%BD%BF%E7%94%A8github-Action-%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>518</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -705,8 +1328,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -728,19 +1351,61 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-07-29 11:06:00" itemprop="dateCreated datePublished" datetime="2021-07-29T11:06:00+08:00">2021-07-29</time>
+              <time title="创建时间：2021-07-29 11:06:00" itemprop="dateCreated datePublished" datetime="2021-07-29T11:06:00+08:00">2021-07-29</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-13 23:47:47" itemprop="dateModified" datetime="2023-11-13T23:47:47+08:00">2023-11-13</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-06-29 23:38:51" itemprop="dateModified" datetime="2026-06-29T23:38:51+08:00">2026-06-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
+                </span>
+            </span>
 
           
+            <span id="/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="如何搭建gitHub个人博客" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/29/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BAgitHub%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>917</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -846,10 +1511,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -868,14 +1533,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">5</span>
-        <span class="site-state-item-name">tags</span></a>
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -901,13 +1573,23 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">39k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">35 分钟</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
         
@@ -933,7 +1615,7 @@
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -946,6 +1628,10 @@
 
 
 
+  
+<script src="/js/local-search.js"></script>
+
+
 
 
 
@@ -960,6 +1646,35 @@
   
 
   
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
+      placeholder: "随便说点啥，欢迎吐槽",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : ,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>
