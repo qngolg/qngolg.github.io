@@ -1,26 +1,25 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
 
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="系统梳理 Agent Skills 的编写最佳实践，涵盖 SKILL.md 精简原则、YAML 规范、渐进式披露、工作流设计与常见反模式，帮助写出可被 Agent 高效发现与执行的 Skill。">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="菜鸟程序员">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="系统梳理 Agent Skills 的编写最佳实践，涵盖 SKILL.md 精简原则、YAML 规范、渐进式披露、工作流设计与常见反模式，帮助写出可被 Agent 高效发现与执行的 Skill。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill">
 <meta property="og:url" content="https://qngolg.github.io/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/index.html">
@@ -34,256 +33,362 @@
 <meta property="article:tag" content="skills">
 <meta property="article:tag" content="claude">
 <meta property="article:tag" content="agent">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Agent Skills 编写最佳实践：如何写出高效可发现的 Skill - 个人博客</title>
 
-<link rel="canonical" href="https://qngolg.github.io/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>Agent Skills 编写最佳实践：如何写出高效可发现的 Skill | 个人博客</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+<body>
+  
 
-</head>
+  <header>
+    
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">个人博客</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>个人博客</strong>
     </a>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
     </div>
   </div>
-
 </div>
-    </header>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-06-23 22:00" pubdate>
+          2026年6月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.8k 字
+        
+      </span>
+    
 
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          82 分钟
+        
+      </span>
+    
+
+    
+    
   </div>
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="菜鸟程序员">
-      <meta itemprop="description" content="这个人很懒，不想写的太详细">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="个人博客">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Agent Skills 编写最佳实践：如何写出高效可发现的 Skill
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2026-06-23 22:00:00" itemprop="dateCreated datePublished" datetime="2026-06-23T22:00:00+08:00">2026-06-23</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" class="post-meta-item leancloud_visitors" data-flag-title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>9.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
-            </span>
-            <div class="post-description">系统梳理 Agent Skills 的编写最佳实践，涵盖 SKILL.md 精简原则、YAML 规范、渐进式披露、工作流设计与常见反模式，帮助写出可被 Agent 高效发现与执行的 Skill。</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        
+      </div>
 
       
-        <h1 id="Agent-Skills-编写最佳实践：如何写出高效可发现的-Skill"><a href="#Agent-Skills-编写最佳实践：如何写出高效可发现的-Skill" class="headerlink" title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill"></a>Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</h1><p>在 Claude、Cursor 等 AI Agent 平台上，<strong>Skill</strong> 是一种将领域知识、工作流程和可执行脚本打包复用的机制。一个设计良好的 Skill，能让 Agent 在正确时机自动加载专业知识，稳定完成复杂任务。</p>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Agent-Skills-编写最佳实践：如何写出高效可发现的-Skill"><a href="#Agent-Skills-编写最佳实践：如何写出高效可发现的-Skill" class="headerlink" title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill"></a>Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</h1><p>在 Claude、Cursor 等 AI Agent 平台上，<strong>Skill</strong> 是一种将领域知识、工作流程和可执行脚本打包复用的机制。一个设计良好的 Skill，能让 Agent 在正确时机自动加载专业知识，稳定完成复杂任务。</p>
 <p>但 Skill 写不好，常见问题也很典型：Agent 找不到该用哪个 Skill、加载了却做不对、或者 <code>SKILL.md</code> 太长把上下文挤爆。</p>
 <p>本文基于 <a target="_blank" rel="noopener" href="https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices">Claude 官方 Skill 编写最佳实践</a>，结合实战经验，系统梳理 Skill 编写的核心原则、结构规范与常见陷阱。<strong>核心结论先行：<code>SKILL.md</code> 要精简，细节往外拆。</strong></p>
 <h2 id="一、Skill-是什么？先理解加载机制"><a href="#一、Skill-是什么？先理解加载机制" class="headerlink" title="一、Skill 是什么？先理解加载机制"></a>一、Skill 是什么？先理解加载机制</h2><p>在动手写之前，先理解 Skill 的<strong>三级加载</strong>机制，这直接决定了你应该把内容放在哪里：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">启动时：预加载所有 Skill 的 name + description（元数据）</span><br><span class="line">         ↓</span><br><span class="line">任务相关时：读取 SKILL.md 正文</span><br><span class="line">         ↓</span><br><span class="line">需要时：按需读取 reference/、scripts/ 等附属文件</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">启动时：预加载所有 Skill 的 name + description（元数据）<br>         ↓<br>任务相关时：读取 SKILL.md 正文<br>         ↓<br>需要时：按需读取 reference/、scripts/ 等附属文件<br></code></pre></td></tr></table></figure>
 
 <p>这意味着：</p>
 <table>
@@ -325,10 +430,10 @@
 <li>这段内容的 Token 成本是否值得？</li>
 </ul>
 <p><strong>良好示例</strong>（约 50 tokens）：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 提取 PDF 文本</span></span><br><span class="line"></span><br><span class="line">使用 pdfplumber 提取文本：</span><br><span class="line"></span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">import pdfplumber</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span></span><br><span class="line"><span class="code">    text = pdf.pages[0].extract_text()</span></span><br><span class="line"><span class="code">```</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 提取 PDF 文本</span><br><br>使用 pdfplumber 提取文本：<br><br><span class="hljs-code">```python</span><br><span class="hljs-code">import pdfplumber</span><br><span class="hljs-code"></span><br><span class="hljs-code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span><br><span class="hljs-code">    text = pdf.pages[0].extract_text()</span><br><span class="hljs-code">```</span><br></code></pre></td></tr></table></figure>
 
 <p><strong>不良示例</strong>（约 150 tokens）：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 提取 PDF 文本</span></span><br><span class="line"></span><br><span class="line">PDF（Portable Document Format）是一种常见的文件格式，包含文本、图片等内容。</span><br><span class="line">要提取 PDF 文本，需要使用库。市面上有很多 PDF 处理库，</span><br><span class="line">pdfplumber 是推荐选择，因为它易于使用且能处理大多数情况。</span><br><span class="line">首先需要用 pip 安装，然后使用下面的代码……</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 提取 PDF 文本</span><br><br>PDF（Portable Document Format）是一种常见的文件格式，包含文本、图片等内容。<br>要提取 PDF 文本，需要使用库。市面上有很多 PDF 处理库，<br>pdfplumber 是推荐选择，因为它易于使用且能处理大多数情况。<br>首先需要用 pip 安装，然后使用下面的代码……<br></code></pre></td></tr></table></figure>
 
 <p>简洁版假设 Agent 已经知道什么是 PDF、库如何工作。<strong>不要重复 Agent 的常识。</strong></p>
 <h3 id="2-2-设置适当的自由度"><a href="#2-2-设置适当的自由度" class="headerlink" title="2.2 设置适当的自由度"></a>2.2 设置适当的自由度</h3><p>根据任务的<strong>脆弱性</strong>和<strong>可变性</strong>，匹配指令的具体程度：</p>
@@ -361,9 +466,9 @@
 <li><strong>两侧悬崖的窄桥</strong>（低自由度）：数据库迁移、支付操作 → 给出精确命令，禁止额外参数</li>
 <li><strong>开阔平地</strong>（高自由度）：代码审查、文档润色 → 给大方向，信任 Agent 找最佳路径</li>
 </ul>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 低自由度示例：数据库迁移</span></span><br><span class="line">Run exactly this script:</span><br><span class="line">python scripts/migrate.py --verify --backup</span><br><span class="line">Do not modify the command or add additional flags.</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 低自由度示例：数据库迁移</span><br>Run exactly this script:<br>python scripts/migrate.py --verify --backup<br>Do not modify the command or add additional flags.<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 高自由度示例：代码审查</span></span><br><span class="line"><span class="bullet">1.</span> 分析代码结构和组织</span><br><span class="line"><span class="bullet">2.</span> 检查潜在 bug 或边界情况</span><br><span class="line"><span class="bullet">3.</span> 提出可读性和可维护性改进建议</span><br><span class="line"><span class="bullet">4.</span> 验证是否符合项目规范</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 高自由度示例：代码审查</span><br><span class="hljs-bullet">1.</span> 分析代码结构和组织<br><span class="hljs-bullet">2.</span> 检查潜在 bug 或边界情况<br><span class="hljs-bullet">3.</span> 提出可读性和可维护性改进建议<br><span class="hljs-bullet">4.</span> 验证是否符合项目规范<br></code></pre></td></tr></table></figure>
 
 <h3 id="2-3-用目标模型测试"><a href="#2-3-用目标模型测试" class="headerlink" title="2.3 用目标模型测试"></a>2.3 用目标模型测试</h3><p>Skill 是对模型的补充，有效性取决于底层模型。应在<strong>计划使用的所有模型</strong>上测试：</p>
 <ul>
@@ -374,7 +479,7 @@
 <p>对 Opus 完美的内容，可能需要为 Haiku 补充更多细节。多模型共用时，力求指令对所有模型都适用。</p>
 <hr>
 <h2 id="三、SKILL-md-结构规范"><a href="#三、SKILL-md-结构规范" class="headerlink" title="三、SKILL.md 结构规范"></a>三、SKILL.md 结构规范</h2><h3 id="3-1-YAML-Frontmatter-必填字段"><a href="#3-1-YAML-Frontmatter-必填字段" class="headerlink" title="3.1 YAML Frontmatter 必填字段"></a>3.1 YAML Frontmatter 必填字段</h3><p><code>SKILL.md</code> 顶部必须是 YAML frontmatter，包含 <code>name</code> 和 <code>description</code> 两个字段：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">pdf-processing</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">从</span> <span class="string">PDF</span> <span class="string">文件提取文本和表格，填写表单，合并文档。在处理</span> <span class="string">PDF</span> <span class="string">文件或用户提到</span> <span class="string">PDF、表单、文档提取时使用。</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-meta">---</span><br><span class="hljs-attr">name:</span> <span class="hljs-string">pdf-processing</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">从</span> <span class="hljs-string">PDF</span> <span class="hljs-string">文件提取文本和表格，填写表单，合并文档。在处理</span> <span class="hljs-string">PDF</span> <span class="hljs-string">文件或用户提到</span> <span class="hljs-string">PDF、表单、文档提取时使用。</span><br><span class="hljs-meta">---</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="name-字段规则"><a href="#name-字段规则" class="headerlink" title="name 字段规则"></a><code>name</code> 字段规则</h4><table>
 <thead>
@@ -401,7 +506,7 @@
 </tr>
 </tbody></table>
 <p><strong>推荐命名风格：动名词形式</strong>（动词 + -ing），清晰描述 Skill 提供的活动：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">✓ processing-pdfs</span><br><span class="line">✓ analyzing-spreadsheets</span><br><span class="line">✓ managing-databases</span><br><span class="line">✓ writing-documentation</span><br><span class="line"></span><br><span class="line">✗ helper / utils / tools（过于模糊）</span><br><span class="line">✗ documents / data / files（过于通用）</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs text">✓ processing-pdfs<br>✓ analyzing-spreadsheets<br>✓ managing-databases<br>✓ writing-documentation<br><br>✗ helper / utils / tools（过于模糊）<br>✗ documents / data / files（过于通用）<br></code></pre></td></tr></table></figure>
 
 <h4 id="description-字段规则"><a href="#description-字段规则" class="headerlink" title="description 字段规则"></a><code>description</code> 字段规则</h4><table>
 <thead>
@@ -432,12 +537,12 @@
 </tr>
 </tbody></table>
 <p><strong>第三人称示例：</strong></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ✓ 良好</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">分析</span> <span class="string">Excel</span> <span class="string">电子表格，创建数据透视表，生成图表。在分析</span> <span class="string">Excel</span> <span class="string">文件、电子表格、表格数据或</span> <span class="string">.xlsx</span> <span class="string">文件时使用。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ✗ 避免</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">我可以帮你处理</span> <span class="string">Excel</span> <span class="string">文件</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">你可以用这个来分析</span> <span class="string">Excel</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ✓ 良好</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">分析</span> <span class="hljs-string">Excel</span> <span class="hljs-string">电子表格，创建数据透视表，生成图表。在分析</span> <span class="hljs-string">Excel</span> <span class="hljs-string">文件、电子表格、表格数据或</span> <span class="hljs-string">.xlsx</span> <span class="hljs-string">文件时使用。</span><br><br><span class="hljs-comment"># ✗ 避免</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">我可以帮你处理</span> <span class="hljs-string">Excel</span> <span class="hljs-string">文件</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">你可以用这个来分析</span> <span class="hljs-string">Excel</span><br></code></pre></td></tr></table></figure>
 
 <p><strong>有效 description 示例：</strong></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Git 提交助手</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">通过分析</span> <span class="string">git</span> <span class="string">diff</span> <span class="string">生成描述性提交信息。在用户请求帮助编写</span> <span class="string">commit</span> <span class="string">message</span> <span class="string">或审查</span> <span class="string">staged</span> <span class="string">changes</span> <span class="string">时使用。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># PDF 处理</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">从</span> <span class="string">PDF</span> <span class="string">文件提取文本和表格，填写表单，合并文档。在处理</span> <span class="string">PDF</span> <span class="string">或用户提到</span> <span class="string">PDF、表单、文档提取时使用。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># Git 提交助手</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">通过分析</span> <span class="hljs-string">git</span> <span class="hljs-string">diff</span> <span class="hljs-string">生成描述性提交信息。在用户请求帮助编写</span> <span class="hljs-string">commit</span> <span class="hljs-string">message</span> <span class="hljs-string">或审查</span> <span class="hljs-string">staged</span> <span class="hljs-string">changes</span> <span class="hljs-string">时使用。</span><br><br><span class="hljs-comment"># PDF 处理</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">从</span> <span class="hljs-string">PDF</span> <span class="hljs-string">文件提取文本和表格，填写表单，合并文档。在处理</span> <span class="hljs-string">PDF</span> <span class="hljs-string">或用户提到</span> <span class="hljs-string">PDF、表单、文档提取时使用。</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ✗ 模糊，Agent 无法判断何时触发</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">帮助处理文档</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">处理数据</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">对文件做一些操作</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ✗ 模糊，Agent 无法判断何时触发</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">帮助处理文档</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">处理数据</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">对文件做一些操作</span><br></code></pre></td></tr></table></figure>
 
 <blockquote>
 <p><strong>关键认知：</strong> 系统可能有超过 100 个 Skill，<code>description</code> 是 Agent 选择正确 Skill 的唯一依据。<code>description</code> 负责「何时用」，<code>SKILL.md</code> 正文负责「怎么用」。</p>
@@ -449,7 +554,7 @@
 <li><strong>工作流概览</strong>：关键步骤和检查清单</li>
 <li><strong>导航链接</strong>：指向详细参考文件的链接（仅一层深度）</li>
 </ol>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: pdf-processing</span><br><span class="line"><span class="section">description: 从 PDF 提取文本和表格，填写表单，合并文档。处理 PDF 或用户提到 PDF、表单、文档提取时使用。</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line"><span class="section"># PDF 处理</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 快速开始</span></span><br><span class="line"></span><br><span class="line">用 pdfplumber 提取文本：</span><br><span class="line"></span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">import pdfplumber</span></span><br><span class="line"><span class="code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span></span><br><span class="line"><span class="code">    text = pdf.pages[0].extract_text()</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 高级功能</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="strong">**表单填写**</span>：见 [<span class="string">FORMS.md</span>](<span class="link">FORMS.md</span>)</span><br><span class="line"><span class="bullet">-</span> <span class="strong">**API 参考**</span>：见 [<span class="string">REFERENCE.md</span>](<span class="link">REFERENCE.md</span>)</span><br><span class="line"><span class="bullet">-</span> <span class="strong">**使用示例**</span>：见 [<span class="string">EXAMPLES.md</span>](<span class="link">EXAMPLES.md</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>name: pdf-processing<br><span class="hljs-section">description: 从 PDF 提取文本和表格，填写表单，合并文档。处理 PDF 或用户提到 PDF、表单、文档提取时使用。</span><br><span class="hljs-section">---</span><br><br><span class="hljs-section"># PDF 处理</span><br><br><span class="hljs-section">## 快速开始</span><br><br>用 pdfplumber 提取文本：<br><br><span class="hljs-code">```python</span><br><span class="hljs-code">import pdfplumber</span><br><span class="hljs-code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span><br><span class="hljs-code">    text = pdf.pages[0].extract_text()</span><br><span class="hljs-code">```</span><br><br><span class="hljs-section">## 高级功能</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**表单填写**</span>：见 [<span class="hljs-string">FORMS.md</span>](<span class="hljs-link">FORMS.md</span>)<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**API 参考**</span>：见 [<span class="hljs-string">REFERENCE.md</span>](<span class="hljs-link">REFERENCE.md</span>)<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**使用示例**</span>：见 [<span class="hljs-string">EXAMPLES.md</span>](<span class="hljs-link">EXAMPLES.md</span>)<br></code></pre></td></tr></table></figure>
 
 <p><strong>SKILL.md 里不应该有的内容：</strong></p>
 <ul>
@@ -460,83 +565,83 @@
 </ul>
 <hr>
 <h2 id="四、渐进式披露：Skill-目录组织"><a href="#四、渐进式披露：Skill-目录组织" class="headerlink" title="四、渐进式披露：Skill 目录组织"></a>四、渐进式披露：Skill 目录组织</h2><p>渐进式披露是 Skill 架构的核心模式：<strong>SKILL.md 是指南目录，详细内容按需加载。</strong></p>
-<h3 id="4-1-推荐目录结构"><a href="#4-1-推荐目录结构" class="headerlink" title="4.1 推荐目录结构"></a>4.1 推荐目录结构</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">my-skill/</span><br><span class="line">├── SKILL.md              # 主指令（触发时加载，保持精简）</span><br><span class="line">├── FORMS.md              # 表单填写指南（按需加载）</span><br><span class="line">├── reference.md          # API 参考（按需加载）</span><br><span class="line">├── examples.md           # 使用示例（按需加载）</span><br><span class="line">└── scripts/</span><br><span class="line">    ├── analyze.py        # 工具脚本（执行，不加载到上下文）</span><br><span class="line">    ├── validate.py</span><br><span class="line">    └── process.py</span><br></pre></td></tr></table></figure>
+<h3 id="4-1-推荐目录结构"><a href="#4-1-推荐目录结构" class="headerlink" title="4.1 推荐目录结构"></a>4.1 推荐目录结构</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">my-skill/<br>├── SKILL.md              # 主指令（触发时加载，保持精简）<br>├── FORMS.md              # 表单填写指南（按需加载）<br>├── reference.md          # API 参考（按需加载）<br>├── examples.md           # 使用示例（按需加载）<br>└── scripts/<br>    ├── analyze.py        # 工具脚本（执行，不加载到上下文）<br>    ├── validate.py<br>    └── process.py<br></code></pre></td></tr></table></figure>
 
 <h3 id="4-2-三种组织模式"><a href="#4-2-三种组织模式" class="headerlink" title="4.2 三种组织模式"></a>4.2 三种组织模式</h3><p><strong>模式 1：高级指南 + 引用文件</strong></p>
 <p>SKILL.md 放快速开始和导航，详细内容通过链接指向单独文件：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**表单填写**</span>：见 [<span class="string">FORMS.md</span>](<span class="link">FORMS.md</span>)</span><br><span class="line"><span class="strong">**API 参考**</span>：见 [<span class="string">REFERENCE.md</span>](<span class="link">REFERENCE.md</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-strong">**表单填写**</span>：见 [<span class="hljs-string">FORMS.md</span>](<span class="hljs-link">FORMS.md</span>)<br><span class="hljs-strong">**API 参考**</span>：见 [<span class="hljs-string">REFERENCE.md</span>](<span class="hljs-link">REFERENCE.md</span>)<br></code></pre></td></tr></table></figure>
 
 <p><strong>模式 2：按领域组织</strong>（适合多领域 Skill）</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bigquery-skill/</span><br><span class="line">├── SKILL.md</span><br><span class="line">└── reference/</span><br><span class="line">    ├── finance.md    # 收入、账单指标</span><br><span class="line">    ├── sales.md      # 商机、管道</span><br><span class="line">    └── product.md    # API 使用量</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">bigquery-skill/<br>├── SKILL.md<br>└── reference/<br>    ├── finance.md    # 收入、账单指标<br>    ├── sales.md      # 商机、管道<br>    └── product.md    # API 使用量<br></code></pre></td></tr></table></figure>
 
 <p>用户问销售指标时，Agent 只读 <code>sales.md</code>，不加载财务或营销内容。</p>
 <p><strong>模式 3：条件性详情</strong></p>
 <p>基础内容在 SKILL.md，高级功能通过链接展开：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 编辑文档</span></span><br><span class="line"></span><br><span class="line">简单编辑：直接修改 XML。</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="strong">**修订追踪**</span>：见 [<span class="string">REDLINING.md</span>](<span class="link">REDLINING.md</span>)</span><br><span class="line"><span class="bullet">-</span> <span class="strong">**OOXML 细节**</span>：见 [<span class="string">OOXML.md</span>](<span class="link">OOXML.md</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 编辑文档</span><br><br>简单编辑：直接修改 XML。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**修订追踪**</span>：见 [<span class="hljs-string">REDLINING.md</span>](<span class="hljs-link">REDLINING.md</span>)<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**OOXML 细节**</span>：见 [<span class="hljs-string">OOXML.md</span>](<span class="hljs-link">OOXML.md</span>)<br></code></pre></td></tr></table></figure>
 
 <h3 id="4-3-引用深度：仅一层"><a href="#4-3-引用深度：仅一层" class="headerlink" title="4.3 引用深度：仅一层"></a>4.3 引用深度：仅一层</h3><p><strong>所有参考文件必须直接从 SKILL.md 链接，禁止嵌套引用。</strong></p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ✗ 不良：三层嵌套</span></span><br><span class="line">SKILL.md → advanced.md → details.md → 实际内容</span><br><span class="line"></span><br><span class="line"><span class="section"># ✓ 良好：一层深度</span></span><br><span class="line">SKILL.md → advanced.md</span><br><span class="line">SKILL.md → reference.md</span><br><span class="line">SKILL.md → examples.md</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># ✗ 不良：三层嵌套</span><br>SKILL.md → advanced.md → details.md → 实际内容<br><br><span class="hljs-section"># ✓ 良好：一层深度</span><br>SKILL.md → advanced.md<br>SKILL.md → reference.md<br>SKILL.md → examples.md<br></code></pre></td></tr></table></figure>
 
 <p>嵌套引用会导致 Agent 用 <code>head -100</code> 预览文件而非完整读取，造成信息不完整。</p>
 <h3 id="4-4-长文件的目录结构"><a href="#4-4-长文件的目录结构" class="headerlink" title="4.4 长文件的目录结构"></a>4.4 长文件的目录结构</h3><p>超过 100 行的参考文件，顶部加目录（TOC）：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># API 参考</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 目录</span></span><br><span class="line"><span class="bullet">-</span> 认证与初始化</span><br><span class="line"><span class="bullet">-</span> 核心方法（CRUD）</span><br><span class="line"><span class="bullet">-</span> 高级功能（批量操作、Webhooks）</span><br><span class="line"><span class="bullet">-</span> 错误处理模式</span><br><span class="line"><span class="bullet">-</span> 代码示例</span><br><span class="line"></span><br><span class="line"><span class="section">## 认证与初始化</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># API 参考</span><br><br><span class="hljs-section">## 目录</span><br><span class="hljs-bullet">-</span> 认证与初始化<br><span class="hljs-bullet">-</span> 核心方法（CRUD）<br><span class="hljs-bullet">-</span> 高级功能（批量操作、Webhooks）<br><span class="hljs-bullet">-</span> 错误处理模式<br><span class="hljs-bullet">-</span> 代码示例<br><br><span class="hljs-section">## 认证与初始化</span><br>...<br></code></pre></td></tr></table></figure>
 
 <p>即使 Agent 只预览文件开头，也能看到完整信息范围。</p>
 <hr>
 <h2 id="五、工作流与反馈循环"><a href="#五、工作流与反馈循环" class="headerlink" title="五、工作流与反馈循环"></a>五、工作流与反馈循环</h2><h3 id="5-1-复杂任务用检查清单"><a href="#5-1-复杂任务用检查清单" class="headerlink" title="5.1 复杂任务用检查清单"></a>5.1 复杂任务用检查清单</h3><p>将复杂操作分解为清晰步骤，提供可复制的检查清单：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## PDF 表单填写工作流</span></span><br><span class="line"></span><br><span class="line">复制此清单并逐项勾选：</span><br><span class="line"></span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">任务进度：</span></span><br><span class="line"><span class="code">- [ ] 步骤 1：分析表单（运行 analyze_form.py）</span></span><br><span class="line"><span class="code">- [ ] 步骤 2：创建字段映射（编辑 fields.json）</span></span><br><span class="line"><span class="code">- [ ] 步骤 3：验证映射（运行 validate_fields.py）</span></span><br><span class="line"><span class="code">- [ ] 步骤 4：填写表单（运行 fill_form.py）</span></span><br><span class="line"><span class="code">- [ ] 步骤 5：验证输出（运行 verify_output.py）</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**步骤 1：分析表单**</span></span><br><span class="line"></span><br><span class="line">运行：<span class="code">`python scripts/analyze_form.py input.pdf`</span></span><br><span class="line">输出保存到 <span class="code">`fields.json`</span>。</span><br><span class="line"></span><br><span class="line"><span class="strong">**步骤 3：验证映射**</span></span><br><span class="line"></span><br><span class="line">运行：<span class="code">`python scripts/validate_fields.py fields.json`</span></span><br><span class="line">有错误则修复后再继续，不要跳过。</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## PDF 表单填写工作流</span><br><br>复制此清单并逐项勾选：<br><br><span class="hljs-code">```</span><br><span class="hljs-code">任务进度：</span><br><span class="hljs-code">- [ ] 步骤 1：分析表单（运行 analyze_form.py）</span><br><span class="hljs-code">- [ ] 步骤 2：创建字段映射（编辑 fields.json）</span><br><span class="hljs-code">- [ ] 步骤 3：验证映射（运行 validate_fields.py）</span><br><span class="hljs-code">- [ ] 步骤 4：填写表单（运行 fill_form.py）</span><br><span class="hljs-code">- [ ] 步骤 5：验证输出（运行 verify_output.py）</span><br><span class="hljs-code">```</span><br><br><span class="hljs-strong">**步骤 1：分析表单**</span><br><br>运行：<span class="hljs-code">`python scripts/analyze_form.py input.pdf`</span><br>输出保存到 <span class="hljs-code">`fields.json`</span>。<br><br><span class="hljs-strong">**步骤 3：验证映射**</span><br><br>运行：<span class="hljs-code">`python scripts/validate_fields.py fields.json`</span><br>有错误则修复后再继续，不要跳过。<br></code></pre></td></tr></table></figure>
 
 <p>检查清单防止 Agent 跳过关键验证步骤，也方便人工跟踪进度。</p>
 <h3 id="5-2-反馈循环模式"><a href="#5-2-反馈循环模式" class="headerlink" title="5.2 反馈循环模式"></a>5.2 反馈循环模式</h3><p><strong>核心模式：执行 → 验证 → 修复 → 重复</strong></p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 文档编辑流程</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 编辑 <span class="code">`word/document.xml`</span></span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**立即验证**</span>：<span class="code">`python scripts/validate.py unpacked_dir/`</span></span><br><span class="line"><span class="bullet">3.</span> 验证失败：</span><br><span class="line"><span class="bullet">   -</span> 仔细阅读错误信息</span><br><span class="line"><span class="bullet">   -</span> 修复 XML 中的问题</span><br><span class="line"><span class="bullet">   -</span> 重新运行验证</span><br><span class="line"><span class="bullet">4.</span> <span class="strong">**只有验证通过后才能继续**</span></span><br><span class="line"><span class="bullet">5.</span> 打包：<span class="code">`python scripts/pack.py unpacked_dir/ output.docx`</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 文档编辑流程</span><br><br><span class="hljs-bullet">1.</span> 编辑 <span class="hljs-code">`word/document.xml`</span><br><span class="hljs-bullet">2.</span> <span class="hljs-strong">**立即验证**</span>：<span class="hljs-code">`python scripts/validate.py unpacked_dir/`</span><br><span class="hljs-bullet">3.</span> 验证失败：<br><span class="hljs-bullet">   -</span> 仔细阅读错误信息<br><span class="hljs-bullet">   -</span> 修复 XML 中的问题<br><span class="hljs-bullet">   -</span> 重新运行验证<br><span class="hljs-bullet">4.</span> <span class="hljs-strong">**只有验证通过后才能继续**</span><br><span class="hljs-bullet">5.</span> 打包：<span class="hljs-code">`python scripts/pack.py unpacked_dir/ output.docx`</span><br></code></pre></td></tr></table></figure>
 
 <p>验证循环能及早发现错误，避免在错误基础上继续操作。</p>
 <h3 id="5-3-计划-验证-执行模式"><a href="#5-3-计划-验证-执行模式" class="headerlink" title="5.3 计划-验证-执行模式"></a>5.3 计划-验证-执行模式</h3><p>对高风险批量操作，增加中间计划文件：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分析 → 生成 changes.json → 验证计划 → 执行 → 验证结果</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">分析 → 生成 changes.json → 验证计划 → 执行 → 验证结果<br></code></pre></td></tr></table></figure>
 
 <p>适用于：批量字段更新、破坏性更改、复杂验证规则。验证脚本应输出具体错误信息，帮助 Agent 自我修正：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">错误：未找到字段 &#x27;signature_date&#x27;。</span><br><span class="line">可用字段：customer_name、order_total、signature_date_signed</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">错误：未找到字段 &#x27;signature_date&#x27;。<br>可用字段：customer_name、order_total、signature_date_signed<br></code></pre></td></tr></table></figure>
 
 <hr>
 <h2 id="六、内容编写规则"><a href="#六、内容编写规则" class="headerlink" title="六、内容编写规则"></a>六、内容编写规则</h2><h3 id="6-1-避免时效性信息"><a href="#6-1-避免时效性信息" class="headerlink" title="6.1 避免时效性信息"></a>6.1 避免时效性信息</h3><p>不要把会过时的信息写进正文：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ✗ 不良：特定日期会失效</span></span><br><span class="line">如果你在 2025 年 8 月之前做这件事，用旧 API。</span><br><span class="line">2025 年 8 月之后，用新 API。</span><br><span class="line"></span><br><span class="line"><span class="section"># ✓ 良好：当前方法 + 旧模式折叠</span></span><br><span class="line"><span class="section">## 当前方法</span></span><br><span class="line">使用 v2 API：<span class="code">`api.example.com/v2/messages`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 旧模式</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">details</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">summary</span>&gt;</span></span>已废弃的 v1 API（2025-08 停用）<span class="language-xml"><span class="tag">&lt;/<span class="name">summary</span>&gt;</span></span></span><br><span class="line">v1 端点：<span class="code">`api.example.com/v1/messages`</span>，已不再支持。</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">details</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># ✗ 不良：特定日期会失效</span><br>如果你在 2025 年 8 月之前做这件事，用旧 API。<br>2025 年 8 月之后，用新 API。<br><br><span class="hljs-section"># ✓ 良好：当前方法 + 旧模式折叠</span><br><span class="hljs-section">## 当前方法</span><br>使用 v2 API：<span class="hljs-code">`api.example.com/v2/messages`</span><br><br><span class="hljs-section">## 旧模式</span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">details</span>&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">summary</span>&gt;</span></span>已废弃的 v1 API（2025-08 停用）<span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">summary</span>&gt;</span></span><br>v1 端点：<span class="hljs-code">`api.example.com/v1/messages`</span>，已不再支持。<br><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">details</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
 
 <h3 id="6-2-术语保持一致"><a href="#6-2-术语保持一致" class="headerlink" title="6.2 术语保持一致"></a>6.2 术语保持一致</h3><p>整个 Skill 中选一个术语并始终使用：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">✓ 始终用 &quot;API endpoint&quot;、&quot;field&quot;、&quot;extract&quot;</span><br><span class="line">✗ 混用 &quot;API endpoint&quot; / &quot;URL&quot; / &quot;API route&quot; / &quot;path&quot;</span><br><span class="line">✗ 混用 &quot;field&quot; / &quot;box&quot; / &quot;element&quot; / &quot;control&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">✓ 始终用 &quot;API endpoint&quot;、&quot;field&quot;、&quot;extract&quot;<br>✗ 混用 &quot;API endpoint&quot; / &quot;URL&quot; / &quot;API route&quot; / &quot;path&quot;<br>✗ 混用 &quot;field&quot; / &quot;box&quot; / &quot;element&quot; / &quot;control&quot;<br></code></pre></td></tr></table></figure>
 
-<h3 id="6-3-提供默认方案，不要罗列选项"><a href="#6-3-提供默认方案，不要罗列选项" class="headerlink" title="6.3 提供默认方案，不要罗列选项"></a>6.3 提供默认方案，不要罗列选项</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ✗ 不良：选择过多，Agent 无所适从</span></span><br><span class="line">你可以用 pypdf，或者 pdfplumber，或者 PyMuPDF，或者 pdf2image……</span><br><span class="line"></span><br><span class="line"><span class="section"># ✓ 良好：默认方案 + 例外说明</span></span><br><span class="line">使用 pdfplumber 提取文本：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">import pdfplumber</span></span><br></pre></td></tr></table></figure>
+<h3 id="6-3-提供默认方案，不要罗列选项"><a href="#6-3-提供默认方案，不要罗列选项" class="headerlink" title="6.3 提供默认方案，不要罗列选项"></a>6.3 提供默认方案，不要罗列选项</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># ✗ 不良：选择过多，Agent 无所适从</span><br>你可以用 pypdf，或者 pdfplumber，或者 PyMuPDF，或者 pdf2image……<br><br><span class="hljs-section"># ✓ 良好：默认方案 + 例外说明</span><br>使用 pdfplumber 提取文本：<br><span class="hljs-code">```python</span><br><span class="hljs-code">import pdfplumber</span><br></code></pre></td></tr></table></figure>
 <p>需要 OCR 处理扫描版 PDF 时，改用 pdf2image + pytesseract。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 6.4 使用正斜杠路径</span><br><span class="line"></span><br><span class="line">所有文件路径统一用正斜杠，跨平台兼容：</span><br><span class="line"></span><br><span class="line">```text</span><br><span class="line">✓ scripts/helper.py</span><br><span class="line">✓ reference/guide.md</span><br><span class="line">✗ scripts\helper.py（Windows 风格在 Unix 上会报错）</span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><br><span class="hljs-comment">### 6.4 使用正斜杠路径</span><br><br>所有文件路径统一用正斜杠，跨平台兼容：<br><br>```<span class="hljs-built_in">text</span><br>✓ scripts/helper.py<br>✓ <span class="hljs-keyword">reference</span>/guide.md<br>✗ scripts\helper.py（Windows 风格在 Unix 上会报错）<br></code></pre></td></tr></table></figure>
 
 <hr>
 <h2 id="七、常见编写模式"><a href="#七、常见编写模式" class="headerlink" title="七、常见编写模式"></a>七、常见编写模式</h2><h3 id="7-1-模板模式"><a href="#7-1-模板模式" class="headerlink" title="7.1 模板模式"></a>7.1 模板模式</h3><p>对输出格式有严格要求时，提供明确模板：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 报告结构</span></span><br><span class="line"></span><br><span class="line">始终使用此模板：</span><br><span class="line"></span><br><span class="line"><span class="code">```markdown</span></span><br><span class="line"><span class="code"># [分析标题]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 执行摘要</span></span><br><span class="line"><span class="code">[一段概述]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 关键发现</span></span><br><span class="line"><span class="code">- 发现 1（附数据支撑）</span></span><br><span class="line"><span class="code">- 发现 2（附数据支撑）</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 建议</span></span><br><span class="line"><span class="code">1. 具体可执行的建议</span></span><br><span class="line"><span class="code">2. 具体可执行的建议</span></span><br><span class="line"><span class="code">```</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 报告结构</span><br><br>始终使用此模板：<br><br><span class="hljs-code">```markdown</span><br><span class="hljs-code"># [分析标题]</span><br><span class="hljs-code"></span><br><span class="hljs-code">## 执行摘要</span><br><span class="hljs-code">[一段概述]</span><br><span class="hljs-code"></span><br><span class="hljs-code">## 关键发现</span><br><span class="hljs-code">- 发现 1（附数据支撑）</span><br><span class="hljs-code">- 发现 2（附数据支撑）</span><br><span class="hljs-code"></span><br><span class="hljs-code">## 建议</span><br><span class="hljs-code">1. 具体可执行的建议</span><br><span class="hljs-code">2. 具体可执行的建议</span><br><span class="hljs-code">```</span><br></code></pre></td></tr></table></figure>
 
 <p>对需要灵活性的场景，标注「可根据实际情况调整」。</p>
 <h3 id="7-2-示例模式"><a href="#7-2-示例模式" class="headerlink" title="7.2 示例模式"></a>7.2 示例模式</h3><p>输出质量依赖风格时，提供输入/输出对：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Commit Message 格式</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**示例 1：**</span></span><br><span class="line">输入：Added user authentication with JWT tokens</span><br><span class="line">输出：</span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">feat(auth): implement JWT-based authentication</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">Add login endpoint and token validation middleware</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**示例 2：**</span></span><br><span class="line">输入：Fixed date display bug in reports</span><br><span class="line">输出：</span><br><span class="line"><span class="code">```</span></span><br><span class="line"><span class="code">fix(reports): correct date formatting in timezone conversion</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">Use UTC timestamps consistently across report generation</span></span><br><span class="line"><span class="code">```</span></span><br><span class="line"></span><br><span class="line">遵循格式：type(scope): 简短描述，然后详细说明。</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## Commit Message 格式</span><br><br><span class="hljs-strong">**示例 1：**</span><br>输入：Added user authentication with JWT tokens<br>输出：<br><span class="hljs-code">```</span><br><span class="hljs-code">feat(auth): implement JWT-based authentication</span><br><span class="hljs-code"></span><br><span class="hljs-code">Add login endpoint and token validation middleware</span><br><span class="hljs-code">```</span><br><br><span class="hljs-strong">**示例 2：**</span><br>输入：Fixed date display bug in reports<br>输出：<br><span class="hljs-code">```</span><br><span class="hljs-code">fix(reports): correct date formatting in timezone conversion</span><br><span class="hljs-code"></span><br><span class="hljs-code">Use UTC timestamps consistently across report generation</span><br><span class="hljs-code">```</span><br><br>遵循格式：type(scope): 简短描述，然后详细说明。<br></code></pre></td></tr></table></figure>
 
 <p>示例比纯描述更能帮 Agent 理解期望的风格和粒度。</p>
 <h3 id="7-3-条件工作流模式"><a href="#7-3-条件工作流模式" class="headerlink" title="7.3 条件工作流模式"></a>7.3 条件工作流模式</h3><p>在决策点引导 Agent 选择正确路径：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 文档修改工作流</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 判断修改类型：</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**创建新内容**</span> → 遵循「创建工作流」</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**编辑现有内容**</span> → 遵循「编辑工作流」</span><br><span class="line"></span><br><span class="line"><span class="bullet">2.</span> 创建工作流：使用 docx-js 库，从头构建，导出 .docx</span><br><span class="line"></span><br><span class="line"><span class="bullet">3.</span> 编辑工作流：解包现有文档 → 直接修改 XML → 每步验证 → 完成后打包</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## 文档修改工作流</span><br><br><span class="hljs-bullet">1.</span> 判断修改类型：<br><span class="hljs-bullet">   -</span> <span class="hljs-strong">**创建新内容**</span> → 遵循「创建工作流」<br><span class="hljs-bullet">   -</span> <span class="hljs-strong">**编辑现有内容**</span> → 遵循「编辑工作流」<br><br><span class="hljs-bullet">2.</span> 创建工作流：使用 docx-js 库，从头构建，导出 .docx<br><br><span class="hljs-bullet">3.</span> 编辑工作流：解包现有文档 → 直接修改 XML → 每步验证 → 完成后打包<br></code></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="八、可执行脚本的最佳实践"><a href="#八、可执行脚本的最佳实践" class="headerlink" title="八、可执行脚本的最佳实践"></a>八、可执行脚本的最佳实践</h2><h3 id="8-1-脚本解决问题，不要推给-Agent"><a href="#8-1-脚本解决问题，不要推给-Agent" class="headerlink" title="8.1 脚本解决问题，不要推给 Agent"></a>8.1 脚本解决问题，不要推给 Agent</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ✓ 良好：显式处理错误</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_file</span>(<span class="params">path</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(path) <span class="keyword">as</span> f:</span><br><span class="line">            <span class="keyword">return</span> f.read()</span><br><span class="line">    <span class="keyword">except</span> FileNotFoundError:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;File <span class="subst">&#123;path&#125;</span> not found, creating default&quot;</span>)</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(path, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(<span class="string">&quot;&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ✗ 不良：直接失败，让 Agent 自行处理</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_file</span>(<span class="params">path</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(path).read()</span><br></pre></td></tr></table></figure>
+<h2 id="八、可执行脚本的最佳实践"><a href="#八、可执行脚本的最佳实践" class="headerlink" title="八、可执行脚本的最佳实践"></a>八、可执行脚本的最佳实践</h2><h3 id="8-1-脚本解决问题，不要推给-Agent"><a href="#8-1-脚本解决问题，不要推给-Agent" class="headerlink" title="8.1 脚本解决问题，不要推给 Agent"></a>8.1 脚本解决问题，不要推给 Agent</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✓ 良好：显式处理错误</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">process_file</span>(<span class="hljs-params">path</span>):<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path) <span class="hljs-keyword">as</span> f:<br>            <span class="hljs-keyword">return</span> f.read()<br>    <span class="hljs-keyword">except</span> FileNotFoundError:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;File <span class="hljs-subst">&#123;path&#125;</span> not found, creating default&quot;</span>)<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path, <span class="hljs-string">&quot;w&quot;</span>) <span class="hljs-keyword">as</span> f:<br>            f.write(<span class="hljs-string">&quot;&quot;</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span><br><br><span class="hljs-comment"># ✗ 不良：直接失败，让 Agent 自行处理</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">process_file</span>(<span class="hljs-params">path</span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">open</span>(path).read()<br></code></pre></td></tr></table></figure>
 
-<h3 id="8-2-避免魔法数字"><a href="#8-2-避免魔法数字" class="headerlink" title="8.2 避免魔法数字"></a>8.2 避免魔法数字</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ✓ 自文档化</span></span><br><span class="line">REQUEST_TIMEOUT = <span class="number">30</span>  <span class="comment"># HTTP 请求通常在 30 秒内完成</span></span><br><span class="line">MAX_RETRIES = <span class="number">3</span>       <span class="comment"># 三次重试在可靠性与速度间取得平衡</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ✗ 魔法数字</span></span><br><span class="line">TIMEOUT = <span class="number">47</span>   <span class="comment"># 为什么是 47？</span></span><br><span class="line">RETRIES = <span class="number">5</span>    <span class="comment"># 为什么是 5？</span></span><br></pre></td></tr></table></figure>
+<h3 id="8-2-避免魔法数字"><a href="#8-2-避免魔法数字" class="headerlink" title="8.2 避免魔法数字"></a>8.2 避免魔法数字</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✓ 自文档化</span><br>REQUEST_TIMEOUT = <span class="hljs-number">30</span>  <span class="hljs-comment"># HTTP 请求通常在 30 秒内完成</span><br>MAX_RETRIES = <span class="hljs-number">3</span>       <span class="hljs-comment"># 三次重试在可靠性与速度间取得平衡</span><br><br><span class="hljs-comment"># ✗ 魔法数字</span><br>TIMEOUT = <span class="hljs-number">47</span>   <span class="hljs-comment"># 为什么是 47？</span><br>RETRIES = <span class="hljs-number">5</span>    <span class="hljs-comment"># 为什么是 5？</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="8-3-明确脚本的用途：执行-vs-阅读"><a href="#8-3-明确脚本的用途：执行-vs-阅读" class="headerlink" title="8.3 明确脚本的用途：执行 vs 阅读"></a>8.3 明确脚本的用途：执行 vs 阅读</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 执行（推荐，更可靠、更省 Token）</span></span><br><span class="line">运行 <span class="code">`analyze_form.py`</span> 提取字段：<span class="code">`python scripts/analyze_form.py input.pdf`</span></span><br><span class="line"></span><br><span class="line"><span class="section"># 阅读（仅用于复杂算法参考）</span></span><br><span class="line">参见 <span class="code">`analyze_form.py`</span> 了解字段提取算法</span><br></pre></td></tr></table></figure>
+<h3 id="8-3-明确脚本的用途：执行-vs-阅读"><a href="#8-3-明确脚本的用途：执行-vs-阅读" class="headerlink" title="8.3 明确脚本的用途：执行 vs 阅读"></a>8.3 明确脚本的用途：执行 vs 阅读</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 执行（推荐，更可靠、更省 Token）</span><br>运行 <span class="hljs-code">`analyze_form.py`</span> 提取字段：<span class="hljs-code">`python scripts/analyze_form.py input.pdf`</span><br><br><span class="hljs-section"># 阅读（仅用于复杂算法参考）</span><br>参见 <span class="hljs-code">`analyze_form.py`</span> 了解字段提取算法<br></code></pre></td></tr></table></figure>
 
-<h3 id="8-4-MCP-工具使用完全限定名"><a href="#8-4-MCP-工具使用完全限定名" class="headerlink" title="8.4 MCP 工具使用完全限定名"></a>8.4 MCP 工具使用完全限定名</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ✓ 良好</span></span><br><span class="line">使用 BigQuery:bigquery<span class="emphasis">_schema 工具获取表结构。</span></span><br><span class="line"><span class="emphasis">使用 GitHub:create_</span>issue 工具创建 Issue。</span><br><span class="line"></span><br><span class="line"><span class="section"># ✗ 不良（多 MCP 服务器时可能找不到工具）</span></span><br><span class="line">使用 bigquery<span class="emphasis">_schema 工具。</span></span><br></pre></td></tr></table></figure>
+<h3 id="8-4-MCP-工具使用完全限定名"><a href="#8-4-MCP-工具使用完全限定名" class="headerlink" title="8.4 MCP 工具使用完全限定名"></a>8.4 MCP 工具使用完全限定名</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># ✓ 良好</span><br>使用 BigQuery:bigquery<span class="hljs-emphasis">_schema 工具获取表结构。</span><br><span class="hljs-emphasis">使用 GitHub:create_</span>issue 工具创建 Issue。<br><br><span class="hljs-section"># ✗ 不良（多 MCP 服务器时可能找不到工具）</span><br>使用 bigquery<span class="hljs-emphasis">_schema 工具。</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="8-5-明确声明依赖"><a href="#8-5-明确声明依赖" class="headerlink" title="8.5 明确声明依赖"></a>8.5 明确声明依赖</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ✗ 假设包已安装</span></span><br><span class="line">使用 pdf 库处理文件。</span><br><span class="line"></span><br><span class="line"><span class="section"># ✓ 明确依赖</span></span><br><span class="line">安装所需包：<span class="code">`pip install pypdf`</span></span><br><span class="line">然后使用：</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">from pypdf import PdfReader</span></span><br><span class="line"><span class="code">reader = PdfReader(&quot;file.pdf&quot;)</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">## 九、评估与迭代</span><br><span class="line"></span><br><span class="line">### 9.1 先建评估，再写文档</span><br><span class="line"></span><br><span class="line">**在写大量文档之前，先创建评估。** 确保 Skill 解决真实问题，而非想象中的问题。</span><br><span class="line"></span><br><span class="line">```text</span><br><span class="line">1. 无 Skill 情况下让 Agent 执行任务 → 记录失败点</span><br><span class="line">2. 针对失败点创建 3 个评估场景</span><br><span class="line">3. 测量无 Skill 时的基线表现</span><br><span class="line">4. 写最少量的指令来填补差距</span><br><span class="line">5. 运行评估，对比基线，迭代优化</span><br></pre></td></tr></table></figure>
+<h3 id="8-5-明确声明依赖"><a href="#8-5-明确声明依赖" class="headerlink" title="8.5 明确声明依赖"></a>8.5 明确声明依赖</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># ✗ 假设包已安装</span><br>使用 pdf 库处理文件。<br><br><span class="hljs-section"># ✓ 明确依赖</span><br>安装所需包：<span class="hljs-code">`pip install pypdf`</span><br>然后使用：<br><span class="hljs-code">```python</span><br><span class="hljs-code">from pypdf import PdfReader</span><br><span class="hljs-code">reader = PdfReader(&quot;file.pdf&quot;)</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><br><span class="hljs-meta">---</span><br><span class="hljs-meta"></span><br><span class="hljs-comment">## 九、评估与迭代</span><br><br><span class="hljs-comment">### 9.1 先建评估，再写文档</span><br><br><span class="hljs-string">**在写大量文档之前，先创建评估。**</span> <span class="hljs-string">确保</span> <span class="hljs-string">Skill</span> <span class="hljs-string">解决真实问题，而非想象中的问题。</span><br><br><span class="hljs-string">```text</span><br><span class="hljs-number">1</span><span class="hljs-string">.</span> <span class="hljs-string">无</span> <span class="hljs-string">Skill</span> <span class="hljs-string">情况下让</span> <span class="hljs-string">Agent</span> <span class="hljs-string">执行任务</span> <span class="hljs-string">→</span> <span class="hljs-string">记录失败点</span><br><span class="hljs-number">2</span><span class="hljs-string">.</span> <span class="hljs-string">针对失败点创建</span> <span class="hljs-number">3</span> <span class="hljs-string">个评估场景</span><br><span class="hljs-number">3</span><span class="hljs-string">.</span> <span class="hljs-string">测量无</span> <span class="hljs-string">Skill</span> <span class="hljs-string">时的基线表现</span><br><span class="hljs-number">4</span><span class="hljs-string">.</span> <span class="hljs-string">写最少量的指令来填补差距</span><br><span class="hljs-number">5</span><span class="hljs-string">.</span> <span class="hljs-string">运行评估，对比基线，迭代优化</span><br></code></pre></td></tr></table></figure>
 
 <p>评估结构示例：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;pdf-processing&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;从这个 PDF 文件提取所有文本并保存到 output.txt&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;files&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;test-files/document.pdf&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;expected_behavior&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;使用合适的 PDF 库成功读取文件&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;提取所有页面的文本内容，不遗漏任何页&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;将文本以清晰可读的格式保存到 output.txt&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;skills&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;pdf-processing&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;query&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;从这个 PDF 文件提取所有文本并保存到 output.txt&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;files&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;test-files/document.pdf&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;expected_behavior&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;使用合适的 PDF 库成功读取文件&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;提取所有页面的文本内容，不遗漏任何页&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;将文本以清晰可读的格式保存到 output.txt&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="9-2-与-Agent-协作迭代"><a href="#9-2-与-Agent-协作迭代" class="headerlink" title="9.2 与 Agent 协作迭代"></a>9.2 与 Agent 协作迭代</h3><p>最高效的 Skill 开发方式：<strong>用一个 Agent 写 Skill，用另一个 Agent 测 Skill。</strong></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Agent A（设计者）          Agent B（执行者）</span><br><span class="line">     │                          │</span><br><span class="line">  完成任务，识别可复用模式  →  加载 Skill 执行真实任务</span><br><span class="line">     │                          │</span><br><span class="line">  创建/优化 Skill          ←  观察行为，反馈问题</span><br><span class="line">     │                          │</span><br><span class="line">  审查简洁性，优化结构      →  再次测试</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs text">Agent A（设计者）          Agent B（执行者）<br>     │                          │<br>  完成任务，识别可复用模式  →  加载 Skill 执行真实任务<br>     │                          │<br>  创建/优化 Skill          ←  观察行为，反馈问题<br>     │                          │<br>  审查简洁性，优化结构      →  再次测试<br></code></pre></td></tr></table></figure>
 
 <p>迭代时重点观察：</p>
 <ul>
@@ -640,7 +745,7 @@
 <li><input disabled="" type="checkbox"> Skill 在预期时机正确触发</li>
 </ul>
 <hr>
-<h2 id="十二、快速参考：SKILL-md-最小模板"><a href="#十二、快速参考：SKILL-md-最小模板" class="headerlink" title="十二、快速参考：SKILL.md 最小模板"></a>十二、快速参考：SKILL.md 最小模板</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: your-skill-name</span><br><span class="line"><span class="section">description: [第三人称描述功能]。[列出触发场景和关键词]。</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line"><span class="section"># [Skill 名称]</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 快速开始</span></span><br><span class="line"></span><br><span class="line">[最短路径完成核心任务的代码/指令，10-30 行以内]</span><br><span class="line"></span><br><span class="line"><span class="section">## 工作流</span></span><br><span class="line"></span><br><span class="line">[复杂任务的分步检查清单]</span><br><span class="line"></span><br><span class="line"><span class="section">## 参考</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> [<span class="string">详细指南</span>](<span class="link">REFERENCE.md</span>)</span><br><span class="line"><span class="bullet">-</span> [<span class="string">使用示例</span>](<span class="link">EXAMPLES.md</span>)</span><br><span class="line"><span class="bullet">-</span> [<span class="string">API 文档</span>](<span class="link">API.md</span>)</span><br><span class="line"></span><br><span class="line"><span class="section">## 工具脚本</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="code">`scripts/analyze.py`</span>：运行 <span class="code">`python scripts/analyze.py input`</span> 执行分析</span><br><span class="line"><span class="bullet">-</span> <span class="code">`scripts/validate.py`</span>：运行 <span class="code">`python scripts/validate.py`</span> 验证结果</span><br></pre></td></tr></table></figure>
+<h2 id="十二、快速参考：SKILL-md-最小模板"><a href="#十二、快速参考：SKILL-md-最小模板" class="headerlink" title="十二、快速参考：SKILL.md 最小模板"></a>十二、快速参考：SKILL.md 最小模板</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>name: your-skill-name<br><span class="hljs-section">description: [第三人称描述功能]。[列出触发场景和关键词]。</span><br><span class="hljs-section">---</span><br><br><span class="hljs-section"># [Skill 名称]</span><br><br><span class="hljs-section">## 快速开始</span><br><br>[最短路径完成核心任务的代码/指令，10-30 行以内]<br><br><span class="hljs-section">## 工作流</span><br><br>[复杂任务的分步检查清单]<br><br><span class="hljs-section">## 参考</span><br><br><span class="hljs-bullet">-</span> [<span class="hljs-string">详细指南</span>](<span class="hljs-link">REFERENCE.md</span>)<br><span class="hljs-bullet">-</span> [<span class="hljs-string">使用示例</span>](<span class="hljs-link">EXAMPLES.md</span>)<br><span class="hljs-bullet">-</span> [<span class="hljs-string">API 文档</span>](<span class="hljs-link">API.md</span>)<br><br><span class="hljs-section">## 工具脚本</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-code">`scripts/analyze.py`</span>：运行 <span class="hljs-code">`python scripts/analyze.py input`</span> 执行分析<br><span class="hljs-bullet">-</span> <span class="hljs-code">`scripts/validate.py`</span>：运行 <span class="hljs-code">`python scripts/validate.py`</span> 验证结果<br></code></pre></td></tr></table></figure>
 
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>写好一个 Skill，记住三句话：</p>
@@ -656,271 +761,472 @@
 <li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/en/skills">在 Claude Code 中使用 Skill</a></li>
 </ul>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ai/" class="print-no-link">#ai</a>
+      
+        <a href="/tags/skills/" class="print-no-link">#skills</a>
+      
+        <a href="/tags/claude/" class="print-no-link">#claude</a>
+      
+        <a href="/tags/agent/" class="print-no-link">#agent</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</div>
+      <div>https://qngolg.github.io/2026/06/23/Agent-Skills编写最佳实践：如何写出高效可发现的Skill/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>菜鸟程序员</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年6月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" title="LangChain Data Agent 入门：数据分析智能体与核心组件详解">
+                        <span class="hidden-mobile">LangChain Data Agent 入门：数据分析智能体与核心组件详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va","appKey":"qsPlalDJdtYgh4AFO3oiFAox","path":"window.location.pathname","placeholder":"随便说点啥，欢迎吐槽","avatar":"mm","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
     </div>
 
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/ai/" rel="tag"># ai</a>
-              <a href="/tags/skills/" rel="tag"># skills</a>
-              <a href="/tags/claude/" rel="tag"># claude</a>
-              <a href="/tags/agent/" rel="tag"># agent</a>
-          </div>
-
-        
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
 
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" rel="prev" title="LangChain Data Agent 入门：数据分析智能体与核心组件详解">
-      <i class="fa fa-chevron-left"></i> LangChain Data Agent 入门：数据分析智能体与核心组件详解
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" rel="next" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南">
-      Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南 <i class="fa fa-chevron-right"></i>
-    </a></div>
+
+  </aside>
+
+
     </div>
-      </footer>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
     
-  </article>
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
   
   
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
 
 
-          </div>
-          
-    <div class="comments" id="valine-comments"></div>
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
 <script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
     }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
       }
     }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
   });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
 </script>
 
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Agent-Skills-%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84-Skill"><span class="nav-number">1.</span> <span class="nav-text">Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81Skill-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%85%88%E7%90%86%E8%A7%A3%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">一、Skill 是什么？先理解加载机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E5%8E%9F%E5%88%99"><span class="nav-number">1.2.</span> <span class="nav-text">二、核心原则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%AE%80%E6%B4%81%E8%87%B3%E5%85%B3%E9%87%8D%E8%A6%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 简洁至关重要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E8%AE%BE%E7%BD%AE%E9%80%82%E5%BD%93%E7%9A%84%E8%87%AA%E7%94%B1%E5%BA%A6"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 设置适当的自由度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%94%A8%E7%9B%AE%E6%A0%87%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 用目标模型测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81SKILL-md-%E7%BB%93%E6%9E%84%E8%A7%84%E8%8C%83"><span class="nav-number">1.3.</span> <span class="nav-text">三、SKILL.md 结构规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-YAML-Frontmatter-%E5%BF%85%E5%A1%AB%E5%AD%97%E6%AE%B5"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 YAML Frontmatter 必填字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#name-%E5%AD%97%E6%AE%B5%E8%A7%84%E5%88%99"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">name 字段规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#description-%E5%AD%97%E6%AE%B5%E8%A7%84%E5%88%99"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">description 字段规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-SKILL-md-%E6%AD%A3%E6%96%87%EF%BC%9A%E7%B2%BE%E7%AE%80%E6%98%AF%E6%8C%87%E5%8D%97%EF%BC%8C%E4%B8%8D%E6%98%AF%E7%99%BE%E7%A7%91%E5%85%A8%E4%B9%A6"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 SKILL.md 正文：精简是指南，不是百科全书</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%B8%90%E8%BF%9B%E5%BC%8F%E6%8A%AB%E9%9C%B2%EF%BC%9ASkill-%E7%9B%AE%E5%BD%95%E7%BB%84%E7%BB%87"><span class="nav-number">1.4.</span> <span class="nav-text">四、渐进式披露：Skill 目录组织</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%8E%A8%E8%8D%90%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 推荐目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E4%B8%89%E7%A7%8D%E7%BB%84%E7%BB%87%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 三种组织模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%BC%95%E7%94%A8%E6%B7%B1%E5%BA%A6%EF%BC%9A%E4%BB%85%E4%B8%80%E5%B1%82"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 引用深度：仅一层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E9%95%BF%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 长文件的目录结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%B7%A5%E4%BD%9C%E6%B5%81%E4%B8%8E%E5%8F%8D%E9%A6%88%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.5.</span> <span class="nav-text">五、工作流与反馈循环</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%A4%8D%E6%9D%82%E4%BB%BB%E5%8A%A1%E7%94%A8%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95"><span class="nav-number">1.5.1.</span> <span class="nav-text">5.1 复杂任务用检查清单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%8F%8D%E9%A6%88%E5%BE%AA%E7%8E%AF%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">5.2 反馈循环模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E8%AE%A1%E5%88%92-%E9%AA%8C%E8%AF%81-%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.3.</span> <span class="nav-text">5.3 计划-验证-执行模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%86%85%E5%AE%B9%E7%BC%96%E5%86%99%E8%A7%84%E5%88%99"><span class="nav-number">1.6.</span> <span class="nav-text">六、内容编写规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E9%81%BF%E5%85%8D%E6%97%B6%E6%95%88%E6%80%A7%E4%BF%A1%E6%81%AF"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 避免时效性信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E6%9C%AF%E8%AF%AD%E4%BF%9D%E6%8C%81%E4%B8%80%E8%87%B4"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 术语保持一致</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E6%8F%90%E4%BE%9B%E9%BB%98%E8%AE%A4%E6%96%B9%E6%A1%88%EF%BC%8C%E4%B8%8D%E8%A6%81%E7%BD%97%E5%88%97%E9%80%89%E9%A1%B9"><span class="nav-number">1.6.3.</span> <span class="nav-text">6.3 提供默认方案，不要罗列选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%B8%B8%E8%A7%81%E7%BC%96%E5%86%99%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">七、常见编写模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.7.1.</span> <span class="nav-text">7.1 模板模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E7%A4%BA%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.7.2.</span> <span class="nav-text">7.2 示例模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E6%9D%A1%E4%BB%B6%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.7.3.</span> <span class="nav-text">7.3 条件工作流模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%8F%AF%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.8.</span> <span class="nav-text">八、可执行脚本的最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E8%84%9A%E6%9C%AC%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%EF%BC%8C%E4%B8%8D%E8%A6%81%E6%8E%A8%E7%BB%99-Agent"><span class="nav-number">1.8.1.</span> <span class="nav-text">8.1 脚本解决问题，不要推给 Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E9%81%BF%E5%85%8D%E9%AD%94%E6%B3%95%E6%95%B0%E5%AD%97"><span class="nav-number">1.8.2.</span> <span class="nav-text">8.2 避免魔法数字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E6%98%8E%E7%A1%AE%E8%84%9A%E6%9C%AC%E7%9A%84%E7%94%A8%E9%80%94%EF%BC%9A%E6%89%A7%E8%A1%8C-vs-%E9%98%85%E8%AF%BB"><span class="nav-number">1.8.3.</span> <span class="nav-text">8.3 明确脚本的用途：执行 vs 阅读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-MCP-%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E5%AE%8C%E5%85%A8%E9%99%90%E5%AE%9A%E5%90%8D"><span class="nav-number">1.8.4.</span> <span class="nav-text">8.4 MCP 工具使用完全限定名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-%E6%98%8E%E7%A1%AE%E5%A3%B0%E6%98%8E%E4%BE%9D%E8%B5%96"><span class="nav-number">1.8.5.</span> <span class="nav-text">8.5 明确声明依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-%E4%B8%8E-Agent-%E5%8D%8F%E4%BD%9C%E8%BF%AD%E4%BB%A3"><span class="nav-number">1.8.6.</span> <span class="nav-text">9.2 与 Agent 协作迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-%E5%85%B3%E6%B3%A8-description-%E7%9A%84%E8%A7%A6%E5%8F%91%E6%95%88%E6%9E%9C"><span class="nav-number">1.8.7.</span> <span class="nav-text">9.3 关注 description 的触发效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E5%BA%94%E9%81%BF%E5%85%8D%E7%9A%84%E5%8F%8D%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.9.</span> <span class="nav-text">十、应避免的反模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E9%AB%98%E6%95%88-Skill-%E5%8F%91%E5%B8%83%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95"><span class="nav-number">1.10.</span> <span class="nav-text">十一、高效 Skill 发布检查清单</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%B4%A8%E9%87%8F"><span class="nav-number">1.10.1.</span> <span class="nav-text">核心质量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%B8%8E%E8%84%9A%E6%9C%AC"><span class="nav-number">1.10.2.</span> <span class="nav-text">代码与脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.10.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%BF%AB%E9%80%9F%E5%8F%82%E8%80%83%EF%BC%9ASKILL-md-%E6%9C%80%E5%B0%8F%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.11.</span> <span class="nav-text">十二、快速参考：SKILL.md 最小模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.13.</span> <span class="nav-text">参考资源</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">菜鸟程序员</p>
-  <div class="site-description" itemprop="description">这个人很懒，不想写的太详细</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">17</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">4</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">204k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">3:05</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
+  <script>Fluid.plugins.codeWidget();</script>
 
 
   
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-
 <script>
-NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
-  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-    var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item => {
-      return GUEST.includes(item);
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
     });
-    new Valine({
-      el         : '#valine-comments',
-      verify     : false,
-      notify     : false,
-      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
-      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
-      placeholder: "随便说点啥，欢迎吐槽",
-      avatar     : 'mm',
-      meta       : guest,
-      pageSize   : '10' || 10,
-      visitor    : true,
-      lang       : 'zh-cn' || 'zh-cn',
-      path       : location.pathname,
-      recordIP   : false,
-      serverURLs : 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com'
-    });
-  }, window.Valine);
-});
+  });
 </script>
+
+
+  
 <script>
-  (function () {
-    if (!document.body.classList.contains('posts-expand')) return;
-
-    var tocTab = document.querySelector('.sidebar-nav-toc');
-    var tocPanel = document.querySelector('.post-toc-wrap');
-    var overviewPanel = document.querySelector('.site-overview-wrap');
-
-    if (tocTab) {
-      tocTab.classList.add('sidebar-nav-active');
-    }
-    if (tocPanel) {
-      tocPanel.classList.add('sidebar-panel-active');
-    }
-    if (overviewPanel) {
-      overviewPanel.classList.remove('sidebar-panel-active');
-    }
-
-    if (typeof NexT !== 'undefined' && NexT.utils && NexT.utils.registerScrollPercent) {
-      NexT.utils.initSidebarDimension();
-    }
-  })();
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
 </script>
 
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
