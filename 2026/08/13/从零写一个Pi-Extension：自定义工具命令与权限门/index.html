@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从零搭建一个可用的 Pi Extension：危险命令权限门、自定义工具、斜杠命令与页脚状态，并说明加载、热重载与打包分享。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零写一个 Pi Extension：自定义工具、命令与权限门">
+<meta property="og:url" content="https://qngolg.github.io/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="从零搭建一个可用的 Pi Extension：危险命令权限门、自定义工具、斜杠命令与页脚状态，并说明加载、热重载与打包分享。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-13T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-13T04:00:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="cli">
+<meta property="article:tag" content="pi">
+<meta property="article:tag" content="extension">
+<meta property="article:tag" content="typescript">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://qngolg.github.io/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>从零写一个 Pi Extension：自定义工具、命令与权限门 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从零写一个 Pi Extension：自定义工具、命令与权限门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-08-13 12:00:00" itemprop="dateCreated datePublished" datetime="2026-08-13T12:00:00+08:00">2026-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" class="post-meta-item leancloud_visitors" data-flag-title="从零写一个 Pi Extension：自定义工具、命令与权限门" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+            <div class="post-description">从零搭建一个可用的 Pi Extension：危险命令权限门、自定义工具、斜杠命令与页脚状态，并说明加载、热重载与打包分享。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="从零写一个-Pi-Extension：自定义工具、命令与权限门"><a href="#从零写一个-Pi-Extension：自定义工具、命令与权限门" class="headerlink" title="从零写一个 Pi Extension：自定义工具、命令与权限门"></a>从零写一个 Pi Extension：自定义工具、命令与权限门</h1><blockquote>
+<p>配套阅读：<a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/">Pi 官方文档长文翻译</a> · <a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/">操作指南</a> · 官方 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/extensions">Extensions</a></p>
+<p>目标：在本机从空文件开始，做出一个能拦住危险 <code>bash</code>、提供自定义工具与 <code>/todo</code> 命令的扩展，并理解加载位置、热重载与打包。</p>
+</blockquote>
+<h2 id="你将做成什么"><a href="#你将做成什么" class="headerlink" title="你将做成什么"></a>你将做成什么</h2><p>一个名为 <code>safe-kit</code> 的扩展，具备：</p>
+<ol>
+<li><strong>权限门</strong>：拦截含 <code>rm -rf</code>、<code>sudo</code>、强制 push 等危险命令，弹确认框</li>
+<li><strong>自定义工具</strong>：模型可调用的 <code>note</code> 工具，把便签写入项目 <code>.pi/notes/</code></li>
+<li><strong>斜杠命令</strong>：<code>/todo</code> 在页脚显示简易待办，并支持追加</li>
+<li><strong>生命周期</strong>：<code>session_start</code> / <code>session_shutdown</code> 正确启停</li>
+</ol>
+<p>Pi 故意不内置权限弹窗——这正是扩展该做的事。</p>
+<hr>
+<h2 id="一、前置条件"><a href="#一、前置条件" class="headerlink" title="一、前置条件"></a>一、前置条件</h2><ol>
+<li>已全局安装 Pi：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span><br><span class="line">pi -v</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>能启动一次交互会话（<code>/login</code> 或已设 API Key）。</li>
+<li>会一点 TypeScript；扩展由 <strong>jiti</strong> 直接加载，<strong>不必</strong>先 <code>tsc</code>。</li>
+</ol>
+<p>扩展以你的完整系统权限运行：只写自己审过的代码，第三方包先看源码。</p>
+<hr>
+<h2 id="二、选加载位置"><a href="#二、选加载位置" class="headerlink" title="二、选加载位置"></a>二、选加载位置</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本机所有项目都能用</td>
+<td><code>~/.pi/agent/extensions/</code></td>
+<td>推荐入门</td>
+</tr>
+<tr>
+<td>仅当前仓库</td>
+<td><code>.pi/extensions/</code></td>
+<td>需项目信任</td>
+</tr>
+<tr>
+<td>临时试一次</td>
+<td><code>pi -e ./safe-kit.ts</code></td>
+<td>不写 settings</td>
+</tr>
+</tbody></table>
+<p>入门用全局目录；需要 <code>/reload</code> 热重载时，也优先放这里（<code>-e</code> 临时路径对热重载不友好）。</p>
+<p>创建目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/.pi/agent/extensions/safe-kit</span><br></pre></td></tr></table></figure>
+
+<p>我们用「目录 + <code>index.ts</code>」结构，方便以后拆文件：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/.pi/agent/extensions/safe-kit/</span><br><span class="line">├── index.ts      # 入口：export default function (pi)</span><br><span class="line">├── guard.ts      # 危险命令检测</span><br><span class="line">└── package.json  # 可选；本教程先可不写依赖</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、最小可运行扩展"><a href="#三、最小可运行扩展" class="headerlink" title="三、最小可运行扩展"></a>三、最小可运行扩展</h2><p>先写一个「能加载」的空壳，确认发现机制没问题。</p>
+<p><code>~/.pi/agent/extensions/safe-kit/index.ts</code>：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">ExtensionAPI</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (!ctx.<span class="property">hasUI</span>) <span class="keyword">return</span>;</span><br><span class="line">    ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;safe-kit loaded&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在任意项目启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /path/to/some-project</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
+
+<p>启动头或通知里应看到 <code>safe-kit loaded</code>。若没有：</p>
+<ul>
+<li>确认文件在 <code>~/.pi/agent/extensions/safe-kit/index.ts</code>（或同级 <code>safe-kit.ts</code>）</li>
+<li>看启动头是否列出该扩展</li>
+<li>试 <code>pi -e ~/.pi/agent/extensions/safe-kit</code></li>
+</ul>
+<p>改完后在会话里执行 <code>/reload</code>，不必退出。</p>
+<hr>
+<h2 id="四、权限门：拦截危险-bash"><a href="#四、权限门：拦截危险-bash" class="headerlink" title="四、权限门：拦截危险 bash"></a>四、权限门：拦截危险 bash</h2><h3 id="4-1-检测函数"><a href="#4-1-检测函数" class="headerlink" title="4.1 检测函数"></a>4.1 检测函数</h3><p><code>~/.pi/agent/extensions/safe-kit/guard.ts</code>：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="attr">DANGEROUS_PATTERNS</span>: <span class="title class_">Array</span>&lt;&#123; <span class="attr">re</span>: <span class="title class_">RegExp</span>; <span class="attr">label</span>: <span class="built_in">string</span> &#125;&gt; = [</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/\brm\s+(-[^\s]*f[^\s]*\s+)?\/?(?:\$HOME|~|\/|\.\.)/i</span>, <span class="attr">label</span>: <span class="string">&quot;destructive rm&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/\brm\s+-rf\b/i</span>, <span class="attr">label</span>: <span class="string">&quot;rm -rf&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/\bsudo\b/i</span>, <span class="attr">label</span>: <span class="string">&quot;sudo&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/\bgit\s+push\s+[^\n]*--force\b/i</span>, <span class="attr">label</span>: <span class="string">&quot;git push --force&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/\bmkfs\b/i</span>, <span class="attr">label</span>: <span class="string">&quot;mkfs&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">re</span>: <span class="regexp">/&gt;\s*\/dev\/sd/i</span>, <span class="attr">label</span>: <span class="string">&quot;write to block device&quot;</span> &#125;,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">findDanger</span>(<span class="params"><span class="attr">command</span>: <span class="built_in">string</span></span>): <span class="built_in">string</span> | <span class="literal">undefined</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> &#123; re, label &#125; <span class="keyword">of</span> <span class="variable constant_">DANGEROUS_PATTERNS</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (re.<span class="title function_">test</span>(command)) <span class="keyword">return</span> label;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正则只是启发式，不能当安全边界；真正隔离仍要靠容器/VM。</p>
+<h3 id="4-2-挂上-tool-call"><a href="#4-2-挂上-tool-call" class="headerlink" title="4.2 挂上 tool_call"></a>4.2 挂上 <code>tool_call</code></h3><p>在 <code>index.ts</code> 里：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">ExtensionAPI</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; isToolCallEventType &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; findDanger &#125; <span class="keyword">from</span> <span class="string">&quot;./guard.ts&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;safe-kit loaded&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;tool_call&quot;</span>, <span class="title function_">async</span> (event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">isToolCallEventType</span>(<span class="string">&quot;bash&quot;</span>, event)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> danger = <span class="title function_">findDanger</span>(event.<span class="property">input</span>.<span class="property">command</span> ?? <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!danger) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 非 TUI/RPC（如 -p）没有对话框：默认拦截，避免无人值守误伤</span></span><br><span class="line">    <span class="keyword">if</span> (!ctx.<span class="property">hasUI</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">block</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">reason</span>: <span class="string">`safe-kit blocked (<span class="subst">$&#123;danger&#125;</span>) in non-interactive mode`</span>,</span><br><span class="line">        <span class="attr">terminate</span>: <span class="literal">true</span>,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> ok = <span class="keyword">await</span> ctx.<span class="property">ui</span>.<span class="title function_">confirm</span>(</span><br><span class="line">      <span class="string">&quot;Dangerous command&quot;</span>,</span><br><span class="line">      <span class="string">`Detected: <span class="subst">$&#123;danger&#125;</span>\n\n<span class="subst">$&#123;event.input.command&#125;</span>\n\nAllow?`</span>,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!ok) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">block</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">reason</span>: <span class="string">`Blocked by user (<span class="subst">$&#123;danger&#125;</span>)`</span>,</span><br><span class="line">        <span class="attr">terminate</span>: <span class="literal">true</span>,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li><code>isToolCallEventType(&quot;bash&quot;, event)</code> 收窄后，<code>event.input</code> 有类型 <code>&#123; command; timeout? &#125;</code></li>
+<li>可<strong>原地修改</strong> <code>event.input</code>（例如自动加 <code>source ~/.profile</code>）；本例只拦截</li>
+<li>返回 <code>&#123; block: true, reason?, terminate? &#125;</code>：<code>terminate</code> 表示这一批都终止时尽早结束 agent 轮次</li>
+<li><code>ctx.hasUI</code>：print/json 模式没有确认框，必须有明确策略（拦或放）</li>
+</ul>
+<p>验证：在 Pi 里让模型执行 <code>rm -rf /tmp/something-safe-to-test</code>，应弹出确认；选否即被拦。</p>
+<p>也可用用户 shell：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!rm -rf /tmp/pi-safe-kit-test</span><br></pre></td></tr></table></figure>
+
+<p>注意：<code>!</code> 用户命令走的是另一类事件（user bash）；若也要拦，需另订 <code>user_bash</code> 相关事件（见官方 Extensions 文档）。本教程先覆盖模型发起的 <code>bash</code> 工具。</p>
+<hr>
+<h2 id="五、自定义工具：note"><a href="#五、自定义工具：note" class="headerlink" title="五、自定义工具：note"></a>五、自定义工具：<code>note</code></h2><p>让模型能调用 <code>note</code>，把短便签落到项目目录。</p>
+<p>继续扩展 <code>index.ts</code>（完整版见文末）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Type</span> &#125; <span class="keyword">from</span> <span class="string">&quot;typebox&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; mkdir, appendFile &#125; <span class="keyword">from</span> <span class="string">&quot;node:fs/promises&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; join &#125; <span class="keyword">from</span> <span class="string">&quot;node:path&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="variable constant_">CONFIG_DIR_NAME</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 export default function (pi) &#123; ... &#125; 内：</span></span><br><span class="line"></span><br><span class="line">pi.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;note&quot;</span>,</span><br><span class="line">  <span class="attr">label</span>: <span class="string">&quot;Note&quot;</span>,</span><br><span class="line">  <span class="attr">description</span>:</span><br><span class="line">    <span class="string">&quot;Append a short note to the project&#x27;s .pi/notes/session.md. Use for durable reminders, decisions, or scratch facts.&quot;</span>,</span><br><span class="line">  <span class="attr">parameters</span>: <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">text</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Note body, one or a few sentences&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">tag</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Optional tag, e.g. decision&quot;</span> &#125;)),</span><br><span class="line">  &#125;),</span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">_toolCallId, params, signal, _onUpdate, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> dir = <span class="title function_">join</span>(ctx.<span class="property">cwd</span>, <span class="variable constant_">CONFIG_DIR_NAME</span>, <span class="string">&quot;notes&quot;</span>);</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">mkdir</span>(dir, &#123; <span class="attr">recursive</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">    <span class="keyword">const</span> file = <span class="title function_">join</span>(dir, <span class="string">&quot;session.md&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> line = <span class="string">`- [<span class="subst">$&#123;<span class="keyword">new</span> <span class="built_in">Date</span>().toISOString()&#125;</span>]<span class="subst">$&#123;params.tag ? <span class="string">` (<span class="subst">$&#123;params.tag&#125;</span>)`</span> : <span class="string">&quot;&quot;</span>&#125;</span> <span class="subst">$&#123;params.text&#125;</span>\n`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 尊重中止：长 IO / fetch 应传入 ctx.signal 或 execute 的 signal</span></span><br><span class="line">    <span class="keyword">if</span> (signal?.<span class="property">aborted</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">&quot;aborted&quot;</span> &#125;], <span class="attr">details</span>: &#123;&#125; &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">appendFile</span>(file, line, <span class="string">&quot;utf8&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">`Wrote note to <span class="subst">$&#123;file&#125;</span>`</span> &#125;],</span><br><span class="line">      <span class="attr">details</span>: &#123; file, <span class="attr">tag</span>: params.<span class="property">tag</span> ?? <span class="literal">null</span> &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li><code>description</code> 写清楚「何时用」，模型才找得到</li>
+<li>用 <code>CONFIG_DIR_NAME</code> 而不是写死 <code>.pi</code>，方便发行版改名</li>
+<li><code>execute</code> 签名含 <code>signal</code>、<code>onUpdate</code>、<code>ctx</code>；流式进度可用 <code>onUpdate</code></li>
+<li>工具名建议小写+下划线风格，避免与内置冲突</li>
+</ul>
+<p>验证 prompt：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Use the note tool to record that we chose Postgres for the cache layer.</span><br></pre></td></tr></table></figure>
+
+<p>然后检查项目下 <code>.pi/notes/session.md</code>。</p>
+<p>若只要只读审查、不要写笔记：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pi --exclude-tools note</span><br><span class="line"><span class="comment"># 或白名单：</span></span><br><span class="line">pi --tools <span class="built_in">read</span>,grep,find,<span class="built_in">ls</span>,bash,edit,write</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、斜杠命令：-todo"><a href="#六、斜杠命令：-todo" class="headerlink" title="六、斜杠命令：/todo"></a>六、斜杠命令：<code>/todo</code></h2><p>命令给<strong>人</strong>用；工具给<strong>模型</strong>用。两者可共用同一份内存状态。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">TodoState</span> = &#123; <span class="attr">items</span>: <span class="built_in">string</span>[] &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="attr">state</span>: <span class="title class_">TodoState</span> = &#123; <span class="attr">items</span>: [] &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">renderFooter</span> = (<span class="params"><span class="attr">ctx</span>: &#123; ui: &#123; setStatus: <span class="built_in">Function</span>; setWidget: <span class="built_in">Function</span> &#125; &#125;</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> n = state.<span class="property">items</span>.<span class="property">length</span>;</span><br><span class="line">    ctx.<span class="property">ui</span>.<span class="title function_">setStatus</span>(<span class="string">&quot;safe-kit&quot;</span>, n ? <span class="string">`todos:<span class="subst">$&#123;n&#125;</span>`</span> : <span class="literal">undefined</span>);</span><br><span class="line">    ctx.<span class="property">ui</span>.<span class="title function_">setWidget</span>(</span><br><span class="line">      <span class="string">&quot;safe-kit&quot;</span>,</span><br><span class="line">      n ? [<span class="string">&quot;TODOs:&quot;</span>, ...state.<span class="property">items</span>.<span class="title function_">map</span>(<span class="function">(<span class="params">t, i</span>) =&gt;</span> <span class="string">` <span class="subst">$&#123;i + <span class="number">1</span>&#125;</span>. <span class="subst">$&#123;t&#125;</span>`</span>)] : <span class="literal">undefined</span>,</span><br><span class="line">    );</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerCommand</span>(<span class="string">&quot;todo&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;List or add local todos: /todo [text]&quot;</span>,</span><br><span class="line">    <span class="attr">handler</span>: <span class="title function_">async</span> (args, ctx) =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> text = (args ?? <span class="string">&quot;&quot;</span>).<span class="title function_">trim</span>();</span><br><span class="line">      <span class="keyword">if</span> (text) &#123;</span><br><span class="line">        state.<span class="property">items</span>.<span class="title function_">push</span>(text);</span><br><span class="line">        <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">`Added: <span class="subst">$&#123;text&#125;</span>`</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ctx.<span class="property">hasUI</span> &amp;&amp; state.<span class="property">items</span>.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">        ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;No todos. Usage: /todo buy milk&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) <span class="title function_">renderFooter</span>(ctx);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    state.<span class="property">items</span> = []; <span class="comment">// 新会话清空；若要持久化可用 pi.appendEntry 或写文件</span></span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) &#123;</span><br><span class="line">      ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;safe-kit loaded&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      <span class="title function_">renderFooter</span>(ctx);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_shutdown&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    state.<span class="property">items</span> = [];</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用法：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/todo fix flaky test</span><br><span class="line">/todo</span><br></pre></td></tr></table></figure>
+
+<p>页脚会出现 <code>todos:1</code>，编辑器上方 widget 列出条目。</p>
+<p>注意：<code>/new</code>、<code>/resume</code>、<code>/fork</code> 会触发旧实例 <code>session_shutdown</code> 再新实例 <code>session_start</code>，内存状态不会自动跨会话，除非你自己持久化。</p>
+<hr>
+<h2 id="七、完整示例代码"><a href="#七、完整示例代码" class="headerlink" title="七、完整示例代码"></a>七、完整示例代码</h2><p><code>~/.pi/agent/extensions/safe-kit/guard.ts</code> 见第四节。</p>
+<p><code>~/.pi/agent/extensions/safe-kit/index.ts</code>：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">ExtensionAPI</span>, <span class="title class_">ExtensionContext</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  <span class="variable constant_">CONFIG_DIR_NAME</span>,</span><br><span class="line">  isToolCallEventType,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Type</span> &#125; <span class="keyword">from</span> <span class="string">&quot;typebox&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; appendFile, mkdir &#125; <span class="keyword">from</span> <span class="string">&quot;node:fs/promises&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; join &#125; <span class="keyword">from</span> <span class="string">&quot;node:path&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; findDanger &#125; <span class="keyword">from</span> <span class="string">&quot;./guard.ts&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">TodoState</span> = &#123; <span class="attr">items</span>: <span class="built_in">string</span>[] &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">renderTodos</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">ExtensionContext</span>, <span class="attr">state</span>: <span class="title class_">TodoState</span></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!ctx.<span class="property">hasUI</span>) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">const</span> n = state.<span class="property">items</span>.<span class="property">length</span>;</span><br><span class="line">  ctx.<span class="property">ui</span>.<span class="title function_">setStatus</span>(<span class="string">&quot;safe-kit&quot;</span>, n ? <span class="string">`todos:<span class="subst">$&#123;n&#125;</span>`</span> : <span class="literal">undefined</span>);</span><br><span class="line">  ctx.<span class="property">ui</span>.<span class="title function_">setWidget</span>(</span><br><span class="line">    <span class="string">&quot;safe-kit&quot;</span>,</span><br><span class="line">    n ? [<span class="string">&quot;TODOs:&quot;</span>, ...state.<span class="property">items</span>.<span class="title function_">map</span>(<span class="function">(<span class="params">t, i</span>) =&gt;</span> <span class="string">` <span class="subst">$&#123;i + <span class="number">1</span>&#125;</span>. <span class="subst">$&#123;t&#125;</span>`</span>)] : <span class="literal">undefined</span>,</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="attr">state</span>: <span class="title class_">TodoState</span> = &#123; <span class="attr">items</span>: [] &#125;;</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    state.<span class="property">items</span> = [];</span><br><span class="line">    <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) &#123;</span><br><span class="line">      ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;safe-kit loaded&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      <span class="title function_">renderTodos</span>(ctx, state);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_shutdown&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    state.<span class="property">items</span> = [];</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;tool_call&quot;</span>, <span class="title function_">async</span> (event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">isToolCallEventType</span>(<span class="string">&quot;bash&quot;</span>, event)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> danger = <span class="title function_">findDanger</span>(event.<span class="property">input</span>.<span class="property">command</span> ?? <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!danger) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!ctx.<span class="property">hasUI</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">block</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">reason</span>: <span class="string">`safe-kit blocked (<span class="subst">$&#123;danger&#125;</span>) in non-interactive mode`</span>,</span><br><span class="line">        <span class="attr">terminate</span>: <span class="literal">true</span>,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> ok = <span class="keyword">await</span> ctx.<span class="property">ui</span>.<span class="title function_">confirm</span>(</span><br><span class="line">      <span class="string">&quot;Dangerous command&quot;</span>,</span><br><span class="line">      <span class="string">`Detected: <span class="subst">$&#123;danger&#125;</span>\n\n<span class="subst">$&#123;event.input.command&#125;</span>\n\nAllow?`</span>,</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">if</span> (!ok) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">block</span>: <span class="literal">true</span>, <span class="attr">reason</span>: <span class="string">`Blocked by user (<span class="subst">$&#123;danger&#125;</span>)`</span>, <span class="attr">terminate</span>: <span class="literal">true</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;note&quot;</span>,</span><br><span class="line">    <span class="attr">label</span>: <span class="string">&quot;Note&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>:</span><br><span class="line">      <span class="string">&quot;Append a short note to the project&#x27;s .pi/notes/session.md. Use for durable reminders or decisions.&quot;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">      <span class="attr">text</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Note body&quot;</span> &#125;),</span><br><span class="line">      <span class="attr">tag</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Optional tag&quot;</span> &#125;)),</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">_id, params, signal, _onUpdate, ctx</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (signal?.<span class="property">aborted</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123; <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">&quot;aborted&quot;</span> &#125;], <span class="attr">details</span>: &#123;&#125; &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">const</span> dir = <span class="title function_">join</span>(ctx.<span class="property">cwd</span>, <span class="variable constant_">CONFIG_DIR_NAME</span>, <span class="string">&quot;notes&quot;</span>);</span><br><span class="line">      <span class="keyword">await</span> <span class="title function_">mkdir</span>(dir, &#123; <span class="attr">recursive</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">      <span class="keyword">const</span> file = <span class="title function_">join</span>(dir, <span class="string">&quot;session.md&quot;</span>);</span><br><span class="line">      <span class="keyword">const</span> line = <span class="string">`- [<span class="subst">$&#123;<span class="keyword">new</span> <span class="built_in">Date</span>().toISOString()&#125;</span>]<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="subst"><span class="string">        params.tag ? <span class="string">` (<span class="subst">$&#123;params.tag&#125;</span>)`</span> : <span class="string">&quot;&quot;</span></span></span></span><br><span class="line"><span class="subst"><span class="string">      &#125;</span> <span class="subst">$&#123;params.text&#125;</span>\n`</span>;</span><br><span class="line">      <span class="keyword">await</span> <span class="title function_">appendFile</span>(file, line, <span class="string">&quot;utf8&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">`Wrote note to <span class="subst">$&#123;file&#125;</span>`</span> &#125;],</span><br><span class="line">        <span class="attr">details</span>: &#123; file &#125;,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerCommand</span>(<span class="string">&quot;todo&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;List or add local todos: /todo [text]&quot;</span>,</span><br><span class="line">    <span class="attr">handler</span>: <span class="title function_">async</span> (args, ctx) =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> text = (args ?? <span class="string">&quot;&quot;</span>).<span class="title function_">trim</span>();</span><br><span class="line">      <span class="keyword">if</span> (text) &#123;</span><br><span class="line">        state.<span class="property">items</span>.<span class="title function_">push</span>(text);</span><br><span class="line">        <span class="keyword">if</span> (ctx.<span class="property">hasUI</span>) ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">`Added: <span class="subst">$&#123;text&#125;</span>`</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ctx.<span class="property">hasUI</span> &amp;&amp; state.<span class="property">items</span>.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">        ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;No todos. Usage: /todo buy milk&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">renderTodos</span>(ctx, state);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自测清单：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>期望</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pi</code> 启动</td>
+<td>通知 <code>safe-kit loaded</code></td>
+</tr>
+<tr>
+<td>让模型跑 <code>rm -rf …</code></td>
+<td>确认框；拒绝则失败并说明原因</td>
+</tr>
+<tr>
+<td>「用 note 记一条」</td>
+<td>生成 <code>.pi/notes/session.md</code></td>
+</tr>
+<tr>
+<td><code>/todo ship it</code></td>
+<td>页脚 <code>todos:1</code>，上方列表</td>
+</tr>
+<tr>
+<td><code>/reload</code> 后再试</td>
+<td>仍可用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、进阶：改参数、快捷键、异步工厂"><a href="#八、进阶：改参数、快捷键、异步工厂" class="headerlink" title="八、进阶：改参数、快捷键、异步工厂"></a>八、进阶：改参数、快捷键、异步工厂</h2><h3 id="8-1-改工具入参（不拦截）"><a href="#8-1-改工具入参（不拦截）" class="headerlink" title="8.1 改工具入参（不拦截）"></a>8.1 改工具入参（不拦截）</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pi.<span class="title function_">on</span>(<span class="string">&quot;tool_call&quot;</span>, <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isToolCallEventType</span>(<span class="string">&quot;bash&quot;</span>, event)) <span class="keyword">return</span>;</span><br><span class="line">  <span class="comment">// 为交互式 shell 预加载别名等</span></span><br><span class="line">  event.<span class="property">input</span>.<span class="property">command</span> = <span class="string">`shopt -s expand_aliases 2&gt;/dev/null; <span class="subst">$&#123;event.input.command&#125;</span>`</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>修改后<strong>不会</strong>再校验；乱改可能导致工具失败。</p>
+<h3 id="8-2-注册快捷键"><a href="#8-2-注册快捷键" class="headerlink" title="8.2 注册快捷键"></a>8.2 注册快捷键</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pi.<span class="title function_">registerShortcut</span>(<span class="string">&quot;ctrl+shift+n&quot;</span>, &#123;</span><br><span class="line">  <span class="attr">description</span>: <span class="string">&quot;Quick note prompt&quot;</span>,</span><br><span class="line">  <span class="attr">handler</span>: <span class="title function_">async</span> (_ctx) =&gt; &#123;</span><br><span class="line">    <span class="comment">// 或打开自定义 UI；此处仅示例</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>与 <code>~/.pi/agent/keybindings.json</code> 的命名空间 id 体系一致。</p>
+<h3 id="8-3-异步工厂（启动时拉模型列表）"><a href="#8-3-异步工厂（启动时拉模型列表）" class="headerlink" title="8.3 异步工厂（启动时拉模型列表）"></a>8.3 异步工厂（启动时拉模型列表）</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&quot;http://localhost:1234/v1/models&quot;</span>);</span><br><span class="line">  <span class="comment">// … pi.registerProvider(&quot;local-openai&quot;, &#123; … &#125;)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Pi 会 await 工厂，再继续 <code>session_start</code> / <code>resources_discover</code>。<br><strong>不要</strong>在工厂里启动长期 watcher；放到 <code>session_start</code>，在 <code>session_shutdown</code> 关闭。</p>
+<h3 id="8-4-需要-npm-依赖时"><a href="#8-4-需要-npm-依赖时" class="headerlink" title="8.4 需要 npm 依赖时"></a>8.4 需要 npm 依赖时</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/.pi/agent/extensions/safe-kit/</span><br><span class="line">├── package.json</span><br><span class="line">├── node_modules/</span><br><span class="line">└── src/index.ts</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;safe-kit&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;chalk&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^5.0.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pi&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extensions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./src/index.ts&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>在目录内 <code>npm install</code> 即可。若做成可分享包，再用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pi install /absolute/path/to/safe-kit</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">pi install git:github.com/you/safe-kit@v1</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、常见坑"><a href="#九、常见坑" class="headerlink" title="九、常见坑"></a>九、常见坑</h2><ol>
+<li><strong>工厂里开后台资源</strong> → 某些调用路径根本不会开会话，资源泄漏。用 <code>session_start</code> / <code>session_shutdown</code>。</li>
+<li><strong>在 <code>tool_call</code> 里调 <code>ctx.newSession()</code></strong> → 命令专用 API，事件里可能死锁。会话切换放在 <code>registerCommand</code> 的 handler。</li>
+<li><strong>项目扩展不生效</strong> → <code>.pi/extensions</code> 需项目信任；或用 <code>--approve</code> / <code>/trust</code>。</li>
+<li><strong><code>-p</code> 模式乱弹窗</strong> → 先看 <code>ctx.hasUI</code>；无人值守默认拒绝危险操作更稳妥。</li>
+<li><strong>热重载无效</strong> → 确认扩展在可发现目录，而不是只靠一次性 <code>-e</code>。</li>
+<li><strong>把扩展当沙箱</strong> → 权限门可挡一部分误操作，挡不住 prompt injection 与恶意扩展；不可信仓库请容器化。</li>
+</ol>
+<hr>
+<h2 id="十、下一步可以做什么"><a href="#十、下一步可以做什么" class="headerlink" title="十、下一步可以做什么"></a>十、下一步可以做什么</h2><p>官方 <code>examples/extensions/</code> 里有更多范例（路径保护、自定义压缩、git checkpoint、贪吃蛇等）。在此基础上常见演进：</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>路径保护</td>
+<td>在 <code>write</code>/<code>edit</code> 的 <code>tool_call</code> 里拦截 <code>.env</code>、<code>node_modules</code></td>
+</tr>
+<tr>
+<td>Git 检查点</td>
+<td>每轮 <code>turn_start</code> stash，<code>/tree</code> 回跳时提示 restore</td>
+</tr>
+<tr>
+<td>自定义压缩</td>
+<td><code>session_before_compact</code> 换模型或换摘要格式</td>
+</tr>
+<tr>
+<td>共享给团队</td>
+<td>打成 Pi Package，<code>pi install</code> + 项目 <code>-l</code></td>
+</tr>
+<tr>
+<td>嵌进应用</td>
+<td>不用 TUI，改走 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/sdk">SDK</a> / RPC</td>
+</tr>
+</tbody></table>
+<p>Pi 的扩展面就是产品差异面：核心保持小，把「你团队真正在乎的护栏与工具」写进几十行 TypeScript——从今天的 <code>safe-kit</code> 开始即可。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/coding-agent/" rel="tag"># coding-agent</a>
+              <a href="/tags/cli/" rel="tag"># cli</a>
+              <a href="/tags/pi/" rel="tag"># pi</a>
+              <a href="/tags/extension/" rel="tag"># extension</a>
+              <a href="/tags/typescript/" rel="tag"># typescript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" rel="prev" title="Pi 中文文档：官方文档长文翻译">
+      <i class="fa fa-chevron-left"></i> Pi 中文文档：官方文档长文翻译
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AA-Pi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">从零写一个 Pi Extension：自定义工具、命令与权限门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%A0%E5%B0%86%E5%81%9A%E6%88%90%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">你将做成什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">一、前置条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%80%89%E5%8A%A0%E8%BD%BD%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">二、选加载位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E6%89%A9%E5%B1%95"><span class="nav-number">1.4.</span> <span class="nav-text">三、最小可运行扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%9D%83%E9%99%90%E9%97%A8%EF%BC%9A%E6%8B%A6%E6%88%AA%E5%8D%B1%E9%99%A9-bash"><span class="nav-number">1.5.</span> <span class="nav-text">四、权限门：拦截危险 bash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%A3%80%E6%B5%8B%E5%87%BD%E6%95%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 检测函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%8C%82%E4%B8%8A-tool-call"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 挂上 tool_call</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%EF%BC%9Anote"><span class="nav-number">1.6.</span> <span class="nav-text">五、自定义工具：note</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%EF%BC%9A-todo"><span class="nav-number">1.7.</span> <span class="nav-text">六、斜杠命令：&#x2F;todo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.8.</span> <span class="nav-text">七、完整示例代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E8%BF%9B%E9%98%B6%EF%BC%9A%E6%94%B9%E5%8F%82%E6%95%B0%E3%80%81%E5%BF%AB%E6%8D%B7%E9%94%AE%E3%80%81%E5%BC%82%E6%AD%A5%E5%B7%A5%E5%8E%82"><span class="nav-number">1.9.</span> <span class="nav-text">八、进阶：改参数、快捷键、异步工厂</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E6%94%B9%E5%B7%A5%E5%85%B7%E5%85%A5%E5%8F%82%EF%BC%88%E4%B8%8D%E6%8B%A6%E6%88%AA%EF%BC%89"><span class="nav-number">1.9.1.</span> <span class="nav-text">8.1 改工具入参（不拦截）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E6%B3%A8%E5%86%8C%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.9.2.</span> <span class="nav-text">8.2 注册快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E5%BC%82%E6%AD%A5%E5%B7%A5%E5%8E%82%EF%BC%88%E5%90%AF%E5%8A%A8%E6%97%B6%E6%8B%89%E6%A8%A1%E5%9E%8B%E5%88%97%E8%A1%A8%EF%BC%89"><span class="nav-number">1.9.3.</span> <span class="nav-text">8.3 异步工厂（启动时拉模型列表）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-%E9%9C%80%E8%A6%81-npm-%E4%BE%9D%E8%B5%96%E6%97%B6"><span class="nav-number">1.9.4.</span> <span class="nav-text">8.4 需要 npm 依赖时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%B8%B8%E8%A7%81%E5%9D%91"><span class="nav-number">1.10.</span> <span class="nav-text">九、常见坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E4%B8%8B%E4%B8%80%E6%AD%A5%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88"><span class="nav-number">1.11.</span> <span class="nav-text">十、下一步可以做什么</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">菜鸟程序员</p>
+  <div class="site-description" itemprop="description">这个人很懒，不想写的太详细</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">204k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:05</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
+      placeholder: "随便说点啥，欢迎吐槽",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com'
+    });
+  }, window.Valine);
+});
+</script>
+<script>
+  (function () {
+    if (!document.body.classList.contains('posts-expand')) return;
+
+    var tocTab = document.querySelector('.sidebar-nav-toc');
+    var tocPanel = document.querySelector('.post-toc-wrap');
+    var overviewPanel = document.querySelector('.site-overview-wrap');
+
+    if (tocTab) {
+      tocTab.classList.add('sidebar-nav-active');
+    }
+    if (tocPanel) {
+      tocPanel.classList.add('sidebar-panel-active');
+    }
+    if (overviewPanel) {
+      overviewPanel.classList.remove('sidebar-panel-active');
+    }
+
+    if (typeof NexT !== 'undefined' && NexT.utils && NexT.utils.registerScrollPercent) {
+      NexT.utils.initSidebarDimension();
+    }
+  })();
+</script>
+
+</body>
+</html>

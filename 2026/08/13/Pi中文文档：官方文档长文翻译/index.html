@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"qngolg.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="将 https:&#x2F;&#x2F;pi.dev&#x2F;docs&#x2F;latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pi 中文文档：官方文档长文翻译">
+<meta property="og:url" content="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="将 https:&#x2F;&#x2F;pi.dev&#x2F;docs&#x2F;latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-13T03:50:00.000Z">
+<meta property="article:modified_time" content="2026-08-13T03:50:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="cli">
+<meta property="article:tag" content="pi">
+<meta property="article:tag" content="文档翻译">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Pi 中文文档：官方文档长文翻译 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="菜鸟程序员">
+      <meta itemprop="description" content="这个人很懒，不想写的太详细">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pi 中文文档：官方文档长文翻译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-08-13 11:50:00" itemprop="dateCreated datePublished" datetime="2026-08-13T11:50:00+08:00">2026-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" class="post-meta-item leancloud_visitors" data-flag-title="Pi 中文文档：官方文档长文翻译" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+            <div class="post-description">将 https://pi.dev/docs/latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pi-中文文档：官方文档长文翻译"><a href="#Pi-中文文档：官方文档长文翻译" class="headerlink" title="Pi 中文文档：官方文档长文翻译"></a>Pi 中文文档：官方文档长文翻译</h1><blockquote>
+<p>本文是 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">Pi 官方文档</a> 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">pi.dev/docs/latest</a> 为准。</p>
+<p><strong>Pi</strong> 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 <code>@earendil-works/pi-coding-agent</code>，命令 <code>pi</code>，数据目录 <code>~/.pi/agent/</code>。</p>
+<p>相关文章：<a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/">操作指南</a> · <a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AA-Pi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">从零写 Extension</a></p>
+<p>注意：本文讲官方 Pi，不是社区分支 <a target="_blank" rel="noopener" href="https://omp.sh/docs">Oh My Pi / omp</a>。</p>
+</blockquote>
+<h2 id="目录导航"><a href="#目录导航" class="headerlink" title="目录导航"></a>目录导航</h2><ul>
+<li><a href="#ch-intro">一、概览与快速开始</a></li>
+<li><a href="#ch-usage">二、使用 Pi</a></li>
+<li><a href="#ch-providers">三、提供商与认证</a></li>
+<li><a href="#ch-sessions">四、会话、树与压缩</a></li>
+<li><a href="#ch-settings">五、设置</a></li>
+<li><a href="#ch-keys">六、快捷键</a></li>
+<li><a href="#ch-custom">七、定制：扩展 / Skills / 模板 / 主题 / 包</a></li>
+<li><a href="#ch-security">八、安全与容器化</a></li>
+<li><a href="#ch-sdk">九、程序化用法</a></li>
+<li><a href="#ch-design">十、设计原则与约定</a></li>
+</ul>
+<hr>
+<p><a id="ch-intro"></a></p>
+<h2 id="一、概览与快速开始"><a href="#一、概览与快速开始" class="headerlink" title="一、概览与快速开始"></a>一、概览与快速开始</h2><h3 id="1-1-Pi-是什么"><a href="#1-1-Pi-是什么" class="headerlink" title="1.1 Pi 是什么"></a>1.1 Pi 是什么</h3><p>Pi 是一个<strong>极简的终端编码 Agent 框架</strong>。它在终端里驱动大模型：读文件、改文件、跑命令；同时把「工作流差异」放到扩展层，而不是堆进核心。</p>
+<p>你可以用它：</p>
+<ul>
+<li>在仓库里交互式对话改代码</li>
+<li>用 <code>AGENTS.md</code> / <code>CLAUDE.md</code> 写项目约定</li>
+<li>用 <code>/tree</code> 在会话树上回跳、分支</li>
+<li>用扩展做权限门、自定义工具、自定义 UI</li>
+<li>用 Skills / Prompt 模板沉淀可复用工作流</li>
+<li>用 <code>-p</code> / JSON / RPC / SDK 接入自动化</li>
+</ul>
+<h3 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span><br></pre></td></tr></table></figure>
+
+<p><code>--ignore-scripts</code> 会禁用依赖的 lifecycle scripts。普通 npm 安装不需要 install scripts。</p>
+<p>Linux / macOS 也可用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://pi.dev/install.sh | sh</span><br></pre></td></tr></table></figure>
+
+<p>卸载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall -g @earendil-works/pi-coding-agent</span><br><span class="line"><span class="comment"># pnpm remove -g / yarn global remove / bun uninstall -g 同理</span></span><br></pre></td></tr></table></figure>
+
+<p>卸载 <strong>不会</strong> 删除 <code>~/.pi/agent/</code> 中的设置、凭据、会话与已安装包。</p>
+<p>进入项目后启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /path/to/project</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-认证"><a href="#1-3-认证" class="headerlink" title="1.3 认证"></a>1.3 认证</h3><p><strong>方式一：订阅登录</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/login</span><br></pre></td></tr></table></figure>
+
+<p>内置订阅包括 Claude Pro/Max、ChatGPT Plus/Pro（Codex）、GitHub Copilot，以及 xAI、OpenRouter、Radius 等。<code>/logout</code> 清除凭据。多数 OAuth token 存于 <code>~/.pi/agent/auth.json</code> 并自动刷新。</p>
+<p><strong>方式二：API Key</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=sk-ant-...</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
+
+<p>也可 <code>/login</code> 选择 API Key 提供商写入 <code>auth.json</code>。</p>
+<h3 id="1-4-第一次会话"><a href="#1-4-第一次会话" class="headerlink" title="1.4 第一次会话"></a>1.4 第一次会话</h3><p>启动后输入请求并回车，例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Summarize this repository and tell me how to run its checks.</span><br></pre></td></tr></table></figure>
+
+<p>默认四个工具：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>read</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>创建/覆盖文件</td>
+</tr>
+<tr>
+<td><code>edit</code></td>
+<td>打补丁</td>
+</tr>
+<tr>
+<td><code>bash</code></td>
+<td>跑 shell</td>
+</tr>
+</tbody></table>
+<p>额外只读工具 <code>grep</code> / <code>find</code> / <code>ls</code> 可通过工具选项开启。Pi 在当前工作目录运行并可修改其中文件；需要回滚请用 git。</p>
+<h3 id="1-5-项目指令（Context-Files）"><a href="#1-5-项目指令（Context-Files）" class="headerlink" title="1.5 项目指令（Context Files）"></a>1.5 项目指令（Context Files）</h3><p>在仓库根添加 <code>AGENTS.md</code>：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Project Instructions</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> Run <span class="code">`npm run check`</span> after code changes.</span><br><span class="line"><span class="bullet">-</span> Do not run production migrations locally.</span><br><span class="line"><span class="bullet">-</span> Keep responses concise.</span><br></pre></td></tr></table></figure>
+
+<p>加载来源：</p>
+<ul>
+<li>全局：<code>~/.pi/agent/AGENTS.md</code></li>
+<li>从 cwd 向上的父目录 + 当前目录：<code>AGENTS.md</code> 或 <code>CLAUDE.md</code></li>
+<li>某目录若有 <code>AGENTS.override.md</code>，则用它替换该目录的 <code>AGENTS.md</code> / <code>CLAUDE.md</code></li>
+</ul>
+<p>改完后重启或 <code>/reload</code>。可用 <code>--no-context-files</code> / <code>-nc</code> 关闭。</p>
+<p>系统提示词：</p>
+<ul>
+<li>替换默认：<code>.pi/SYSTEM.md</code> 或 <code>~/.pi/agent/SYSTEM.md</code></li>
+<li>追加：同位置 <code>APPEND_SYSTEM.md</code></li>
+</ul>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/quickstart">Quickstart</a></p>
+<hr>
+<p><a id="ch-usage"></a></p>
+<h2 id="二、使用-Pi"><a href="#二、使用-Pi" class="headerlink" title="二、使用 Pi"></a>二、使用 Pi</h2><h3 id="2-1-交互界面"><a href="#2-1-交互界面" class="headerlink" title="2.1 交互界面"></a>2.1 交互界面</h3><p>四个主要区域：</p>
+<ol>
+<li><strong>启动头</strong>：快捷键、已加载上下文文件、模板、Skills、扩展</li>
+<li><strong>消息区</strong>：用户消息、助手回复、工具调用/结果、通知、错误、扩展 UI</li>
+<li><strong>编辑器</strong>：输入；边框颜色表示 thinking 级别</li>
+<li><strong>页脚</strong>：工作目录、会话名、Token/缓存、费用、上下文占用、当前模型</li>
+</ol>
+<p>编辑器可被 <code>/settings</code> 或扩展自定义 UI 临时替换。</p>
+<h3 id="2-2-编辑器功能"><a href="#2-2-编辑器功能" class="headerlink" title="2.2 编辑器功能"></a>2.2 编辑器功能</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件引用</td>
+<td><code>@</code> 模糊搜索项目文件</td>
+</tr>
+<tr>
+<td>路径补全</td>
+<td><code>Tab</code></td>
+</tr>
+<tr>
+<td>多行</td>
+<td><code>Shift+Enter</code>；Windows Terminal 可用 <code>Ctrl+Enter</code></td>
+</tr>
+<tr>
+<td>复制回复</td>
+<td><code>Ctrl+X</code>；在 <code>/tree</code> 中复制选中消息</td>
+</tr>
+<tr>
+<td>图片</td>
+<td><code>Ctrl+V</code> 粘贴（Windows：<code>Alt+V</code>），或拖入终端</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td><code>!command</code> 执行并把输出送给模型</td>
+</tr>
+<tr>
+<td>隐藏 Shell</td>
+<td><code>!!command</code> 执行但不进模型上下文</td>
+</tr>
+<tr>
+<td>外部编辑器</td>
+<td><code>Ctrl+G</code> → <code>externalEditor</code> / <code>$VISUAL</code> / <code>$EDITOR</code> / Windows Notepad / 其他平台 <code>nano</code></td>
+</tr>
+</tbody></table>
+<h3 id="2-3-斜杠命令"><a href="#2-3-斜杠命令" class="headerlink" title="2.3 斜杠命令"></a>2.3 斜杠命令</h3><p>输入 <code>/</code> 打开补全。扩展可注册命令；Skills 为 <code>/skill:name</code>；Prompt 模板为 <code>/模板名</code>。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/login</code> <code>/logout</code></td>
+<td>OAuth 或 API Key 凭据</td>
+</tr>
+<tr>
+<td><code>/llama</code></td>
+<td>下载/加载/卸载 llama.cpp router 模型</td>
+</tr>
+<tr>
+<td><code>/model</code></td>
+<td>切换模型</td>
+</tr>
+<tr>
+<td><code>/scoped-models</code></td>
+<td>配置 <code>Ctrl+P</code> 循环的模型</td>
+</tr>
+<tr>
+<td><code>/settings</code></td>
+<td>Thinking、主题、消息投递、传输等</td>
+</tr>
+<tr>
+<td><code>/resume</code></td>
+<td>选择历史会话</td>
+</tr>
+<tr>
+<td><code>/new</code></td>
+<td>新会话</td>
+</tr>
+<tr>
+<td><code>/name &lt;名&gt;</code></td>
+<td>设置会话显示名</td>
+</tr>
+<tr>
+<td><code>/session</code></td>
+<td>显示会话文件、ID、消息数、Token、费用</td>
+</tr>
+<tr>
+<td><code>/tree</code></td>
+<td>跳到会话任意节点继续</td>
+</tr>
+<tr>
+<td><code>/trust</code></td>
+<td>保存项目信任决定</td>
+</tr>
+<tr>
+<td><code>/fork</code></td>
+<td>从某条用户消息创建新会话文件</td>
+</tr>
+<tr>
+<td><code>/clone</code></td>
+<td>把当前活跃分支复制到新会话</td>
+</tr>
+<tr>
+<td><code>/compact [prompt]</code></td>
+<td>手动压缩上下文</td>
+</tr>
+<tr>
+<td><code>/copy</code></td>
+<td>复制最后一条助手消息</td>
+</tr>
+<tr>
+<td><code>/export [file]</code></td>
+<td>导出为 HTML 或 JSONL</td>
+</tr>
+<tr>
+<td><code>/import &lt;file&gt;</code></td>
+<td>从 JSONL 导入并恢复</td>
+</tr>
+<tr>
+<td><code>/share</code></td>
+<td>上传为私有 GitHub gist，附可分享 HTML 链接</td>
+</tr>
+<tr>
+<td><code>/reload</code></td>
+<td>重载键位、扩展、Skills、模板、主题、上下文文件</td>
+</tr>
+<tr>
+<td><code>/hotkeys</code></td>
+<td>显示快捷键</td>
+</tr>
+<tr>
+<td><code>/changelog</code></td>
+<td>版本历史</td>
+</tr>
+<tr>
+<td><code>/quit</code></td>
+<td>退出</td>
+</tr>
+</tbody></table>
+<h3 id="2-4-消息队列"><a href="#2-4-消息队列" class="headerlink" title="2.4 消息队列"></a>2.4 消息队列</h3><p>Agent 仍在工作时可继续提交：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Enter</code></td>
+<td>排队 steering：当前助手轮次工具执行完后投递</td>
+</tr>
+<tr>
+<td><code>Alt+Enter</code></td>
+<td>排队 follow-up：Agent 全部工作结束后投递</td>
+</tr>
+<tr>
+<td><code>Escape</code></td>
+<td>中止，并把排队消息还原到编辑器</td>
+</tr>
+<tr>
+<td><code>Alt+Up</code></td>
+<td>把排队消息取回编辑器</td>
+</tr>
+</tbody></table>
+<p>Windows Terminal 默认把 <code>Alt+Enter</code> 当全屏；若要给 Pi 用，需在终端设置里重映射。投递策略见设置项 <code>steeringMode</code> / <code>followUpMode</code>。</p>
+<h3 id="2-5-会话-CLI-入口"><a href="#2-5-会话-CLI-入口" class="headerlink" title="2.5 会话 CLI 入口"></a>2.5 会话 CLI 入口</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pi -c                  <span class="comment"># 续最近会话</span></span><br><span class="line">pi -r                  <span class="comment"># 浏览历史会话</span></span><br><span class="line">pi --no-session        <span class="comment"># 不落盘</span></span><br><span class="line">pi --name <span class="string">&quot;my task&quot;</span>    <span class="comment"># 启动命名</span></span><br><span class="line">pi --session &lt;path|<span class="built_in">id</span>&gt; <span class="comment"># 指定会话</span></span><br><span class="line">pi --fork &lt;path|<span class="built_in">id</span>&gt;    <span class="comment"># 派生新文件</span></span><br></pre></td></tr></table></figure>
+
+<p>会话按工作目录存于 <code>~/.pi/agent/sessions/</code>。</p>
+<h3 id="2-6-项目信任（Usage-节摘要）"><a href="#2-6-项目信任（Usage-节摘要）" class="headerlink" title="2.6 项目信任（Usage 节摘要）"></a>2.6 项目信任（Usage 节摘要）</h3><p>交互启动时，若项目含需信任的本地资源且无已保存决定，Pi 会询问。信任后才加载 <code>.pi/settings.json</code>、<code>.pi</code> 资源、缺包安装与项目扩展。</p>
+<p>信任前仅加载：上下文文件、用户/全局扩展、CLI <code>-e</code> 扩展（它们可处理 <code>project_trust</code> 事件）。</p>
+<p>非交互（<code>-p</code> / <code>--mode json</code> / <code>--mode rpc</code>）不弹窗。无已保存决定时，用全局 <code>defaultProjectTrust</code>：<code>ask</code>（默认）与 <code>never</code> 忽略项目受保护资源，<code>always</code> 信任。可用 <code>--approve</code> / <code>--no-approve</code> 单次覆盖。</p>
+<p><code>/trust</code> 写入 <code>~/.pi/agent/trust.json</code>，当前会话不重载，需重启生效。</p>
+<h3 id="2-7-导出与分享"><a href="#2-7-导出与分享" class="headerlink" title="2.7 导出与分享"></a>2.7 导出与分享</h3><ul>
+<li><code>/export [file]</code> → HTML</li>
+<li><code>/share</code> → 私有 gist + HTML 链接</li>
+<li>开源研究数据可用 <a target="_blank" rel="noopener" href="https://github.com/badlogic/pi-share-hf">badlogic/pi-share-hf</a> 发布到 Hugging Face</li>
+</ul>
+<h3 id="2-8-CLI-参考"><a href="#2-8-CLI-参考" class="headerlink" title="2.8 CLI 参考"></a>2.8 CLI 参考</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi [options] [@files...] [messages...]</span><br></pre></td></tr></table></figure>
+
+<h4 id="包命令"><a href="#包命令" class="headerlink" title="包命令"></a>包命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pi install &lt;<span class="built_in">source</span>&gt; [-l]     <span class="comment"># 安装包；-l 项目本地</span></span><br><span class="line">pi remove &lt;<span class="built_in">source</span>&gt; [-l]      <span class="comment"># 移除</span></span><br><span class="line">pi uninstall &lt;<span class="built_in">source</span>&gt; [-l]   <span class="comment"># remove 别名</span></span><br><span class="line">pi update [<span class="built_in">source</span>|self|pi]   <span class="comment"># 更新 pi 或某个包</span></span><br><span class="line">pi update --all              <span class="comment"># 更新 pi + 包，并校准 pinned git ref</span></span><br><span class="line">pi update --extensions       <span class="comment"># 只更新包</span></span><br><span class="line">pi update --models           <span class="comment"># 只刷新模型目录</span></span><br><span class="line">pi update --self             <span class="comment"># 只更新 pi</span></span><br><span class="line">pi list                      <span class="comment"># 列出已装包</span></span><br><span class="line">pi config                    <span class="comment"># 启用/禁用包资源</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h4><table>
+<thead>
+<tr>
+<th>标志</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>默认</td>
+<td>交互</td>
+</tr>
+<tr>
+<td><code>-p</code> / <code>--print</code></td>
+<td>打印回复后退出；可合并 stdin</td>
+</tr>
+<tr>
+<td><code>--mode json</code></td>
+<td>JSONL 事件</td>
+</tr>
+<tr>
+<td><code>--mode rpc</code></td>
+<td>stdin/stdout RPC</td>
+</tr>
+<tr>
+<td><code>--export [out]</code></td>
+<td>导出会话 HTML</td>
+</tr>
+</tbody></table>
+<h4 id="模型选项"><a href="#模型选项" class="headerlink" title="模型选项"></a>模型选项</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--provider</code></td>
+<td>如 <code>anthropic</code>、<code>openai</code>、<code>google</code></td>
+</tr>
+<tr>
+<td><code>--model</code></td>
+<td>模型 ID / 模式；支持 <code>provider/id</code> 与可选 <code>:thinking</code></td>
+</tr>
+<tr>
+<td><code>--api-key</code></td>
+<td>覆盖环境变量</td>
+</tr>
+<tr>
+<td><code>--thinking</code></td>
+<td><code>off</code>/<code>minimal</code>/<code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code>/<code>max</code></td>
+</tr>
+<tr>
+<td><code>--models</code></td>
+<td><code>Ctrl+P</code> 循环用的逗号分隔模式</td>
+</tr>
+<tr>
+<td><code>--list-models [search]</code></td>
+<td>列出模型</td>
+</tr>
+</tbody></table>
+<h4 id="会话选项"><a href="#会话选项" class="headerlink" title="会话选项"></a>会话选项</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-c</code> / <code>--continue</code></td>
+<td>续最近</td>
+</tr>
+<tr>
+<td><code>-r</code> / <code>--resume</code></td>
+<td>浏览选择</td>
+</tr>
+<tr>
+<td><code>--session</code></td>
+<td>指定文件或部分 UUID</td>
+</tr>
+<tr>
+<td><code>--fork</code></td>
+<td>派生新文件</td>
+</tr>
+<tr>
+<td><code>--session-dir</code></td>
+<td>自定义存储目录</td>
+</tr>
+<tr>
+<td><code>--no-session</code></td>
+<td>临时</td>
+</tr>
+<tr>
+<td><code>-n</code> / <code>--name</code></td>
+<td>显示名</td>
+</tr>
+</tbody></table>
+<h4 id="工具选项"><a href="#工具选项" class="headerlink" title="工具选项"></a>工具选项</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-t</code> / <code>--tools</code></td>
+<td>白名单（内置 + 扩展 + 自定义）</td>
+</tr>
+<tr>
+<td><code>-xt</code> / <code>--exclude-tools</code></td>
+<td>禁用指定工具</td>
+</tr>
+<tr>
+<td><code>-nbt</code> / <code>--no-builtin-tools</code></td>
+<td>禁用内置，保留扩展工具</td>
+</tr>
+<tr>
+<td><code>-nt</code> / <code>--no-tools</code></td>
+<td>禁用全部工具</td>
+</tr>
+</tbody></table>
+<p>内置：<code>read</code> <code>bash</code> <code>edit</code> <code>write</code> <code>grep</code> <code>find</code> <code>ls</code>。</p>
+<h4 id="资源选项"><a href="#资源选项" class="headerlink" title="资源选项"></a>资源选项</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-e</code> / <code>--extension</code></td>
+<td>加载扩展（可重复）</td>
+</tr>
+<tr>
+<td><code>--no-extensions</code></td>
+<td>关闭扩展发现</td>
+</tr>
+<tr>
+<td><code>--skill</code> / <code>--no-skills</code></td>
+<td>Skills</td>
+</tr>
+<tr>
+<td><code>--prompt-template</code> / <code>--no-prompt-templates</code></td>
+<td>模板</td>
+</tr>
+<tr>
+<td><code>--theme</code> / <code>--no-themes</code></td>
+<td>主题</td>
+</tr>
+<tr>
+<td><code>-nc</code> / <code>--no-context-files</code></td>
+<td>关闭 <code>AGENTS.md</code>/<code>CLAUDE.md</code></td>
+</tr>
+</tbody></table>
+<p>可组合精确加载，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi --no-extensions -e ./my-extension.ts</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--system-prompt</code></td>
+<td>替换默认系统提示（上下文与 Skills 仍追加）</td>
+</tr>
+<tr>
+<td><code>--append-system-prompt</code></td>
+<td>追加</td>
+</tr>
+<tr>
+<td><code>--tui-mode</code></td>
+<td><code>regular</code> 或实验性 <code>fullscreen</code></td>
+</tr>
+<tr>
+<td><code>--use-theme</code></td>
+<td>本次初始主题，不改永久设置</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td>强制详细启动信息</td>
+</tr>
+<tr>
+<td><code>-a</code> / <code>--approve</code></td>
+<td>本次信任项目本地文件</td>
+</tr>
+<tr>
+<td><code>-na</code> / <code>--no-approve</code></td>
+<td>本次忽略项目本地文件</td>
+</tr>
+<tr>
+<td><code>-h</code> / <code>-v</code></td>
+<td>帮助 / 版本</td>
+</tr>
+</tbody></table>
+<p><code>fullscreen</code>：转录在视口内滚动，编辑器/页脚固定；Kitty/Ghostty 支持内联图；iTerm2 在 fullscreen 下多为占位。<code>/settings</code> 可即时切换并设默认。</p>
+<h4 id="文件参数与示例"><a href="#文件参数与示例" class="headerlink" title="文件参数与示例"></a>文件参数与示例</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pi @prompt.md <span class="string">&quot;Answer this&quot;</span></span><br><span class="line">pi -p @screenshot.png <span class="string">&quot;What&#x27;s in this image?&quot;</span></span><br><span class="line">pi @code.ts @test.ts <span class="string">&quot;Review these files&quot;</span></span><br><span class="line"></span><br><span class="line">pi <span class="string">&quot;List all .ts files in src/&quot;</span></span><br><span class="line">pi -p <span class="string">&quot;Summarize this codebase&quot;</span></span><br><span class="line"><span class="built_in">cat</span> README.md | pi -p <span class="string">&quot;Summarize this text&quot;</span></span><br><span class="line">pi --name <span class="string">&quot;release audit&quot;</span> -p <span class="string">&quot;Audit this repository&quot;</span></span><br><span class="line">pi --provider openai --model gpt-4o <span class="string">&quot;Help me refactor&quot;</span></span><br><span class="line">pi --model openai/gpt-4o <span class="string">&quot;Help me refactor&quot;</span></span><br><span class="line">pi --model sonnet:high <span class="string">&quot;Solve this complex problem&quot;</span></span><br><span class="line">pi --models <span class="string">&quot;claude-*,gpt-4o&quot;</span></span><br><span class="line">pi --tools <span class="built_in">read</span>,grep,find,<span class="built_in">ls</span> -p <span class="string">&quot;Review the code&quot;</span></span><br><span class="line">pi --exclude-tools ask_question</span><br></pre></td></tr></table></figure>
+
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/usage">Using Pi</a></p>
+<hr>
+<p><a id="ch-providers"></a></p>
+<h2 id="三、提供商与认证"><a href="#三、提供商与认证" class="headerlink" title="三、提供商与认证"></a>三、提供商与认证</h2><p>Pi 支持 OAuth 订阅与 API Key。内置目录随包装载；配置过的提供商可刷新目录并缓存到 <code>~/.pi/agent/models-store.json</code> 供离线使用。</p>
+<h3 id="3-1-订阅（-login）"><a href="#3-1-订阅（-login）" class="headerlink" title="3.1 订阅（/login）"></a>3.1 订阅（<code>/login</code>）</h3><ul>
+<li>ChatGPT Plus/Pro（Codex）</li>
+<li>Claude Pro/Max（第三方 harness 走 <strong>extra usage</strong>，按 token 计费，不抵扣套餐额度）</li>
+<li>GitHub Copilot（github.com 或 Enterprise 域名；模型需在 VS Code Copilot 中启用）</li>
+<li>xAI（Grok/X 订阅；也可 API Key）</li>
+<li>OpenRouter（PKCE 铸造用户可控 API Key，消耗 OpenRouter credits；无头环境可贴回调 URL/授权码）</li>
+<li>Radius（动态 <code>pi-messages</code> 网关）</li>
+</ul>
+<p><code>/logout</code> 清除。凭据在 <code>auth.json</code>。</p>
+<h3 id="3-2-API-Key-环境变量（节选）"><a href="#3-2-API-Key-环境变量（节选）" class="headerlink" title="3.2 API Key 环境变量（节选）"></a>3.2 API Key 环境变量（节选）</h3><table>
+<thead>
+<tr>
+<th>提供商</th>
+<th>环境变量</th>
+<th>auth.json key</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Anthropic</td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td><code>anthropic</code></td>
+</tr>
+<tr>
+<td>OpenAI</td>
+<td><code>OPENAI_API_KEY</code></td>
+<td><code>openai</code></td>
+</tr>
+<tr>
+<td>Google Gemini</td>
+<td><code>GEMINI_API_KEY</code></td>
+<td><code>google</code></td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>DEEPSEEK_API_KEY</code></td>
+<td><code>deepseek</code></td>
+</tr>
+<tr>
+<td>Amazon Bedrock</td>
+<td><code>AWS_BEARER_TOKEN_BEDROCK</code> 等</td>
+<td><code>amazon-bedrock</code></td>
+</tr>
+<tr>
+<td>Azure OpenAI Responses</td>
+<td><code>AZURE_OPENAI_API_KEY</code></td>
+<td><code>azure-openai-responses</code></td>
+</tr>
+<tr>
+<td>Mistral / Groq / Cerebras / xAI</td>
+<td>对应 <code>*_API_KEY</code></td>
+<td>同名风格</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td><code>OPENROUTER_API_KEY</code></td>
+<td><code>openrouter</code></td>
+</tr>
+<tr>
+<td>Vercel AI Gateway</td>
+<td><code>AI_GATEWAY_API_KEY</code></td>
+<td><code>vercel-ai-gateway</code></td>
+</tr>
+<tr>
+<td>ZAI Global / China</td>
+<td><code>ZAI_API_KEY</code> / <code>ZAI_CODING_CN_API_KEY</code></td>
+<td><code>zai</code> / <code>zai-coding-cn</code></td>
+</tr>
+<tr>
+<td>Hugging Face</td>
+<td><code>HF_TOKEN</code></td>
+<td><code>huggingface</code></td>
+</tr>
+<tr>
+<td>Fireworks / Together / Baseten</td>
+<td>对应 Key</td>
+<td>对应 key</td>
+</tr>
+<tr>
+<td>Kimi For Coding</td>
+<td><code>KIMI_API_KEY</code></td>
+<td><code>kimi-coding</code></td>
+</tr>
+<tr>
+<td>MiniMax / CN</td>
+<td><code>MINIMAX_API_KEY</code> / <code>MINIMAX_CN_API_KEY</code></td>
+<td><code>minimax</code> / <code>minimax-cn</code></td>
+</tr>
+<tr>
+<td>Qwen Token Plan</td>
+<td><code>QWEN_TOKEN_PLAN_API_KEY</code>（CN：<code>_CN_</code>）</td>
+<td><code>qwen-token-plan*</code></td>
+</tr>
+<tr>
+<td>Xiaomi MiMo / Token Plan</td>
+<td><code>XIAOMI_*</code></td>
+<td><code>xiaomi*</code></td>
+</tr>
+<tr>
+<td>Cloudflare AI Gateway / Workers AI</td>
+<td><code>CLOUDFLARE_API_KEY</code> + Account/Gateway ID</td>
+<td>对应 key</td>
+</tr>
+<tr>
+<td>NVIDIA NIM</td>
+<td><code>NVIDIA_API_KEY</code></td>
+<td><code>nvidia</code></td>
+</tr>
+<tr>
+<td>OpenCode Zen/Go</td>
+<td><code>OPENCODE_API_KEY</code></td>
+<td><code>opencode</code> / <code>opencode-go</code></td>
+</tr>
+</tbody></table>
+<p>完整表见官方 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/providers">Providers</a>。</p>
+<h3 id="3-3-auth-json"><a href="#3-3-auth-json" class="headerlink" title="3.3 auth.json"></a>3.3 auth.json</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;anthropic&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;api_key&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sk-ant-...&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;openai&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;api_key&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sk-...&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>权限 <code>0600</code>。auth.json <strong>优先于</strong>环境变量。</p>
+<p><code>key</code> 支持：</p>
+<ul>
+<li>字面量：<code>sk-...</code></li>
+<li>环境插值：<code>&quot;$MY_KEY&quot;</code> / <code>&quot;$&#123;PREFIX&#125;_$&#123;SUFFIX&#125;&quot;</code></li>
+<li>命令：<code>&quot;!op read &#39;op://...&#39;&quot;</code>（进程生命周期内缓存 stdout）</li>
+<li>转义：<code>&quot;$$&quot;</code> → <code>$</code>，<code>&quot;$!&quot;</code> → <code>!</code></li>
+</ul>
+<p>还可在凭据里挂 <code>env</code>，用于 Cloudflare Account ID、Azure、Vertex、Bedrock、<code>PI_CACHE_RETENTION</code>、代理等，且优先于进程环境。</p>
+<h3 id="3-4-云厂商要点"><a href="#3-4-云厂商要点" class="headerlink" title="3.4 云厂商要点"></a>3.4 云厂商要点</h3><p><strong>Azure OpenAI</strong>：<code>AZURE_OPENAI_API_KEY</code> + <code>AZURE_OPENAI_BASE_URL</code> 或 <code>AZURE_OPENAI_RESOURCE_NAME</code>；可选 API version 与部署名映射。</p>
+<p><strong>Bedrock</strong>：AWS Profile / IAM / Bearer Token；支持 ECS 任务角色与 IRSA；Claude 可自动 prompt cache；应用推理配置文件 ARN 可设 <code>AWS_BEDROCK_FORCE_CACHE=1</code>。</p>
+<p><strong>Vertex</strong>：ADC（<code>gcloud auth application-default login</code>）+ <code>GOOGLE_CLOUD_PROJECT</code> / <code>GOOGLE_CLOUD_LOCATION</code>。</p>
+<p><strong>Cloudflare AI Gateway / Workers AI</strong>：需 API Key + Account（Gateway 还要 Gateway ID）；多种上游鉴权模式（统一计费、存储 BYOK、内联 BYOK 等）。</p>
+<h3 id="3-5-llama-cpp-自定义"><a href="#3-5-llama-cpp-自定义" class="headerlink" title="3.5 llama.cpp / 自定义"></a>3.5 llama.cpp / 自定义</h3><ul>
+<li>llama.cpp：<code>/login llama.cpp</code>，<code>/llama</code> 管理，<code>/model</code> 选择</li>
+<li><code>models.json</code>：接 Ollama、LM Studio、vLLM 等兼容 API</li>
+<li>Extension：自定义协议或 OAuth</li>
+</ul>
+<h3 id="3-6-凭据解析顺序"><a href="#3-6-凭据解析顺序" class="headerlink" title="3.6 凭据解析顺序"></a>3.6 凭据解析顺序</h3><ol>
+<li>CLI <code>--api-key</code></li>
+<li><code>auth.json</code></li>
+<li>环境变量</li>
+<li><code>models.json</code> 自定义提供商密钥</li>
+</ol>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/providers">Providers</a></p>
+<hr>
+<p><a id="ch-sessions"></a></p>
+<h2 id="四、会话、树与压缩"><a href="#四、会话、树与压缩" class="headerlink" title="四、会话、树与压缩"></a>四、会话、树与压缩</h2><h3 id="4-1-存储"><a href="#4-1-存储" class="headerlink" title="4.1 存储"></a>4.1 存储</h3><p>会话自动保存为 JSONL 树，目录 <code>~/.pi/agent/sessions/</code>，按工作目录组织。<code>/session</code> 可查看文件路径、ID、消息数、Token、费用。格式细节见官方 Session Format。</p>
+<h3 id="4-2-恢复与删除"><a href="#4-2-恢复与删除" class="headerlink" title="4.2 恢复与删除"></a>4.2 恢复与删除</h3><p><code>/resume</code> 与 <code>pi -r</code> 打开挑选器：</p>
+<ul>
+<li>打字搜索</li>
+<li><code>Ctrl+P</code> 切换路径显示</li>
+<li><code>Ctrl+S</code> 切换排序</li>
+<li><code>Ctrl+N</code> 仅命名会话</li>
+<li><code>Ctrl+R</code> 重命名</li>
+<li><code>Ctrl+D</code> 删除（优先用 <code>trash</code> CLI）</li>
+</ul>
+<h3 id="4-3-命名"><a href="#4-3-命名" class="headerlink" title="4.3 命名"></a>4.3 命名</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/name Refactor auth module</span><br></pre></td></tr></table></figure>
+
+<p>或：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pi --name <span class="string">&quot;Refactor auth module&quot;</span></span><br><span class="line">pi --name <span class="string">&quot;CI audit&quot;</span> -p <span class="string">&quot;Review this build failure&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-tree-分支导航"><a href="#4-4-tree-分支导航" class="headerlink" title="4.4 /tree 分支导航"></a>4.4 <code>/tree</code> 分支导航</h3><p>会话是树：每条有 <code>id</code> / <code>parentId</code>，当前位置是活跃叶子。<code>/tree</code> 可跳到任意历史点继续，<strong>不新建文件</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>↑/↓</td>
+<td>导航</td>
+</tr>
+<tr>
+<td>←/→</td>
+<td>翻页</td>
+</tr>
+<tr>
+<td>Ctrl/Alt + ←/→</td>
+<td>折叠/展开或在分支段间跳</td>
+</tr>
+<tr>
+<td>Shift+L</td>
+<td>给选中节点打标签</td>
+</tr>
+<tr>
+<td>Shift+T</td>
+<td>切换标签时间戳</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>选中</td>
+</tr>
+<tr>
+<td>Escape</td>
+<td>取消</td>
+</tr>
+<tr>
+<td>Ctrl+O</td>
+<td>循环过滤模式</td>
+</tr>
+</tbody></table>
+<p>过滤：default / no-tools / user-only / labeled-only / all；默认可用 <code>treeFilterMode</code> 配置。</p>
+<p>选中<strong>用户消息</strong>：叶子回到其父，消息进编辑器，可改后重发成新分支。选中助手/工具等：叶子移到该点，编辑器空，可继续。选根用户消息：重置为空对话并把原 prompt 放进编辑器。</p>
+<h3 id="4-5-tree-vs-fork-vs-clone"><a href="#4-5-tree-vs-fork-vs-clone" class="headerlink" title="4.5 /tree vs /fork vs /clone"></a>4.5 <code>/tree</code> vs <code>/fork</code> vs <code>/clone</code></h3><table>
+<thead>
+<tr>
+<th></th>
+<th><code>/tree</code></th>
+<th><code>/fork</code></th>
+<th><code>/clone</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输出</td>
+<td>同文件</td>
+<td>新文件</td>
+<td>新文件</td>
+</tr>
+<tr>
+<td>视图</td>
+<td>整棵树</td>
+<td>用户消息选择器</td>
+<td>当前活跃分支</td>
+</tr>
+<tr>
+<td>用途</td>
+<td>就地试替代路径</td>
+<td>从早前 prompt 另开</td>
+<td>复制当前工作再继续</td>
+</tr>
+<tr>
+<td>摘要</td>
+<td>可选分支摘要</td>
+<td>无</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h3 id="4-6-分支摘要"><a href="#4-6-分支摘要" class="headerlink" title="4.6 分支摘要"></a>4.6 分支摘要</h3><p><code>/tree</code> 离开某分支时，可对放弃分支做摘要并挂到新位置。选项：不摘要 / 默认提示摘要 / 自定义焦点说明。<code>branchSummary.skipPrompt</code> 可跳过询问。</p>
+<h3 id="4-7-Compaction"><a href="#4-7-Compaction" class="headerlink" title="4.7 Compaction"></a>4.7 Compaction</h3><p>当 <code>contextTokens &gt; contextWindow - reserveTokens</code> 时自动压缩；也可 <code>/compact [说明]</code>。</p>
+<p>流程概要：</p>
+<ol>
+<li>从新到旧累计，保留约 <code>keepRecentTokens</code>（默认 20000）</li>
+<li>对更早消息生成结构化摘要</li>
+<li>写入 <code>CompactionEntry</code>，下次请求用「摘要 + 保留段」重建上下文</li>
+</ol>
+<p>默认设置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;compaction&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;reserveTokens&quot;</span><span class="punctuation">:</span> <span class="number">16384</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;keepRecentTokens&quot;</span><span class="punctuation">:</span> <span class="number">20000</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>摘要格式大致包含：Goal、Constraints、Progress、Key Decisions、Next Steps、Critical Context，以及 <code>&lt;read-files&gt;</code> / <code>&lt;modified-files&gt;</code>。扩展可通过 <code>session_before_compact</code> / <code>session_before_tree</code> 自定义或取消。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/sessions">Sessions</a> · <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/compaction">Compaction</a></p>
+<hr>
+<p><a id="ch-settings"></a></p>
+<h2 id="五、设置"><a href="#五、设置" class="headerlink" title="五、设置"></a>五、设置</h2><table>
+<thead>
+<tr>
+<th>位置</th>
+<th>作用域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>~/.pi/agent/settings.json</code></td>
+<td>全局</td>
+</tr>
+<tr>
+<td><code>.pi/settings.json</code></td>
+<td>项目（覆盖全局；嵌套对象合并）</td>
+</tr>
+</tbody></table>
+<p>可用 <code>/settings</code> 改常用项。</p>
+<h3 id="5-1-模型与-Thinking"><a href="#5-1-模型与-Thinking" class="headerlink" title="5.1 模型与 Thinking"></a>5.1 模型与 Thinking</h3><table>
+<thead>
+<tr>
+<th>键</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>defaultProvider</code></td>
+<td>—</td>
+<td>默认提供商</td>
+</tr>
+<tr>
+<td><code>defaultModel</code></td>
+<td>—</td>
+<td>默认模型 ID</td>
+</tr>
+<tr>
+<td><code>defaultThinkingLevel</code></td>
+<td>—</td>
+<td><code>off</code>…<code>max</code></td>
+</tr>
+<tr>
+<td><code>hideThinkingBlock</code></td>
+<td><code>false</code></td>
+<td>隐藏 thinking 块</td>
+</tr>
+<tr>
+<td><code>showCacheMissNotices</code></td>
+<td><code>false</code></td>
+<td>显著 cache miss 通知</td>
+</tr>
+<tr>
+<td><code>thinkingBudgets</code></td>
+<td>—</td>
+<td>各级 token 预算</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-UI-信任-TUI"><a href="#5-2-UI-信任-TUI" class="headerlink" title="5.2 UI / 信任 / TUI"></a>5.2 UI / 信任 / TUI</h3><table>
+<thead>
+<tr>
+<th>键</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>theme</code></td>
+<td><code>&quot;dark&quot;</code></td>
+<td>主题名</td>
+</tr>
+<tr>
+<td><code>externalEditor</code></td>
+<td><code>$VISUAL</code>/<code>$EDITOR</code>…</td>
+<td><code>Ctrl+G</code> 编辑器；VS Code 建议 <code>&quot;code --wait&quot;</code></td>
+</tr>
+<tr>
+<td><code>quietStartup</code></td>
+<td><code>false</code></td>
+<td>隐藏启动头</td>
+</tr>
+<tr>
+<td><code>defaultProjectTrust</code></td>
+<td><code>&quot;ask&quot;</code></td>
+<td>仅全局：<code>ask</code>/<code>always</code>/<code>never</code></td>
+</tr>
+<tr>
+<td><code>doubleEscapeAction</code></td>
+<td><code>&quot;tree&quot;</code></td>
+<td>双 Escape：<code>tree</code>/<code>fork</code>/<code>none</code></td>
+</tr>
+<tr>
+<td><code>treeFilterMode</code></td>
+<td><code>&quot;default&quot;</code></td>
+<td><code>/tree</code> 默认过滤</td>
+</tr>
+<tr>
+<td><code>tuiMode</code></td>
+<td><code>&quot;regular&quot;</code></td>
+<td>或实验性 <code>fullscreen</code></td>
+</tr>
+<tr>
+<td><code>fullscreenExitOutput</code></td>
+<td><code>&quot;transcript&quot;</code></td>
+<td>退出 fullscreen 时打印转录或仅 resume 提示</td>
+</tr>
+<tr>
+<td><code>fullscreenScrollbar</code></td>
+<td><code>&quot;auto&quot;</code></td>
+<td>滚动条策略</td>
+</tr>
+<tr>
+<td><code>enableInstallTelemetry</code></td>
+<td><code>true</code></td>
+<td>匿名安装/更新 ping（不等于分析）</td>
+</tr>
+<tr>
+<td><code>enableAnalytics</code></td>
+<td><code>false</code></td>
+<td>可选分析（实验性首次设置）</td>
+</tr>
+</tbody></table>
+<p>版本检查：<code>PI_SKIP_VERSION_CHECK=1</code>。完全离线启动网络：<code>--offline</code> 或 <code>PI_OFFLINE=1</code>。</p>
+<h3 id="5-3-网络-压缩-重试-消息投递"><a href="#5-3-网络-压缩-重试-消息投递" class="headerlink" title="5.3 网络 / 压缩 / 重试 / 消息投递"></a>5.3 网络 / 压缩 / 重试 / 消息投递</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;httpProxy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://127.0.0.1:7890&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;compaction&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;reserveTokens&quot;</span><span class="punctuation">:</span> <span class="number">16384</span><span class="punctuation">,</span> <span class="attr">&quot;keepRecentTokens&quot;</span><span class="punctuation">:</span> <span class="number">20000</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retry&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;maxRetries&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;baseDelayMs&quot;</span><span class="punctuation">:</span> <span class="number">2000</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;timeoutMs&quot;</span><span class="punctuation">:</span> <span class="number">3600000</span><span class="punctuation">,</span> <span class="attr">&quot;maxRetries&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> <span class="attr">&quot;maxRetryDelayMs&quot;</span><span class="punctuation">:</span> <span class="number">60000</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;steeringMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;one-at-a-time&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;followUpMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;one-at-a-time&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;transport&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>建议保持 <code>retry.provider.maxRetries = 0</code>，避免提供商层重试抢在 Pi 之前处理额度错误。</p>
+<h3 id="5-4-Shell-工具-会话-资源"><a href="#5-4-Shell-工具-会话-资源" class="headerlink" title="5.4 Shell / 工具 / 会话 / 资源"></a>5.4 Shell / 工具 / 会话 / 资源</h3><table>
+<thead>
+<tr>
+<th>键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>shellPath</code></td>
+<td>自定义 shell（如 Cygwin）</td>
+</tr>
+<tr>
+<td><code>shellCommandPrefix</code></td>
+<td>每条 bash 前缀</td>
+</tr>
+<tr>
+<td><code>npmCommand</code></td>
+<td>包安装用的 argv，如 <code>[&quot;mise&quot;,&quot;exec&quot;,&quot;node@20&quot;,&quot;--&quot;,&quot;npm&quot;]</code></td>
+</tr>
+<tr>
+<td><code>defaultTools</code></td>
+<td>启动启用的内置工具列表；<code>[]</code> = 无内置但仍保留扩展工具</td>
+</tr>
+<tr>
+<td><code>sessionDir</code></td>
+<td>会话目录；优先级：<code>--session-dir</code> &gt; <code>PI_CODING_AGENT_SESSION_DIR</code> &gt; 设置</td>
+</tr>
+<tr>
+<td><code>enabledModels</code></td>
+<td><code>Ctrl+P</code> 模型模式列表</td>
+</tr>
+<tr>
+<td><code>packages</code> / <code>extensions</code> / <code>skills</code> / <code>prompts</code> / <code>themes</code></td>
+<td>资源路径或包</td>
+</tr>
+<tr>
+<td><code>enableSkillCommands</code></td>
+<td>Skills 注册为 <code>/skill:name</code></td>
+</tr>
+</tbody></table>
+<p>路径：全局设置相对 <code>~/.pi/agent</code>，项目设置相对 <code>.pi</code>；支持绝对路径与 <code>~</code>。数组支持 glob、<code>!排除</code>、<code>+强制包含</code>、<code>-强制排除</code>。</p>
+<p>完整示例见 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/settings">Settings</a>。</p>
+<hr>
+<p><a id="ch-keys"></a></p>
+<h2 id="六、快捷键"><a href="#六、快捷键" class="headerlink" title="六、快捷键"></a>六、快捷键</h2><p>配置文件：<code>~/.pi/agent/keybindings.json</code>。改完 <code>/reload</code>。旧的非命名空间 id 会自动迁移。</p>
+<p>键格式：<code>modifier+key</code>，修饰键 <code>ctrl</code>/<code>shift</code>/<code>alt</code>/<code>super</code> 可组合。</p>
+<h3 id="6-1-常用应用快捷键"><a href="#6-1-常用应用快捷键" class="headerlink" title="6.1 常用应用快捷键"></a>6.1 常用应用快捷键</h3><table>
+<thead>
+<tr>
+<th>id</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>app.interrupt</code></td>
+<td><code>escape</code></td>
+<td>取消/中止</td>
+</tr>
+<tr>
+<td><code>app.clear</code></td>
+<td><code>ctrl+c</code></td>
+<td>清编辑器 / 再按退出</td>
+</tr>
+<tr>
+<td><code>app.exit</code></td>
+<td><code>ctrl+d</code></td>
+<td>空编辑器退出</td>
+</tr>
+<tr>
+<td><code>app.suspend</code></td>
+<td><code>ctrl+z</code>（Windows 无默认）</td>
+<td>挂起</td>
+</tr>
+<tr>
+<td><code>app.editor.external</code></td>
+<td><code>ctrl+g</code></td>
+<td>外部编辑器</td>
+</tr>
+<tr>
+<td><code>app.clipboard.pasteImage</code></td>
+<td><code>ctrl+v</code>（Win：<code>alt+v</code>）</td>
+<td>粘贴</td>
+</tr>
+<tr>
+<td><code>app.model.select</code></td>
+<td><code>ctrl+l</code></td>
+<td>模型选择器</td>
+</tr>
+<tr>
+<td><code>app.model.cycleForward</code></td>
+<td><code>ctrl+p</code></td>
+<td>下一模型</td>
+</tr>
+<tr>
+<td><code>app.model.cycleBackward</code></td>
+<td><code>shift+ctrl+p</code></td>
+<td>上一模型</td>
+</tr>
+<tr>
+<td><code>app.thinking.cycle</code></td>
+<td><code>shift+tab</code></td>
+<td>循环 thinking</td>
+</tr>
+<tr>
+<td><code>app.thinking.toggle</code></td>
+<td><code>ctrl+t</code></td>
+<td>折叠/展开 thinking</td>
+</tr>
+<tr>
+<td><code>app.tools.expand</code></td>
+<td><code>ctrl+o</code></td>
+<td>折叠/展开工具输出</td>
+</tr>
+<tr>
+<td><code>app.message.copy</code></td>
+<td><code>ctrl+x</code></td>
+<td>复制助手消息</td>
+</tr>
+<tr>
+<td><code>app.message.followUp</code></td>
+<td><code>alt+enter</code></td>
+<td>排队 follow-up</td>
+</tr>
+<tr>
+<td><code>app.message.dequeue</code></td>
+<td><code>alt+up</code></td>
+<td>取回排队消息</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-自定义示例（Emacs-风格历史）"><a href="#6-2-自定义示例（Emacs-风格历史）" class="headerlink" title="6.2 自定义示例（Emacs 风格历史）"></a>6.2 自定义示例（Emacs 风格历史）</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.historyPrevious&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl+p&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.historyNext&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl+n&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.deleteWordBackward&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;ctrl+w&quot;</span><span class="punctuation">,</span> <span class="string">&quot;alt+backspace&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Fullscreen 下未修饰的 <code>pageUp</code>/<code>home</code> 等默认控制转录区，<code>ctrl</code> 变体控制编辑器。完整 id 见 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/keybindings">Keybindings</a>。</p>
+<hr>
+<p><a id="ch-custom"></a></p>
+<h2 id="七、定制：扩展-Skills-模板-主题-包"><a href="#七、定制：扩展-Skills-模板-主题-包" class="headerlink" title="七、定制：扩展 / Skills / 模板 / 主题 / 包"></a>七、定制：扩展 / Skills / 模板 / 主题 / 包</h2><h3 id="7-1-Extensions"><a href="#7-1-Extensions" class="headerlink" title="7.1 Extensions"></a>7.1 Extensions</h3><p>扩展是 TypeScript 模块：可订阅生命周期、注册工具/命令/快捷键/Flag、拦截工具调用、自定义压缩与 UI。</p>
+<p><strong>安全</strong>：扩展以你的完整系统权限运行。只装可信来源。</p>
+<p>放置位置（便于 <code>/reload</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>作用域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>~/.pi/agent/extensions/*.ts</code> 或 <code>*/index.ts</code></td>
+<td>全局</td>
+</tr>
+<tr>
+<td><code>.pi/extensions/*.ts</code> 或 <code>*/index.ts</code></td>
+<td>项目（需信任）</td>
+</tr>
+</tbody></table>
+<p>也可用 settings 的 <code>extensions</code> / <code>packages</code>，或临时 <code>pi -e ./path.ts</code>。</p>
+<p>可用导入：<code>@earendil-works/pi-coding-agent</code>、<code>typebox</code>、<code>@earendil-works/pi-ai</code>、<code>@earendil-works/pi-tui</code>，以及 <code>node:*</code> 与本地 <code>node_modules</code>。</p>
+<p><strong>最小结构</strong>：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">ExtensionAPI</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Type</span> &#125; <span class="keyword">from</span> <span class="string">&quot;typebox&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;Extension loaded!&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;tool_call&quot;</span>, <span class="title function_">async</span> (event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">toolName</span> === <span class="string">&quot;bash&quot;</span> &amp;&amp; event.<span class="property">input</span>.<span class="property">command</span>?.<span class="title function_">includes</span>(<span class="string">&quot;rm -rf&quot;</span>)) &#123;</span><br><span class="line">      <span class="keyword">const</span> ok = <span class="keyword">await</span> ctx.<span class="property">ui</span>.<span class="title function_">confirm</span>(<span class="string">&quot;Dangerous!&quot;</span>, <span class="string">&quot;Allow rm -rf?&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (!ok) <span class="keyword">return</span> &#123; <span class="attr">block</span>: <span class="literal">true</span>, <span class="attr">reason</span>: <span class="string">&quot;Blocked by user&quot;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;greet&quot;</span>,</span><br><span class="line">    <span class="attr">label</span>: <span class="string">&quot;Greet&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;Greet someone by name&quot;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Name to greet&quot;</span> &#125;),</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">_id, params</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">`Hello, <span class="subst">$&#123;params.name&#125;</span>!`</span> &#125;],</span><br><span class="line">        <span class="attr">details</span>: &#123;&#125;,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerCommand</span>(<span class="string">&quot;hello&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;Say hello&quot;</span>,</span><br><span class="line">    <span class="attr">handler</span>: <span class="title function_">async</span> (args, ctx) =&gt; &#123;</span><br><span class="line">      ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">`Hello <span class="subst">$&#123;args || <span class="string">&quot;world&quot;</span>&#125;</span>!`</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由 jiti 加载，无需预编译。工厂可为 <code>async</code>（启动前 await）。<strong>不要</strong>在工厂里开后台进程/socket/watcher；放到 <code>session_start</code>，并在 <code>session_shutdown</code> 里幂等清理。</p>
+<p><strong>生命周期（摘要）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pi starts</span><br><span class="line">  → project_trust（仅用户/全局/CLI 扩展）</span><br><span class="line">  → session_start</span><br><span class="line">  → resources_discover</span><br><span class="line">用户发消息</span><br><span class="line">  → input → before_agent_start → agent_start</span><br><span class="line">  → 多轮 turn：context → provider hooks → tool_call(可拦截) → tool_result → …</span><br><span class="line">  → agent_end → agent_settled</span><br><span class="line">/new|/resume|/fork|/clone 会 session_shutdown 再 session_start</span><br><span class="line">退出 → session_shutdown</span><br></pre></td></tr></table></figure>
+
+<p><code>tool_call</code>：可原地改 <code>event.input</code>；返回 <code>&#123; block: true, reason?, terminate? &#125;</code> 可拦截。内置工具可用 <code>isToolCallEventType(&quot;bash&quot;, event)</code> 做类型收窄。</p>
+<p><code>ctx</code> 常用：<code>ui</code>、<code>mode</code>、<code>hasUI</code>、<code>cwd</code>、<code>sessionManager</code>、<code>model</code>、<code>signal</code>、<code>abort()</code>、<code>compact()</code> 等。命令 handler 另有 <code>newSession</code> / <code>fork</code> / <code>navigateTree</code> / <code>switchSession</code>（勿在普通事件里调，易死锁）。</p>
+<p>手把手教程见：<a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AA-Pi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">从零写一个 Pi Extension</a>。官方详版：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/extensions">Extensions</a>。</p>
+<h3 id="7-2-Skills"><a href="#7-2-Skills" class="headerlink" title="7.2 Skills"></a>7.2 Skills</h3><p>符合 Agent Skills 标准的按需能力包：目录 + <code>SKILL.md</code>。启动只注入名称与描述；任务匹配时再用 <code>read</code> 加载全文（渐进披露）。也可用 <code>/skill:name</code>。</p>
+<p>加载位置：</p>
+<ul>
+<li>全局：<code>~/.pi/agent/skills/</code>、<code>~/.agents/skills/</code></li>
+<li>项目（需信任）：<code>.pi/skills/</code>、cwd 与祖先的 <code>.agents/skills/</code>（到 git 根）</li>
+<li>包与 settings / <code>--skill</code></li>
+</ul>
+<p>可在 settings 挂 Claude Code / Codex 技能目录：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;~/.claude/skills&quot;</span><span class="punctuation">,</span> <span class="string">&quot;~/.codex/skills&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Frontmatter 必填 <code>name</code>、<code>description</code>。无 description 的技能不会加载。<code>disable-model-invocation: true</code> 时模型侧隐藏，只能 <code>/skill:name</code> 触发。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/skills">Skills</a></p>
+<h3 id="7-3-Prompt-Templates"><a href="#7-3-Prompt-Templates" class="headerlink" title="7.3 Prompt Templates"></a>7.3 Prompt Templates</h3><p><code>~/.pi/agent/prompts/*.md</code> 或 <code>.pi/prompts/*.md</code>。文件名即命令：<code>review.md</code> → <code>/review</code>。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">description: Review staged git changes</span><br><span class="line"><span class="section">argument-hint: &quot;[focus]&quot;</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line">Review the staged changes (<span class="code">`git diff --cached`</span>). Focus on:</span><br><span class="line"><span class="bullet">-</span> Bugs and logic errors</span><br><span class="line"><span class="bullet">-</span> Security issues</span><br><span class="line">$@</span><br></pre></td></tr></table></figure>
+
+<p>参数：<code>$1</code> <code>$2</code>、<code>$@</code>/<code>$ARGUMENTS</code>、<code>$&#123;1:-default&#125;</code>、<code>$&#123;@:N&#125;</code>、<code>$&#123;@:N:L&#125;</code>。<code>prompts/</code> 目录<strong>不递归</strong>；子目录需在 settings 或包清单中显式声明。</p>
+<h3 id="7-4-Themes"><a href="#7-4-Themes" class="headerlink" title="7.4 Themes"></a>7.4 Themes</h3><p>JSON 定义 TUI 颜色。内置 <code>dark</code>/<code>light</code>；自定义放 <code>~/.pi/agent/themes/*.json</code>。<code>/settings</code> 或 <code>&quot;theme&quot;: &quot;my-theme&quot;</code> 选择。<code>--use-theme light</code> 或 <code>light/dark</code> 可设本次初始主题。</p>
+<p>需定义约 51 个必需 color token（可用 <code>vars</code> 别名）。颜色支持 hex、256 色索引、变量名、<code>&quot;&quot;</code>（终端默认）。正在使用的自定义主题文件保存后会热重载。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/themes">Themes</a></p>
+<h3 id="7-5-Pi-Packages"><a href="#7-5-Pi-Packages" class="headerlink" title="7.5 Pi Packages"></a>7.5 Pi Packages</h3><p>把扩展 / Skills / 模板 / 主题打成包，经 npm 或 git 分享。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pi install npm:@foo/bar@1.0.0</span><br><span class="line">pi install git:github.com/user/repo@v1</span><br><span class="line">pi install https://github.com/user/repo</span><br><span class="line">pi install ./relative/path</span><br><span class="line"></span><br><span class="line">pi list</span><br><span class="line">pi remove npm:@foo/bar</span><br><span class="line">pi update --all</span><br><span class="line">pi config</span><br></pre></td></tr></table></figure>
+
+<p><code>-l</code> 写入项目 settings，团队共享；项目受信任后启动会自动安装缺失包。临时试用：<code>pi -e npm:@foo/bar</code>。</p>
+<p><code>package.json</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my-package&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;keywords&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;pi-package&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pi&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extensions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./extensions&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./skills&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;prompts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./prompts&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;themes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./themes&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>无 <code>pi</code> 清单时按约定目录自动发现：<code>extensions/</code>、<code>skills/</code>、<code>prompts/</code>、<code>themes/</code>。</p>
+<p><strong>安全</strong>：包与扩展拥有完整本机权限；第三方务必审源码。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/packages">Pi Packages</a></p>
+<hr>
+<p><a id="ch-security"></a></p>
+<h2 id="八、安全与容器化"><a href="#八、安全与容器化" class="headerlink" title="八、安全与容器化"></a>八、安全与容器化</h2><h3 id="8-1-项目信任-≠-沙箱"><a href="#8-1-项目信任-≠-沙箱" class="headerlink" title="8.1 项目信任 ≠ 沙箱"></a>8.1 项目信任 ≠ 沙箱</h3><p>项目信任只控制是否加载项目本地设置/资源/扩展/包，<strong>不限制</strong>模型之后让工具做什么。</p>
+<p>需要信任的资源包括：<code>.pi/settings.json</code>、<code>.pi</code> 下 extensions/skills/prompts/themes、<code>.pi/SYSTEM.md</code> / <code>APPEND_SYSTEM.md</code>、项目 <code>.agents/skills</code>。空的 <code>.pi</code> 目录不算。</p>
+<p><code>AGENTS.md</code> / <code>CLAUDE.md</code> <strong>不受</strong>信任开关影响（除非禁用 context files）。</p>
+<h3 id="8-2-无内置沙箱"><a href="#8-2-无内置沙箱" class="headerlink" title="8.2 无内置沙箱"></a>8.2 无内置沙箱</h3><p>内置工具与扩展以启动用户权限读写文件、跑 shell。这是刻意设计：Pi 要对接本机工具链。半吊子进程内沙箱容易造成「假安全感」。真正隔离应来自 OS / 容器 / 虚拟化。</p>
+<p>Prompt injection（来自仓库文件、注释、文档、构建产物）是本地 Agent 的预期风险，Pi 无法可靠杜绝。</p>
+<h3 id="8-3-容器化模式"><a href="#8-3-容器化模式" class="headerlink" title="8.3 容器化模式"></a>8.3 容器化模式</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>隔离什么</th>
+<th>适合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gondolin 扩展</td>
+<td>内置工具与 <code>!</code> 命令进微 VM</td>
+<td>本机跑 Pi，工具进微 VM；鉴权留宿主</td>
+</tr>
+<tr>
+<td>Plain Docker</td>
+<td>整个 <code>pi</code> 进程</td>
+<td>最简单本地容器边界</td>
+</tr>
+<tr>
+<td>OpenShell</td>
+<td>整个 <code>pi</code> + 策略沙箱</td>
+<td>本地/远程托管沙箱，可控网络与推理</td>
+</tr>
+</tbody></table>
+<p>扩展跑在 <code>pi</code> 进程所在处：宿主 Pi + 工具路由扩展时，<strong>其他自定义扩展工具仍在宿主</strong>，除非它们也委托。</p>
+<p><strong>Docker 示例</strong>：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">24</span>-bookworm-slim</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update \</span></span><br><span class="line"><span class="language-bash">  &amp;&amp; apt-get install -y --no-install-recommends bash ca-certificates git ripgrep \</span></span><br><span class="line"><span class="language-bash">  &amp;&amp; <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /workspace</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;pi&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker build -t pi-sandbox -f Dockerfile.pi .</span><br><span class="line">docker run --<span class="built_in">rm</span> -it \</span><br><span class="line">  -e ANTHROPIC_API_KEY \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$PWD</span>:/workspace&quot;</span> \</span><br><span class="line">  -v pi-agent-home:/root/.pi/agent \</span><br><span class="line">  pi-sandbox</span><br></pre></td></tr></table></figure>
+
+<p>注意：把 <code>$PWD</code> 挂到 <code>/workspace</code> 时，容器内写入会改宿主文件。用命名卷存 <code>/root/.pi/agent</code> 可避免暴露宿主凭据；若挂载宿主 <code>~/.pi/agent</code> 则会话与 Key 会进容器。</p>
+<p><strong>Gondolin</strong>：复制官方示例扩展，<code>npm install</code>，<code>pi -e ~/.pi/agent/extensions/gondolin</code>；cwd 挂到 VM <code>/workspace</code>，覆盖内置工具。需 Node ≥ 23.6.0 与 QEMU。</p>
+<p><strong>OpenShell</strong>：先注册 gateway，再 <code>openshell sandbox create --name pi-sandbox --from pi -- pi</code>。远程 gateway 时通常无 bind-mount，需 upload/download 或沙箱内 clone。可把推理路由到 <code>https://inference.local</code>，由网关注入上游密钥。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/security">Security</a> · <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/containerization">Containerization</a></p>
+<hr>
+<p><a id="ch-sdk"></a></p>
+<h2 id="九、程序化用法"><a href="#九、程序化用法" class="headerlink" title="九、程序化用法"></a>九、程序化用法</h2><h3 id="9-1-SDK-速览"><a href="#9-1-SDK-速览" class="headerlink" title="9.1 SDK 速览"></a>9.1 SDK 速览</h3><p>包内已含 SDK，无需另装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @earendil-works/pi-coding-agent</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createAgentSession, <span class="title class_">ModelRuntime</span>, <span class="title class_">SessionManager</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> modelRuntime = <span class="keyword">await</span> <span class="title class_">ModelRuntime</span>.<span class="title function_">create</span>();</span><br><span class="line"><span class="keyword">const</span> &#123; session &#125; = <span class="keyword">await</span> <span class="title function_">createAgentSession</span>(&#123;</span><br><span class="line">  <span class="attr">sessionManager</span>: <span class="title class_">SessionManager</span>.<span class="title function_">inMemory</span>(),</span><br><span class="line">  modelRuntime,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">session.<span class="title function_">subscribe</span>(<span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.<span class="property">type</span> === <span class="string">&quot;message_update&quot;</span> &amp;&amp; event.<span class="property">assistantMessageEvent</span>.<span class="property">type</span> === <span class="string">&quot;text_delta&quot;</span>) &#123;</span><br><span class="line">    process.<span class="property">stdout</span>.<span class="title function_">write</span>(event.<span class="property">assistantMessageEvent</span>.<span class="property">delta</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> session.<span class="title function_">prompt</span>(<span class="string">&quot;What files are in the current directory?&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>用途：自定义 UI、嵌入现有应用、自动化流水线、程序化测 Agent、spawn 子 Agent 等。默认用 <code>DefaultResourceLoader</code> 发现扩展/Skills/模板/主题/上下文。更多见 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/sdk">SDK</a> 与 <code>examples/sdk/</code>。</p>
+<h3 id="9-2-RPC-JSON-事件流"><a href="#9-2-RPC-JSON-事件流" class="headerlink" title="9.2 RPC / JSON 事件流"></a>9.2 RPC / JSON 事件流</h3><ul>
+<li><code>--mode rpc</code>：stdin/stdout JSONL 集成</li>
+<li><code>--mode json</code>：打印结构化事件</li>
+<li><code>-p</code>：一次性打印文本回复</li>
+</ul>
+<p>适合 CI、编辑器插件、编排器对接。细节见官方 RPC Mode / JSON Event Stream Mode 页。</p>
+<hr>
+<p><a id="ch-design"></a></p>
+<h2 id="十、设计原则与约定"><a href="#十、设计原则与约定" class="headerlink" title="十、设计原则与约定"></a>十、设计原则与约定</h2><h3 id="10-1-刻意不做的事"><a href="#10-1-刻意不做的事" class="headerlink" title="10.1 刻意不做的事"></a>10.1 刻意不做的事</h3><p>官方写明：Pi <strong>故意不</strong>内置 MCP、子代理、权限弹窗、Plan 模式、Todo、后台 bash。需要时用扩展/包安装，或用容器、tmux 等外部手段。</p>
+<p>哲学：<strong>核心保持小，按你的工作流定制 Pi，而不是反过来。</strong></p>
+<h3 id="10-2-约定速记"><a href="#10-2-约定速记" class="headerlink" title="10.2 约定速记"></a>10.2 约定速记</h3><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>约定</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>二进制 / 包</td>
+<td><code>pi</code> / <code>@earendil-works/pi-coding-agent</code></td>
+</tr>
+<tr>
+<td>代理目录</td>
+<td><code>~/.pi/agent/</code></td>
+</tr>
+<tr>
+<td>设置</td>
+<td><code>settings.json</code>（全局或 <code>.pi/</code>）</td>
+</tr>
+<tr>
+<td>凭据</td>
+<td><code>auth.json</code></td>
+</tr>
+<tr>
+<td>信任</td>
+<td><code>trust.json</code></td>
+</tr>
+<tr>
+<td>会话</td>
+<td><code>sessions/</code> 下 JSONL 树</td>
+</tr>
+<tr>
+<td>斜杠命令</td>
+<td><code>/model</code> 等，在活跃会话内</td>
+</tr>
+<tr>
+<td>Skills 命令</td>
+<td><code>/skill:name</code></td>
+</tr>
+<tr>
+<td>文件引用</td>
+<td><code>@path</code></td>
+</tr>
+<tr>
+<td>Shell 喂模型</td>
+<td><code>!cmd</code> / <code>!!cmd</code></td>
+</tr>
+</tbody></table>
+<h3 id="10-3-官方导航"><a href="#10-3-官方导航" class="headerlink" title="10.3 官方导航"></a>10.3 官方导航</h3><table>
+<thead>
+<tr>
+<th>分区</th>
+<th>页面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Start here</td>
+<td>Overview · Quickstart · Using Pi · Providers · Security · Containerization · Settings · Keybindings · Sessions · Compaction</td>
+</tr>
+<tr>
+<td>Customization</td>
+<td>Extensions · Skills · Prompt Templates · Themes · Pi Packages · Custom Models · Custom Providers</td>
+</tr>
+<tr>
+<td>Programmatic</td>
+<td>SDK · RPC · JSON Event Stream · TUI Components</td>
+</tr>
+<tr>
+<td>Platform</td>
+<td>Windows · Termux · tmux · Terminal Setup · Shell Aliases</td>
+</tr>
+<tr>
+<td>Development</td>
+<td>Development</td>
+</tr>
+</tbody></table>
+<p>总入口：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">https://pi.dev/docs/latest</a></p>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文覆盖 Pi 文档主线的中文长文整理：从安装认证到会话树、从设置键位到扩展生态、从安全边界到 SDK。扩展 API 的事件与 UI 细节极多，完整类型与示例以官方 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/extensions">Extensions</a> 为准；若要动手做一个可用扩展，请看下一篇实战。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ai/" rel="tag"># ai</a>
+              <a href="/tags/coding-agent/" rel="tag"># coding-agent</a>
+              <a href="/tags/cli/" rel="tag"># cli</a>
+              <a href="/tags/pi/" rel="tag"># pi</a>
+              <a href="/tags/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/" rel="tag"># 文档翻译</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" rel="prev" title="Pi 中文文档：终端编码 Agent 操作指南">
+      <i class="fa fa-chevron-left"></i> Pi 中文文档：终端编码 Agent 操作指南
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" rel="next" title="从零写一个 Pi Extension：自定义工具、命令与权限门">
+      从零写一个 Pi Extension：自定义工具、命令与权限门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pi-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">Pi 中文文档：官方文档长文翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E5%AF%BC%E8%88%AA"><span class="nav-number">1.1.</span> <span class="nav-text">目录导航</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E8%A7%88%E4%B8%8E%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="nav-number">1.2.</span> <span class="nav-text">一、概览与快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Pi-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 Pi 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%AE%A4%E8%AF%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.3 认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BC%9A%E8%AF%9D"><span class="nav-number">1.2.4.</span> <span class="nav-text">1.4 第一次会话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E9%A1%B9%E7%9B%AE%E6%8C%87%E4%BB%A4%EF%BC%88Context-Files%EF%BC%89"><span class="nav-number">1.2.5.</span> <span class="nav-text">1.5 项目指令（Context Files）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8-Pi"><span class="nav-number">1.3.</span> <span class="nav-text">二、使用 Pi</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BA%A4%E4%BA%92%E7%95%8C%E9%9D%A2"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 交互界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%BC%96%E8%BE%91%E5%99%A8%E5%8A%9F%E8%83%BD"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.2 编辑器功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.3.</span> <span class="nav-text">2.3 斜杠命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.3.4.</span> <span class="nav-text">2.4 消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E4%BC%9A%E8%AF%9D-CLI-%E5%85%A5%E5%8F%A3"><span class="nav-number">1.3.5.</span> <span class="nav-text">2.5 会话 CLI 入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E4%BB%BB%EF%BC%88Usage-%E8%8A%82%E6%91%98%E8%A6%81%EF%BC%89"><span class="nav-number">1.3.6.</span> <span class="nav-text">2.6 项目信任（Usage 节摘要）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-%E5%AF%BC%E5%87%BA%E4%B8%8E%E5%88%86%E4%BA%AB"><span class="nav-number">1.3.7.</span> <span class="nav-text">2.7 导出与分享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-CLI-%E5%8F%82%E8%80%83"><span class="nav-number">1.3.8.</span> <span class="nav-text">2.8 CLI 参考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8F%90%E4%BE%9B%E5%95%86%E4%B8%8E%E8%AE%A4%E8%AF%81"><span class="nav-number">1.4.</span> <span class="nav-text">三、提供商与认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E8%AE%A2%E9%98%85%EF%BC%88-login%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 订阅（&#x2F;login）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-API-Key-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%88%E8%8A%82%E9%80%89%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.2 API Key 环境变量（节选）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-auth-json"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.3 auth.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E4%BA%91%E5%8E%82%E5%95%86%E8%A6%81%E7%82%B9"><span class="nav-number">1.4.4.</span> <span class="nav-text">3.4 云厂商要点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-llama-cpp-%E8%87%AA%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.5.</span> <span class="nav-text">3.5 llama.cpp &#x2F; 自定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E5%87%AD%E6%8D%AE%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.4.6.</span> <span class="nav-text">3.6 凭据解析顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BC%9A%E8%AF%9D%E3%80%81%E6%A0%91%E4%B8%8E%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.5.</span> <span class="nav-text">四、会话、树与压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%AD%98%E5%82%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%81%A2%E5%A4%8D%E4%B8%8E%E5%88%A0%E9%99%A4"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 恢复与删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%91%BD%E5%90%8D"><span class="nav-number">1.5.3.</span> <span class="nav-text">4.3 命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-tree-%E5%88%86%E6%94%AF%E5%AF%BC%E8%88%AA"><span class="nav-number">1.5.4.</span> <span class="nav-text">4.4 &#x2F;tree 分支导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-tree-vs-fork-vs-clone"><span class="nav-number">1.5.5.</span> <span class="nav-text">4.5 &#x2F;tree vs &#x2F;fork vs &#x2F;clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E5%88%86%E6%94%AF%E6%91%98%E8%A6%81"><span class="nav-number">1.5.6.</span> <span class="nav-text">4.6 分支摘要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-Compaction"><span class="nav-number">1.5.7.</span> <span class="nav-text">4.7 Compaction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.6.</span> <span class="nav-text">五、设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%A8%A1%E5%9E%8B%E4%B8%8E-Thinking"><span class="nav-number">1.6.1.</span> <span class="nav-text">5.1 模型与 Thinking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-UI-%E4%BF%A1%E4%BB%BB-TUI"><span class="nav-number">1.6.2.</span> <span class="nav-text">5.2 UI &#x2F; 信任 &#x2F; TUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E7%BD%91%E7%BB%9C-%E5%8E%8B%E7%BC%A9-%E9%87%8D%E8%AF%95-%E6%B6%88%E6%81%AF%E6%8A%95%E9%80%92"><span class="nav-number">1.6.3.</span> <span class="nav-text">5.3 网络 &#x2F; 压缩 &#x2F; 重试 &#x2F; 消息投递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-Shell-%E5%B7%A5%E5%85%B7-%E4%BC%9A%E8%AF%9D-%E8%B5%84%E6%BA%90"><span class="nav-number">1.6.4.</span> <span class="nav-text">5.4 Shell &#x2F; 工具 &#x2F; 会话 &#x2F; 资源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.7.</span> <span class="nav-text">六、快捷键</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E5%B8%B8%E7%94%A8%E5%BA%94%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.7.1.</span> <span class="nav-text">6.1 常用应用快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%A4%BA%E4%BE%8B%EF%BC%88Emacs-%E9%A3%8E%E6%A0%BC%E5%8E%86%E5%8F%B2%EF%BC%89"><span class="nav-number">1.7.2.</span> <span class="nav-text">6.2 自定义示例（Emacs 风格历史）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%AE%9A%E5%88%B6%EF%BC%9A%E6%89%A9%E5%B1%95-Skills-%E6%A8%A1%E6%9D%BF-%E4%B8%BB%E9%A2%98-%E5%8C%85"><span class="nav-number">1.8.</span> <span class="nav-text">七、定制：扩展 &#x2F; Skills &#x2F; 模板 &#x2F; 主题 &#x2F; 包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-Extensions"><span class="nav-number">1.8.1.</span> <span class="nav-text">7.1 Extensions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-Skills"><span class="nav-number">1.8.2.</span> <span class="nav-text">7.2 Skills</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-Prompt-Templates"><span class="nav-number">1.8.3.</span> <span class="nav-text">7.3 Prompt Templates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-Themes"><span class="nav-number">1.8.4.</span> <span class="nav-text">7.4 Themes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-5-Pi-Packages"><span class="nav-number">1.8.5.</span> <span class="nav-text">7.5 Pi Packages</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%AE%89%E5%85%A8%E4%B8%8E%E5%AE%B9%E5%99%A8%E5%8C%96"><span class="nav-number">1.9.</span> <span class="nav-text">八、安全与容器化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E4%BB%BB-%E2%89%A0-%E6%B2%99%E7%AE%B1"><span class="nav-number">1.9.1.</span> <span class="nav-text">8.1 项目信任 ≠ 沙箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E6%97%A0%E5%86%85%E7%BD%AE%E6%B2%99%E7%AE%B1"><span class="nav-number">1.9.2.</span> <span class="nav-text">8.2 无内置沙箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E5%AE%B9%E5%99%A8%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.9.3.</span> <span class="nav-text">8.3 容器化模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%94%A8%E6%B3%95"><span class="nav-number">1.10.</span> <span class="nav-text">九、程序化用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-SDK-%E9%80%9F%E8%A7%88"><span class="nav-number">1.10.1.</span> <span class="nav-text">9.1 SDK 速览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-RPC-JSON-%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="nav-number">1.10.2.</span> <span class="nav-text">9.2 RPC &#x2F; JSON 事件流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99%E4%B8%8E%E7%BA%A6%E5%AE%9A"><span class="nav-number">1.11.</span> <span class="nav-text">十、设计原则与约定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-%E5%88%BB%E6%84%8F%E4%B8%8D%E5%81%9A%E7%9A%84%E4%BA%8B"><span class="nav-number">1.11.1.</span> <span class="nav-text">10.1 刻意不做的事</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-%E7%BA%A6%E5%AE%9A%E9%80%9F%E8%AE%B0"><span class="nav-number">1.11.2.</span> <span class="nav-text">10.2 约定速记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-3-%E5%AE%98%E6%96%B9%E5%AF%BC%E8%88%AA"><span class="nav-number">1.11.3.</span> <span class="nav-text">10.3 官方导航</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">1.12.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">菜鸟程序员</p>
+  <div class="site-description" itemprop="description">这个人很懒，不想写的太详细</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">菜鸟程序员</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">204k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:05</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey     : 'qsPlalDJdtYgh4AFO3oiFAox',
+      placeholder: "随便说点啥，欢迎吐槽",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com'
+    });
+  }, window.Valine);
+});
+</script>
+<script>
+  (function () {
+    if (!document.body.classList.contains('posts-expand')) return;
+
+    var tocTab = document.querySelector('.sidebar-nav-toc');
+    var tocPanel = document.querySelector('.post-toc-wrap');
+    var overviewPanel = document.querySelector('.site-overview-wrap');
+
+    if (tocTab) {
+      tocTab.classList.add('sidebar-nav-active');
+    }
+    if (tocPanel) {
+      tocPanel.classList.add('sidebar-panel-active');
+    }
+    if (overviewPanel) {
+      overviewPanel.classList.remove('sidebar-panel-active');
+    }
+
+    if (typeof NexT !== 'undefined' && NexT.utils && NexT.utils.registerScrollPercent) {
+      NexT.utils.initSidebarDimension();
+    }
+  })();
+</script>
+
+</body>
+</html>
