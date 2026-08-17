@@ -1,31 +1,11 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
-
-
-<head>
-  <meta charset="UTF-8">
-
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
-  
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="菜鸟程序员">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="将 https:&#x2F;&#x2F;pi.dev&#x2F;docs&#x2F;latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Pi 中文文档：官方文档长文翻译 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="将 https:&#x2F;&#x2F;pi.dev&#x2F;docs&#x2F;latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pi 中文文档：官方文档长文翻译">
 <meta property="og:url" content="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="将 https:&#x2F;&#x2F;pi.dev&#x2F;docs&#x2F;latest 主要章节翻译为中文长文，覆盖入门、用法、提供商、会话、设置、扩展、Skills、包、安全、容器化、主题与 SDK 等，便于离线查阅。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
 <meta property="article:published_time" content="2026-08-13T03:50:00.000Z">
 <meta property="article:modified_time" content="2026-08-13T03:50:00.000Z">
 <meta property="article:author" content="菜鸟程序员">
@@ -34,358 +14,221 @@
 <meta property="article:tag" content="cli">
 <meta property="article:tag" content="pi">
 <meta property="article:tag" content="文档翻译">
-<meta name="twitter:card" content="summary_large_image">
-  
-  
-  
-  <title>Pi 中文文档：官方文档长文翻译 - 个人博客</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
-
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"qngolg.github.io","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qngolg.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Pi 中文文档：官方文档长文翻译",
+  "url": "https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/",
+  "image": "https://qngolg.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-08-13T03:50:00.000Z",
+  "dateModified": "2026-08-13T03:50:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "菜鸟程序员",
+      "url": "https://qngolg.github.io"
     }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 5.4.2"></head>
-
-
-<body>
-  
-
-  <header>
-    
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>个人博客</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content (desktop) -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- Mobile grid menu overlay -->
-<div id="mobile-grid-menu" class="d-lg-none">
-  <div class="mobile-grid-menu-inner">
-    <div class="container">
-      <div class="row">
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-home-fill"></i>
-                  <span>首页</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/archives/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-archive-fill"></i>
-                  <span>归档</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/categories/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-category-fill"></i>
-                  <span>分类</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/tags/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-tags-fill"></i>
-                  <span>标签</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/about/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-user-fill"></i>
-                  <span>关于</span>
-                </div>
-              </a>
-            </div>
-          
-        
-        
-          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
-            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <div class="mobile-grid-item">
-                <i class="iconfont icon-search"></i>
-                <span>搜索</span>
-              </div>
-            </a>
-          </div>
-        
-        
-          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
-               data-label-light="开灯"
-               data-label-dark="关灯">
-            <a href="javascript:;" aria-label="Color Toggle">
-              <div class="mobile-grid-item">
-                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
-                <span id="mobile-color-toggle-label">关灯</span>
-              </div>
-            </a>
-          </div>
-        
-      </div>
-    </div>
-  </div>
-</div>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="Pi 中文文档：官方文档长文翻译"></span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
-    
-    
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-08-13 11:50" pubdate>
-          2026年8月13日 中午
-        </time>
-      </span>
-    
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
-        
-          19k 字
-        
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          161 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
       
-    </div>
-  </div>
-</div>
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
 
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
 
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
 
-</div>
+        try {
+          const data = JSON.parse(itemStr)
 
-  </header>
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
 
-  <main>
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
     
       
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">Pi 中文文档：官方文档长文翻译</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <h1 id="Pi-中文文档：官方文档长文翻译"><a href="#Pi-中文文档：官方文档长文翻译" class="headerlink" title="Pi 中文文档：官方文档长文翻译"></a>Pi 中文文档：官方文档长文翻译</h1><blockquote>
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Pi 中文文档：官方文档长文翻译',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Pi 中文文档：官方文档长文翻译</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Pi 中文文档：官方文档长文翻译</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-13T03:50:00.000Z" title="发表于 2026-08-13 11:50:00">2026-08-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-13T03:50:00.000Z" title="更新于 2026-08-13 11:50:00">2026-08-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Pi-中文文档：官方文档长文翻译"><a href="#Pi-中文文档：官方文档长文翻译" class="headerlink" title="Pi 中文文档：官方文档长文翻译"></a>Pi 中文文档：官方文档长文翻译</h1><blockquote>
 <p>本文是 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">Pi 官方文档</a> 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">pi.dev/docs/latest</a> 为准。</p>
 <p><strong>Pi</strong> 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 <code>@earendil-works/pi-coding-agent</code>，命令 <code>pi</code>，数据目录 <code>~/.pi/agent/</code>。</p>
 <p>相关文章：<a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/">操作指南</a> · <a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AA-Pi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">从零写 Extension</a></p>
@@ -415,29 +258,29 @@
 <li>用 Skills / Prompt 模板沉淀可复用工作流</li>
 <li>用 <code>-p</code> / JSON / RPC / SDK 接入自动化</li>
 </ul>
-<h3 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install -g --ignore-scripts @earendil-works/pi-coding-agent<br></code></pre></td></tr></table></figure>
+<h3 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span><br></pre></td></tr></table></figure>
 
 <p><code>--ignore-scripts</code> 会禁用依赖的 lifecycle scripts。普通 npm 安装不需要 install scripts。</p>
 <p>Linux / macOS 也可用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -fsSL https://pi.dev/install.sh | sh<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://pi.dev/install.sh | sh</span><br></pre></td></tr></table></figure>
 
 <p>卸载：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm uninstall -g @earendil-works/pi-coding-agent<br><span class="hljs-comment"># pnpm remove -g / yarn global remove / bun uninstall -g 同理</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall -g @earendil-works/pi-coding-agent</span><br><span class="line"><span class="comment"># pnpm remove -g / yarn global remove / bun uninstall -g 同理</span></span><br></pre></td></tr></table></figure>
 
 <p>卸载 <strong>不会</strong> 删除 <code>~/.pi/agent/</code> 中的设置、凭据、会话与已安装包。</p>
 <p>进入项目后启动：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /path/to/project<br>pi<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /path/to/project</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
 
 <h3 id="1-3-认证"><a href="#1-3-认证" class="headerlink" title="1.3 认证"></a>1.3 认证</h3><p><strong>方式一：订阅登录</strong></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">/login<br></code></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/login</span><br></pre></td></tr></table></figure>
 
 <p>内置订阅包括 Claude Pro/Max、ChatGPT Plus/Pro（Codex）、GitHub Copilot，以及 xAI、OpenRouter、Radius 等。<code>/logout</code> 清除凭据。多数 OAuth token 存于 <code>~/.pi/agent/auth.json</code> 并自动刷新。</p>
 <p><strong>方式二：API Key</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> ANTHROPIC_API_KEY=sk-ant-...<br>pi<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=sk-ant-...</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
 
 <p>也可 <code>/login</code> 选择 API Key 提供商写入 <code>auth.json</code>。</p>
 <h3 id="1-4-第一次会话"><a href="#1-4-第一次会话" class="headerlink" title="1.4 第一次会话"></a>1.4 第一次会话</h3><p>启动后输入请求并回车，例如：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Summarize this repository and tell me how to run its checks.<br></code></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Summarize this repository and tell me how to run its checks.</span><br></pre></td></tr></table></figure>
 
 <p>默认四个工具：</p>
 <table>
@@ -466,7 +309,7 @@
 </tbody></table>
 <p>额外只读工具 <code>grep</code> / <code>find</code> / <code>ls</code> 可通过工具选项开启。Pi 在当前工作目录运行并可修改其中文件；需要回滚请用 git。</p>
 <h3 id="1-5-项目指令（Context-Files）"><a href="#1-5-项目指令（Context-Files）" class="headerlink" title="1.5 项目指令（Context Files）"></a>1.5 项目指令（Context Files）</h3><p>在仓库根添加 <code>AGENTS.md</code>：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># Project Instructions</span><br><br><span class="hljs-bullet">-</span> Run <span class="hljs-code">`npm run check`</span> after code changes.<br><span class="hljs-bullet">-</span> Do not run production migrations locally.<br><span class="hljs-bullet">-</span> Keep responses concise.<br></code></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Project Instructions</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> Run <span class="code">`npm run check`</span> after code changes.</span><br><span class="line"><span class="bullet">-</span> Do not run production migrations locally.</span><br><span class="line"><span class="bullet">-</span> Keep responses concise.</span><br></pre></td></tr></table></figure>
 
 <p>加载来源：</p>
 <ul>
@@ -654,7 +497,7 @@
 </tr>
 </tbody></table>
 <p>Windows Terminal 默认把 <code>Alt+Enter</code> 当全屏；若要给 Pi 用，需在终端设置里重映射。投递策略见设置项 <code>steeringMode</code> / <code>followUpMode</code>。</p>
-<h3 id="2-5-会话-CLI-入口"><a href="#2-5-会话-CLI-入口" class="headerlink" title="2.5 会话 CLI 入口"></a>2.5 会话 CLI 入口</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi -c                  <span class="hljs-comment"># 续最近会话</span><br>pi -r                  <span class="hljs-comment"># 浏览历史会话</span><br>pi --no-session        <span class="hljs-comment"># 不落盘</span><br>pi --name <span class="hljs-string">&quot;my task&quot;</span>    <span class="hljs-comment"># 启动命名</span><br>pi --session &lt;path|<span class="hljs-built_in">id</span>&gt; <span class="hljs-comment"># 指定会话</span><br>pi --fork &lt;path|<span class="hljs-built_in">id</span>&gt;    <span class="hljs-comment"># 派生新文件</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-5-会话-CLI-入口"><a href="#2-5-会话-CLI-入口" class="headerlink" title="2.5 会话 CLI 入口"></a>2.5 会话 CLI 入口</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pi -c                  <span class="comment"># 续最近会话</span></span><br><span class="line">pi -r                  <span class="comment"># 浏览历史会话</span></span><br><span class="line">pi --no-session        <span class="comment"># 不落盘</span></span><br><span class="line">pi --name <span class="string">&quot;my task&quot;</span>    <span class="comment"># 启动命名</span></span><br><span class="line">pi --session &lt;path|<span class="built_in">id</span>&gt; <span class="comment"># 指定会话</span></span><br><span class="line">pi --fork &lt;path|<span class="built_in">id</span>&gt;    <span class="comment"># 派生新文件</span></span><br></pre></td></tr></table></figure>
 
 <p>会话按工作目录存于 <code>~/.pi/agent/sessions/</code>。</p>
 <h3 id="2-6-项目信任（Usage-节摘要）"><a href="#2-6-项目信任（Usage-节摘要）" class="headerlink" title="2.6 项目信任（Usage 节摘要）"></a>2.6 项目信任（Usage 节摘要）</h3><p>交互启动时，若项目含需信任的本地资源且无已保存决定，Pi 会询问。信任后才加载 <code>.pi/settings.json</code>、<code>.pi</code> 资源、缺包安装与项目扩展。</p>
@@ -666,9 +509,9 @@
 <li><code>/share</code> → 私有 gist + HTML 链接</li>
 <li>开源研究数据可用 <a target="_blank" rel="noopener" href="https://github.com/badlogic/pi-share-hf">badlogic/pi-share-hf</a> 发布到 Hugging Face</li>
 </ul>
-<h3 id="2-8-CLI-参考"><a href="#2-8-CLI-参考" class="headerlink" title="2.8 CLI 参考"></a>2.8 CLI 参考</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi [options] [@files...] [messages...]<br></code></pre></td></tr></table></figure>
+<h3 id="2-8-CLI-参考"><a href="#2-8-CLI-参考" class="headerlink" title="2.8 CLI 参考"></a>2.8 CLI 参考</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi [options] [@files...] [messages...]</span><br></pre></td></tr></table></figure>
 
-<h4 id="包命令"><a href="#包命令" class="headerlink" title="包命令"></a>包命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi install &lt;<span class="hljs-built_in">source</span>&gt; [-l]     <span class="hljs-comment"># 安装包；-l 项目本地</span><br>pi remove &lt;<span class="hljs-built_in">source</span>&gt; [-l]      <span class="hljs-comment"># 移除</span><br>pi uninstall &lt;<span class="hljs-built_in">source</span>&gt; [-l]   <span class="hljs-comment"># remove 别名</span><br>pi update [<span class="hljs-built_in">source</span>|self|pi]   <span class="hljs-comment"># 更新 pi 或某个包</span><br>pi update --all              <span class="hljs-comment"># 更新 pi + 包，并校准 pinned git ref</span><br>pi update --extensions       <span class="hljs-comment"># 只更新包</span><br>pi update --models           <span class="hljs-comment"># 只刷新模型目录</span><br>pi update --self             <span class="hljs-comment"># 只更新 pi</span><br>pi list                      <span class="hljs-comment"># 列出已装包</span><br>pi config                    <span class="hljs-comment"># 启用/禁用包资源</span><br></code></pre></td></tr></table></figure>
+<h4 id="包命令"><a href="#包命令" class="headerlink" title="包命令"></a>包命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pi install &lt;<span class="built_in">source</span>&gt; [-l]     <span class="comment"># 安装包；-l 项目本地</span></span><br><span class="line">pi remove &lt;<span class="built_in">source</span>&gt; [-l]      <span class="comment"># 移除</span></span><br><span class="line">pi uninstall &lt;<span class="built_in">source</span>&gt; [-l]   <span class="comment"># remove 别名</span></span><br><span class="line">pi update [<span class="built_in">source</span>|self|pi]   <span class="comment"># 更新 pi 或某个包</span></span><br><span class="line">pi update --all              <span class="comment"># 更新 pi + 包，并校准 pinned git ref</span></span><br><span class="line">pi update --extensions       <span class="comment"># 只更新包</span></span><br><span class="line">pi update --models           <span class="comment"># 只刷新模型目录</span></span><br><span class="line">pi update --self             <span class="comment"># 只更新 pi</span></span><br><span class="line">pi list                      <span class="comment"># 列出已装包</span></span><br><span class="line">pi config                    <span class="comment"># 启用/禁用包资源</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h4><table>
 <thead>
@@ -824,7 +667,7 @@
 </tr>
 </tbody></table>
 <p>可组合精确加载，例如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi --no-extensions -e ./my-extension.ts<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi --no-extensions -e ./my-extension.ts</span><br></pre></td></tr></table></figure>
 
 <h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><table>
 <thead>
@@ -867,7 +710,7 @@
 </tr>
 </tbody></table>
 <p><code>fullscreen</code>：转录在视口内滚动，编辑器/页脚固定；Kitty/Ghostty 支持内联图；iTerm2 在 fullscreen 下多为占位。<code>/settings</code> 可即时切换并设默认。</p>
-<h4 id="文件参数与示例"><a href="#文件参数与示例" class="headerlink" title="文件参数与示例"></a>文件参数与示例</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi @prompt.md <span class="hljs-string">&quot;Answer this&quot;</span><br>pi -p @screenshot.png <span class="hljs-string">&quot;What&#x27;s in this image?&quot;</span><br>pi @code.ts @test.ts <span class="hljs-string">&quot;Review these files&quot;</span><br><br>pi <span class="hljs-string">&quot;List all .ts files in src/&quot;</span><br>pi -p <span class="hljs-string">&quot;Summarize this codebase&quot;</span><br><span class="hljs-built_in">cat</span> README.md | pi -p <span class="hljs-string">&quot;Summarize this text&quot;</span><br>pi --name <span class="hljs-string">&quot;release audit&quot;</span> -p <span class="hljs-string">&quot;Audit this repository&quot;</span><br>pi --provider openai --model gpt-4o <span class="hljs-string">&quot;Help me refactor&quot;</span><br>pi --model openai/gpt-4o <span class="hljs-string">&quot;Help me refactor&quot;</span><br>pi --model sonnet:high <span class="hljs-string">&quot;Solve this complex problem&quot;</span><br>pi --models <span class="hljs-string">&quot;claude-*,gpt-4o&quot;</span><br>pi --tools <span class="hljs-built_in">read</span>,grep,find,<span class="hljs-built_in">ls</span> -p <span class="hljs-string">&quot;Review the code&quot;</span><br>pi --exclude-tools ask_question<br></code></pre></td></tr></table></figure>
+<h4 id="文件参数与示例"><a href="#文件参数与示例" class="headerlink" title="文件参数与示例"></a>文件参数与示例</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pi @prompt.md <span class="string">&quot;Answer this&quot;</span></span><br><span class="line">pi -p @screenshot.png <span class="string">&quot;What&#x27;s in this image?&quot;</span></span><br><span class="line">pi @code.ts @test.ts <span class="string">&quot;Review these files&quot;</span></span><br><span class="line"></span><br><span class="line">pi <span class="string">&quot;List all .ts files in src/&quot;</span></span><br><span class="line">pi -p <span class="string">&quot;Summarize this codebase&quot;</span></span><br><span class="line"><span class="built_in">cat</span> README.md | pi -p <span class="string">&quot;Summarize this text&quot;</span></span><br><span class="line">pi --name <span class="string">&quot;release audit&quot;</span> -p <span class="string">&quot;Audit this repository&quot;</span></span><br><span class="line">pi --provider openai --model gpt-4o <span class="string">&quot;Help me refactor&quot;</span></span><br><span class="line">pi --model openai/gpt-4o <span class="string">&quot;Help me refactor&quot;</span></span><br><span class="line">pi --model sonnet:high <span class="string">&quot;Solve this complex problem&quot;</span></span><br><span class="line">pi --models <span class="string">&quot;claude-*,gpt-4o&quot;</span></span><br><span class="line">pi --tools <span class="built_in">read</span>,grep,find,<span class="built_in">ls</span> -p <span class="string">&quot;Review the code&quot;</span></span><br><span class="line">pi --exclude-tools ask_question</span><br></pre></td></tr></table></figure>
 
 <p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/usage">Using Pi</a></p>
 <hr>
@@ -987,7 +830,7 @@
 </tr>
 </tbody></table>
 <p>完整表见官方 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/providers">Providers</a>。</p>
-<h3 id="3-3-auth-json"><a href="#3-3-auth-json" class="headerlink" title="3.3 auth.json"></a>3.3 auth.json</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;anthropic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;api_key&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;key&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sk-ant-...&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;openai&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;api_key&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;key&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sk-...&quot;</span> <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<h3 id="3-3-auth-json"><a href="#3-3-auth-json" class="headerlink" title="3.3 auth.json"></a>3.3 auth.json</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;anthropic&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;api_key&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sk-ant-...&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;openai&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;api_key&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sk-...&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>权限 <code>0600</code>。auth.json <strong>优先于</strong>环境变量。</p>
 <p><code>key</code> 支持：</p>
@@ -1026,10 +869,10 @@
 <li><code>Ctrl+R</code> 重命名</li>
 <li><code>Ctrl+D</code> 删除（优先用 <code>trash</code> CLI）</li>
 </ul>
-<h3 id="4-3-命名"><a href="#4-3-命名" class="headerlink" title="4.3 命名"></a>4.3 命名</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">/name Refactor auth module<br></code></pre></td></tr></table></figure>
+<h3 id="4-3-命名"><a href="#4-3-命名" class="headerlink" title="4.3 命名"></a>4.3 命名</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/name Refactor auth module</span><br></pre></td></tr></table></figure>
 
 <p>或：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi --name <span class="hljs-string">&quot;Refactor auth module&quot;</span><br>pi --name <span class="hljs-string">&quot;CI audit&quot;</span> -p <span class="hljs-string">&quot;Review this build failure&quot;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pi --name <span class="string">&quot;Refactor auth module&quot;</span></span><br><span class="line">pi --name <span class="string">&quot;CI audit&quot;</span> -p <span class="string">&quot;Review this build failure&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="4-4-tree-分支导航"><a href="#4-4-tree-分支导航" class="headerlink" title="4.4 /tree 分支导航"></a>4.4 <code>/tree</code> 分支导航</h3><p>会话是树：每条有 <code>id</code> / <code>parentId</code>，当前位置是活跃叶子。<code>/tree</code> 可跳到任意历史点继续，<strong>不新建文件</strong>。</p>
 <table>
@@ -1117,7 +960,7 @@
 <li>写入 <code>CompactionEntry</code>，下次请求用「摘要 + 保留段」重建上下文</li>
 </ol>
 <p>默认设置：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;compaction&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;reserveTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16384</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;keepRecentTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20000</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;compaction&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;reserveTokens&quot;</span><span class="punctuation">:</span> <span class="number">16384</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;keepRecentTokens&quot;</span><span class="punctuation">:</span> <span class="number">20000</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>摘要格式大致包含：Goal、Constraints、Progress、Key Decisions、Next Steps、Critical Context，以及 <code>&lt;read-files&gt;</code> / <code>&lt;modified-files&gt;</code>。扩展可通过 <code>session_before_compact</code> / <code>session_before_tree</code> 自定义或取消。</p>
 <p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/sessions">Sessions</a> · <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/compaction">Compaction</a></p>
@@ -1244,7 +1087,7 @@
 </tr>
 </tbody></table>
 <p>版本检查：<code>PI_SKIP_VERSION_CHECK=1</code>。完全离线启动网络：<code>--offline</code> 或 <code>PI_OFFLINE=1</code>。</p>
-<h3 id="5-3-网络-压缩-重试-消息投递"><a href="#5-3-网络-压缩-重试-消息投递" class="headerlink" title="5.3 网络 / 压缩 / 重试 / 消息投递"></a>5.3 网络 / 压缩 / 重试 / 消息投递</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;httpProxy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://127.0.0.1:7890&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;compaction&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reserveTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16384</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;keepRecentTokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20000</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;retry&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;maxRetries&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;baseDelayMs&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2000</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;provider&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;timeoutMs&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3600000</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;maxRetries&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;maxRetryDelayMs&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">60000</span> <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;steeringMode&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;one-at-a-time&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;followUpMode&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;one-at-a-time&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;transport&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;auto&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<h3 id="5-3-网络-压缩-重试-消息投递"><a href="#5-3-网络-压缩-重试-消息投递" class="headerlink" title="5.3 网络 / 压缩 / 重试 / 消息投递"></a>5.3 网络 / 压缩 / 重试 / 消息投递</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;httpProxy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://127.0.0.1:7890&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;compaction&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;reserveTokens&quot;</span><span class="punctuation">:</span> <span class="number">16384</span><span class="punctuation">,</span> <span class="attr">&quot;keepRecentTokens&quot;</span><span class="punctuation">:</span> <span class="number">20000</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;retry&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;maxRetries&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;baseDelayMs&quot;</span><span class="punctuation">:</span> <span class="number">2000</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;provider&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;timeoutMs&quot;</span><span class="punctuation">:</span> <span class="number">3600000</span><span class="punctuation">,</span> <span class="attr">&quot;maxRetries&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> <span class="attr">&quot;maxRetryDelayMs&quot;</span><span class="punctuation">:</span> <span class="number">60000</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;steeringMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;one-at-a-time&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;followUpMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;one-at-a-time&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;transport&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>建议保持 <code>retry.provider.maxRetries = 0</code>，避免提供商层重试抢在 Pi 之前处理额度错误。</p>
 <h3 id="5-4-Shell-工具-会话-资源"><a href="#5-4-Shell-工具-会话-资源" class="headerlink" title="5.4 Shell / 工具 / 会话 / 资源"></a>5.4 Shell / 工具 / 会话 / 资源</h3><table>
@@ -1377,7 +1220,7 @@
 <td>取回排队消息</td>
 </tr>
 </tbody></table>
-<h3 id="6-2-自定义示例（Emacs-风格历史）"><a href="#6-2-自定义示例（Emacs-风格历史）" class="headerlink" title="6.2 自定义示例（Emacs 风格历史）"></a>6.2 自定义示例（Emacs 风格历史）</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;tui.editor.historyPrevious&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ctrl+p&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;tui.editor.historyNext&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ctrl+n&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;tui.editor.deleteWordBackward&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;ctrl+w&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;alt+backspace&quot;</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<h3 id="6-2-自定义示例（Emacs-风格历史）"><a href="#6-2-自定义示例（Emacs-风格历史）" class="headerlink" title="6.2 自定义示例（Emacs 风格历史）"></a>6.2 自定义示例（Emacs 风格历史）</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.historyPrevious&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl+p&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.historyNext&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ctrl+n&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tui.editor.deleteWordBackward&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;ctrl+w&quot;</span><span class="punctuation">,</span> <span class="string">&quot;alt+backspace&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>Fullscreen 下未修饰的 <code>pageUp</code>/<code>home</code> 等默认控制转录区，<code>ctrl</code> 变体控制编辑器。完整 id 见 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/keybindings">Keybindings</a>。</p>
 <hr>
@@ -1404,11 +1247,11 @@
 <p>也可用 settings 的 <code>extensions</code> / <code>packages</code>，或临时 <code>pi -e ./path.ts</code>。</p>
 <p>可用导入：<code>@earendil-works/pi-coding-agent</code>、<code>typebox</code>、<code>@earendil-works/pi-ai</code>、<code>@earendil-works/pi-tui</code>，以及 <code>node:*</code> 与本地 <code>node_modules</code>。</p>
 <p><strong>最小结构</strong>：</p>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> &#123; <span class="hljs-title class_">ExtensionAPI</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@earendil-works/pi-coding-agent&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Type</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;typebox&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-attr">pi</span>: <span class="hljs-title class_">ExtensionAPI</span></span>) &#123;<br>  pi.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;session_start&quot;</span>, <span class="hljs-title function_">async</span> (_event, ctx) =&gt; &#123;<br>    ctx.<span class="hljs-property">ui</span>.<span class="hljs-title function_">notify</span>(<span class="hljs-string">&quot;Extension loaded!&quot;</span>, <span class="hljs-string">&quot;info&quot;</span>);<br>  &#125;);<br><br>  pi.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;tool_call&quot;</span>, <span class="hljs-title function_">async</span> (event, ctx) =&gt; &#123;<br>    <span class="hljs-keyword">if</span> (event.<span class="hljs-property">toolName</span> === <span class="hljs-string">&quot;bash&quot;</span> &amp;&amp; event.<span class="hljs-property">input</span>.<span class="hljs-property">command</span>?.<span class="hljs-title function_">includes</span>(<span class="hljs-string">&quot;rm -rf&quot;</span>)) &#123;<br>      <span class="hljs-keyword">const</span> ok = <span class="hljs-keyword">await</span> ctx.<span class="hljs-property">ui</span>.<span class="hljs-title function_">confirm</span>(<span class="hljs-string">&quot;Dangerous!&quot;</span>, <span class="hljs-string">&quot;Allow rm -rf?&quot;</span>);<br>      <span class="hljs-keyword">if</span> (!ok) <span class="hljs-keyword">return</span> &#123; <span class="hljs-attr">block</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">&quot;Blocked by user&quot;</span> &#125;;<br>    &#125;<br>  &#125;);<br><br>  pi.<span class="hljs-title function_">registerTool</span>(&#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;greet&quot;</span>,<br>    <span class="hljs-attr">label</span>: <span class="hljs-string">&quot;Greet&quot;</span>,<br>    <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Greet someone by name&quot;</span>,<br>    <span class="hljs-attr">parameters</span>: <span class="hljs-title class_">Type</span>.<span class="hljs-title class_">Object</span>(&#123;<br>      <span class="hljs-attr">name</span>: <span class="hljs-title class_">Type</span>.<span class="hljs-title class_">String</span>(&#123; <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Name to greet&quot;</span> &#125;),<br>    &#125;),<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">execute</span>(<span class="hljs-params">_id, params</span>) &#123;<br>      <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-attr">content</span>: [&#123; <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">text</span>: <span class="hljs-string">`Hello, <span class="hljs-subst">$&#123;params.name&#125;</span>!`</span> &#125;],<br>        <span class="hljs-attr">details</span>: &#123;&#125;,<br>      &#125;;<br>    &#125;,<br>  &#125;);<br><br>  pi.<span class="hljs-title function_">registerCommand</span>(<span class="hljs-string">&quot;hello&quot;</span>, &#123;<br>    <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Say hello&quot;</span>,<br>    <span class="hljs-attr">handler</span>: <span class="hljs-title function_">async</span> (args, ctx) =&gt; &#123;<br>      ctx.<span class="hljs-property">ui</span>.<span class="hljs-title function_">notify</span>(<span class="hljs-string">`Hello <span class="hljs-subst">$&#123;args || <span class="hljs-string">&quot;world&quot;</span>&#125;</span>!`</span>, <span class="hljs-string">&quot;info&quot;</span>);<br>    &#125;,<br>  &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">ExtensionAPI</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Type</span> &#125; <span class="keyword">from</span> <span class="string">&quot;typebox&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;session_start&quot;</span>, <span class="title function_">async</span> (_event, ctx) =&gt; &#123;</span><br><span class="line">    ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">&quot;Extension loaded!&quot;</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">on</span>(<span class="string">&quot;tool_call&quot;</span>, <span class="title function_">async</span> (event, ctx) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">toolName</span> === <span class="string">&quot;bash&quot;</span> &amp;&amp; event.<span class="property">input</span>.<span class="property">command</span>?.<span class="title function_">includes</span>(<span class="string">&quot;rm -rf&quot;</span>)) &#123;</span><br><span class="line">      <span class="keyword">const</span> ok = <span class="keyword">await</span> ctx.<span class="property">ui</span>.<span class="title function_">confirm</span>(<span class="string">&quot;Dangerous!&quot;</span>, <span class="string">&quot;Allow rm -rf?&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (!ok) <span class="keyword">return</span> &#123; <span class="attr">block</span>: <span class="literal">true</span>, <span class="attr">reason</span>: <span class="string">&quot;Blocked by user&quot;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;greet&quot;</span>,</span><br><span class="line">    <span class="attr">label</span>: <span class="string">&quot;Greet&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;Greet someone by name&quot;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Name to greet&quot;</span> &#125;),</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">_id, params</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">text</span>: <span class="string">`Hello, <span class="subst">$&#123;params.name&#125;</span>!`</span> &#125;],</span><br><span class="line">        <span class="attr">details</span>: &#123;&#125;,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  pi.<span class="title function_">registerCommand</span>(<span class="string">&quot;hello&quot;</span>, &#123;</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;Say hello&quot;</span>,</span><br><span class="line">    <span class="attr">handler</span>: <span class="title function_">async</span> (args, ctx) =&gt; &#123;</span><br><span class="line">      ctx.<span class="property">ui</span>.<span class="title function_">notify</span>(<span class="string">`Hello <span class="subst">$&#123;args || <span class="string">&quot;world&quot;</span>&#125;</span>!`</span>, <span class="string">&quot;info&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>由 jiti 加载，无需预编译。工厂可为 <code>async</code>（启动前 await）。<strong>不要</strong>在工厂里开后台进程/socket/watcher；放到 <code>session_start</code>，并在 <code>session_shutdown</code> 里幂等清理。</p>
 <p><strong>生命周期（摘要）</strong>：</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">pi starts<br>  → project_trust（仅用户/全局<span class="hljs-string">/CLI</span> 扩展）<br>  → session_start<br>  → resources_discover<br>用户发消息<br>  → input → before_agent_start → agent_start<br>  → 多轮 turn：context → provider hooks → tool_call<span class="hljs-params">(可拦截)</span> → tool_result → …<br>  → agent_end → agent_settled<br><span class="hljs-string">/new</span>|<span class="hljs-string">/resume</span>|<span class="hljs-string">/fork</span>|<span class="hljs-string">/clone</span> 会 session_<span class="hljs-keyword">shutdown</span> 再 session_start<br>退出 → session_<span class="hljs-keyword">shutdown</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pi starts</span><br><span class="line">  → project_trust（仅用户/全局/CLI 扩展）</span><br><span class="line">  → session_start</span><br><span class="line">  → resources_discover</span><br><span class="line">用户发消息</span><br><span class="line">  → input → before_agent_start → agent_start</span><br><span class="line">  → 多轮 turn：context → provider hooks → tool_call(可拦截) → tool_result → …</span><br><span class="line">  → agent_end → agent_settled</span><br><span class="line">/new|/resume|/fork|/clone 会 session_shutdown 再 session_start</span><br><span class="line">退出 → session_shutdown</span><br></pre></td></tr></table></figure>
 
 <p><code>tool_call</code>：可原地改 <code>event.input</code>；返回 <code>&#123; block: true, reason?, terminate? &#125;</code> 可拦截。内置工具可用 <code>isToolCallEventType(&quot;bash&quot;, event)</code> 做类型收窄。</p>
 <p><code>ctx</code> 常用：<code>ui</code>、<code>mode</code>、<code>hasUI</code>、<code>cwd</code>、<code>sessionManager</code>、<code>model</code>、<code>signal</code>、<code>abort()</code>、<code>compact()</code> 等。命令 handler 另有 <code>newSession</code> / <code>fork</code> / <code>navigateTree</code> / <code>switchSession</code>（勿在普通事件里调，易死锁）。</p>
@@ -1421,23 +1264,23 @@
 <li>包与 settings / <code>--skill</code></li>
 </ul>
 <p>可在 settings 挂 Claude Code / Codex 技能目录：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;skills&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;~/.claude/skills&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;~/.codex/skills&quot;</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;~/.claude/skills&quot;</span><span class="punctuation">,</span> <span class="string">&quot;~/.codex/skills&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>Frontmatter 必填 <code>name</code>、<code>description</code>。无 description 的技能不会加载。<code>disable-model-invocation: true</code> 时模型侧隐藏，只能 <code>/skill:name</code> 触发。</p>
 <p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/skills">Skills</a></p>
 <h3 id="7-3-Prompt-Templates"><a href="#7-3-Prompt-Templates" class="headerlink" title="7.3 Prompt Templates"></a>7.3 Prompt Templates</h3><p><code>~/.pi/agent/prompts/*.md</code> 或 <code>.pi/prompts/*.md</code>。文件名即命令：<code>review.md</code> → <code>/review</code>。</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>description: Review staged git changes<br><span class="hljs-section">argument-hint: &quot;[focus]&quot;</span><br><span class="hljs-section">---</span><br>Review the staged changes (<span class="hljs-code">`git diff --cached`</span>). Focus on:<br><span class="hljs-bullet">-</span> Bugs and logic errors<br><span class="hljs-bullet">-</span> Security issues<br>$@<br></code></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">description: Review staged git changes</span><br><span class="line"><span class="section">argument-hint: &quot;[focus]&quot;</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line">Review the staged changes (<span class="code">`git diff --cached`</span>). Focus on:</span><br><span class="line"><span class="bullet">-</span> Bugs and logic errors</span><br><span class="line"><span class="bullet">-</span> Security issues</span><br><span class="line">$@</span><br></pre></td></tr></table></figure>
 
 <p>参数：<code>$1</code> <code>$2</code>、<code>$@</code>/<code>$ARGUMENTS</code>、<code>$&#123;1:-default&#125;</code>、<code>$&#123;@:N&#125;</code>、<code>$&#123;@:N:L&#125;</code>。<code>prompts/</code> 目录<strong>不递归</strong>；子目录需在 settings 或包清单中显式声明。</p>
 <h3 id="7-4-Themes"><a href="#7-4-Themes" class="headerlink" title="7.4 Themes"></a>7.4 Themes</h3><p>JSON 定义 TUI 颜色。内置 <code>dark</code>/<code>light</code>；自定义放 <code>~/.pi/agent/themes/*.json</code>。<code>/settings</code> 或 <code>&quot;theme&quot;: &quot;my-theme&quot;</code> 选择。<code>--use-theme light</code> 或 <code>light/dark</code> 可设本次初始主题。</p>
 <p>需定义约 51 个必需 color token（可用 <code>vars</code> 别名）。颜色支持 hex、256 色索引、变量名、<code>&quot;&quot;</code>（终端默认）。正在使用的自定义主题文件保存后会热重载。</p>
 <p>原文：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/themes">Themes</a></p>
 <h3 id="7-5-Pi-Packages"><a href="#7-5-Pi-Packages" class="headerlink" title="7.5 Pi Packages"></a>7.5 Pi Packages</h3><p>把扩展 / Skills / 模板 / 主题打成包，经 npm 或 git 分享。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">pi install npm:@foo/bar@1.0.0<br>pi install git:github.com/user/repo@v1<br>pi install https://github.com/user/repo<br>pi install ./relative/path<br><br>pi list<br>pi remove npm:@foo/bar<br>pi update --all<br>pi config<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pi install npm:@foo/bar@1.0.0</span><br><span class="line">pi install git:github.com/user/repo@v1</span><br><span class="line">pi install https://github.com/user/repo</span><br><span class="line">pi install ./relative/path</span><br><span class="line"></span><br><span class="line">pi list</span><br><span class="line">pi remove npm:@foo/bar</span><br><span class="line">pi update --all</span><br><span class="line">pi config</span><br></pre></td></tr></table></figure>
 
 <p><code>-l</code> 写入项目 settings，团队共享；项目受信任后启动会自动安装缺失包。临时试用：<code>pi -e npm:@foo/bar</code>。</p>
 <p><code>package.json</code>：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;my-package&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;keywords&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;pi-package&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;pi&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;extensions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;./extensions&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;skills&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;./skills&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;prompts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;./prompts&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;themes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;./themes&quot;</span><span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my-package&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;keywords&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;pi-package&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pi&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;extensions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./extensions&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./skills&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;prompts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./prompts&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;themes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;./themes&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>无 <code>pi</code> 清单时按约定目录自动发现：<code>extensions/</code>、<code>skills/</code>、<code>prompts/</code>、<code>themes/</code>。</p>
 <p><strong>安全</strong>：包与扩展拥有完整本机权限；第三方务必审源码。</p>
@@ -1475,9 +1318,9 @@
 </tbody></table>
 <p>扩展跑在 <code>pi</code> 进程所在处：宿主 Pi + 工具路由扩展时，<strong>其他自定义扩展工具仍在宿主</strong>，除非它们也委托。</p>
 <p><strong>Docker 示例</strong>：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">24</span>-bookworm-slim<br><span class="hljs-keyword">RUN</span><span class="language-bash"> apt-get update \</span><br><span class="language-bash">  &amp;&amp; apt-get install -y --no-install-recommends bash ca-certificates git ripgrep \</span><br><span class="language-bash">  &amp;&amp; <span class="hljs-built_in">rm</span> -rf /var/lib/apt/lists/*</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /workspace</span><br><span class="hljs-keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="hljs-string">&quot;pi&quot;</span>]</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">24</span>-bookworm-slim</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update \</span></span><br><span class="line"><span class="language-bash">  &amp;&amp; apt-get install -y --no-install-recommends bash ca-certificates git ripgrep \</span></span><br><span class="line"><span class="language-bash">  &amp;&amp; <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install -g --ignore-scripts @earendil-works/pi-coding-agent</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /workspace</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;pi&quot;</span>]</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker build -t pi-sandbox -f Dockerfile.pi .<br>docker run --<span class="hljs-built_in">rm</span> -it \<br>  -e ANTHROPIC_API_KEY \<br>  -v <span class="hljs-string">&quot;<span class="hljs-variable">$PWD</span>:/workspace&quot;</span> \<br>  -v pi-agent-home:/root/.pi/agent \<br>  pi-sandbox<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker build -t pi-sandbox -f Dockerfile.pi .</span><br><span class="line">docker run --<span class="built_in">rm</span> -it \</span><br><span class="line">  -e ANTHROPIC_API_KEY \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$PWD</span>:/workspace&quot;</span> \</span><br><span class="line">  -v pi-agent-home:/root/.pi/agent \</span><br><span class="line">  pi-sandbox</span><br></pre></td></tr></table></figure>
 
 <p>注意：把 <code>$PWD</code> 挂到 <code>/workspace</code> 时，容器内写入会改宿主文件。用命名卷存 <code>/root/.pi/agent</code> 可避免暴露宿主凭据；若挂载宿主 <code>~/.pi/agent</code> 则会话与 Key 会进容器。</p>
 <p><strong>Gondolin</strong>：复制官方示例扩展，<code>npm install</code>，<code>pi -e ~/.pi/agent/extensions/gondolin</code>；cwd 挂到 VM <code>/workspace</code>，覆盖内置工具。需 Node ≥ 23.6.0 与 QEMU。</p>
@@ -1486,9 +1329,9 @@
 <hr>
 <p><a id="ch-sdk"></a></p>
 <h2 id="九、程序化用法"><a href="#九、程序化用法" class="headerlink" title="九、程序化用法"></a>九、程序化用法</h2><h3 id="9-1-SDK-速览"><a href="#9-1-SDK-速览" class="headerlink" title="9.1 SDK 速览"></a>9.1 SDK 速览</h3><p>包内已含 SDK，无需另装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install @earendil-works/pi-coding-agent<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @earendil-works/pi-coding-agent</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> &#123; createAgentSession, <span class="hljs-title class_">ModelRuntime</span>, <span class="hljs-title class_">SessionManager</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@earendil-works/pi-coding-agent&quot;</span>;<br><br><span class="hljs-keyword">const</span> modelRuntime = <span class="hljs-keyword">await</span> <span class="hljs-title class_">ModelRuntime</span>.<span class="hljs-title function_">create</span>();<br><span class="hljs-keyword">const</span> &#123; session &#125; = <span class="hljs-keyword">await</span> <span class="hljs-title function_">createAgentSession</span>(&#123;<br>  <span class="hljs-attr">sessionManager</span>: <span class="hljs-title class_">SessionManager</span>.<span class="hljs-title function_">inMemory</span>(),<br>  modelRuntime,<br>&#125;);<br><br>session.<span class="hljs-title function_">subscribe</span>(<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (event.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;message_update&quot;</span> &amp;&amp; event.<span class="hljs-property">assistantMessageEvent</span>.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;text_delta&quot;</span>) &#123;<br>    process.<span class="hljs-property">stdout</span>.<span class="hljs-title function_">write</span>(event.<span class="hljs-property">assistantMessageEvent</span>.<span class="hljs-property">delta</span>);<br>  &#125;<br>&#125;);<br><br><span class="hljs-keyword">await</span> session.<span class="hljs-title function_">prompt</span>(<span class="hljs-string">&quot;What files are in the current directory?&quot;</span>);<br></code></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createAgentSession, <span class="title class_">ModelRuntime</span>, <span class="title class_">SessionManager</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@earendil-works/pi-coding-agent&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> modelRuntime = <span class="keyword">await</span> <span class="title class_">ModelRuntime</span>.<span class="title function_">create</span>();</span><br><span class="line"><span class="keyword">const</span> &#123; session &#125; = <span class="keyword">await</span> <span class="title function_">createAgentSession</span>(&#123;</span><br><span class="line">  <span class="attr">sessionManager</span>: <span class="title class_">SessionManager</span>.<span class="title function_">inMemory</span>(),</span><br><span class="line">  modelRuntime,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">session.<span class="title function_">subscribe</span>(<span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.<span class="property">type</span> === <span class="string">&quot;message_update&quot;</span> &amp;&amp; event.<span class="property">assistantMessageEvent</span>.<span class="property">type</span> === <span class="string">&quot;text_delta&quot;</span>) &#123;</span><br><span class="line">    process.<span class="property">stdout</span>.<span class="title function_">write</span>(event.<span class="property">assistantMessageEvent</span>.<span class="property">delta</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> session.<span class="title function_">prompt</span>(<span class="string">&quot;What files are in the current directory?&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>用途：自定义 UI、嵌入现有应用、自动化流水线、程序化测 Agent、spawn 子 Agent 等。默认用 <code>DefaultResourceLoader</code> 发现扩展/Skills/模板/主题/上下文。更多见 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/sdk">SDK</a> 与 <code>examples/sdk/</code>。</p>
 <h3 id="9-2-RPC-JSON-事件流"><a href="#9-2-RPC-JSON-事件流" class="headerlink" title="9.2 RPC / JSON 事件流"></a>9.2 RPC / JSON 事件流</h3><ul>
@@ -1580,475 +1423,55 @@
 <p>总入口：<a target="_blank" rel="noopener" href="https://pi.dev/docs/latest">https://pi.dev/docs/latest</a></p>
 <hr>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文覆盖 Pi 文档主线的中文长文整理：从安装认证到会话树、从设置键位到扩展生态、从安全边界到 SDK。扩展 API 的事件与 UI 细节极多，完整类型与示例以官方 <a target="_blank" rel="noopener" href="https://pi.dev/docs/latest/extensions">Extensions</a> 为准；若要动手做一个可用扩展，请看下一篇实战。</p>
-
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI/" class="category-chain-item">AI</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/coding-agent/" class="print-no-link">#coding-agent</a>
-      
-        <a href="/tags/ai/" class="print-no-link">#ai</a>
-      
-        <a href="/tags/cli/" class="print-no-link">#cli</a>
-      
-        <a href="/tags/pi/" class="print-no-link">#pi</a>
-      
-        <a href="/tags/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/" class="print-no-link">#文档翻译</a>
-      
-    </div>
-  
-</div>
-
-
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>Pi 中文文档：官方文档长文翻译</div>
-      <div>https://qngolg.github.io/2026/08/13/Pi中文文档：官方文档长文翻译/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>菜鸟程序员</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2026年8月13日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-cc-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">从零写一个 Pi Extension：自定义工具、命令与权限门</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南">
-                        <span class="hidden-mobile">Pi 中文文档：终端编码 Agent 操作指南</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-  
-  
-    <article id="comments" lazyload>
-      
-  <div id="valine"></div>
-  <script type="text/javascript">
-    Fluid.utils.loadComments('#valine', function() {
-      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
-        var options = Object.assign(
-          {"appId":"RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va","appKey":"qsPlalDJdtYgh4AFO3oiFAox","path":"window.location.pathname","placeholder":"随便说点啥，欢迎吐槽","avatar":"mm","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
-          {
-            el: "#valine",
-            path: window.location.pathname
-          }
-        )
-        new Valine(options);
-        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
-          var imgSelector = '#valine .vcontent img:not(.vemoji)';
-          Fluid.plugins.imageCaption(imgSelector);
-          Fluid.plugins.fancyBox(imgSelector);
-        })
-      });
-    });
-  </script>
-  <noscript>Please enable JavaScript to view the comments</noscript>
-
-
-    </article>
-  
-
-
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
-    })
-  </script>
-
-
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
-
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    function isExpandAllEnabled() {
-      return CONFIG.toc && CONFIG.toc.expand_all === true;
-    }
-    function expandAllToc() {
-      if (!isExpandAllEnabled()) { return; }
-      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
-    }
-    function updateTocToggle($li, $childList) {
-      var $toggle = $li.children('.toc-toggle');
-      if ($toggle.length === 0) { return; }
-      var collapsed = $childList.hasClass('tocbot-is-collapsed');
-      $toggle
-        .toggleClass('toc-toggle-collapsed', collapsed)
-        .toggleClass('toc-toggle-expanded', !collapsed);
-    }
-    function bindTocToggle() {
-      if (!isExpandAllEnabled()) { return; }
-      jQuery('#toc-body .toc-list-item').each(function() {
-        var $li = jQuery(this);
-        var $childList = $li.children('ol');
-        if ($childList.length === 0) {
-          if ($li.children('.toc-toggle').length === 0) {
-            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
-          }
-          return;
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/">https://qngolg.github.io/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/coding-agent/">coding-agent</a><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/cli/">cli</a><a class="post-meta__tags" href="/tags/pi/">pi</a><a class="post-meta__tags" href="/tags/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/">文档翻译</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">从零写一个 Pi Extension：自定义工具、命令与权限门</div></div><div class="info-2"><div class="info-item-1">从零写一个 Pi Extension：自定义工具、命令与权限门 配套阅读：Pi 官方文档长文翻译 · 操作指南 · 官方 Extensions 目标：在本机从空文件开始，做出一个能拦住危险 bash、提供自定义工具与 /todo 命令的扩展，并理解加载位置、热重载与打包。  你将做成什么一个名为 safe-kit 的扩展，具备：  权限门：拦截含 rm -rf、sudo、强制 push 等危险命令，弹确认框 自定义工具：模型可调用的 note 工具，把便签写入项目 .pi/notes/ 斜杠命令：/todo 在页脚显示简易待办，并支持追加 生命周期：session_start / session_shutdown 正确启停  Pi 故意不内置权限弹窗——这正是扩展该做的事。  一、前置条件 已全局安装 Pi：  12npm install -g --ignore-scripts @earendil-works/pi-coding-agentpi -v   能启动一次交互会话（/login 或已设 API Key）。 会一点 TypeScript；扩展由 jiti 直接加载，不必先...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">从零写一个 Pi Extension：自定义工具、命令与权限门</div></div><div class="info-2"><div class="info-item-1">从零写一个 Pi Extension：自定义工具、命令与权限门 配套阅读：Pi 官方文档长文翻译 · 操作指南 · 官方 Extensions 目标：在本机从空文件开始，做出一个能拦住危险 bash、提供自定义工具与 /todo 命令的扩展，并理解加载位置、热重载与打包。  你将做成什么一个名为 safe-kit 的扩展，具备：  权限门：拦截含 rm -rf、sudo、强制 push 等危险命令，弹确认框 自定义工具：模型可调用的 note 工具，把便签写入项目 .pi/notes/ 斜杠命令：/todo 在页脚显示简易待办，并支持追加 生命周期：session_start / session_shutdown 正确启停  Pi 故意不内置权限弹窗——这正是扩展该做的事。  一、前置条件 已全局安装 Pi：  12npm install -g --ignore-scripts @earendil-works/pi-coding-agentpi -v   能启动一次交互会话（/login 或已设 API Key）。 会一点 TypeScript；扩展由 jiti 直接加载，不必先...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到 ~/.omp/agent/sessions/。你可以恢复、派生、创建分支并分享它们。设置、凭...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/" title="Oh My Pi (omp) 全量快捷键指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Oh My Pi (omp) 全量快捷键指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi (omp) 全量快捷键指南 本文基于 omp 内置文档（keybindings.md、agent-hub.md、tree.md、TUI 运行时文档）归纳整理。快捷键可能随版本调整，在任意 omp 会话内运行 /hotkeys 即可查看当前构建实际生效的全部按键（包含磁盘上的重映射与扩展注册的绑定）。  目录导航 一、快速上手 二、模型与计划模式 三、思考块与工具显示 四、编辑器与消息 五、剪贴板与终端显示 六、语音 七、Agent Hub 八、进程控制：中断、退出与挂起 九、Tree 会话树选择器 十、会话切换器 十一、自定义快捷键 十二、扩展开发者的保留快捷键   一、快速上手 **/hotkeys**：在 omp 会话内运行，列出当前构建生效的全部按键组合。该列表会反映： 用户磁盘上的重映射（~/.omp/agent/keybindings.yml）； 扩展注册的额外绑定。    二、模型与计划模式   快捷键 动作 ID 含义    Ctrl+P app.model.cycleForward 向前循环切换角色模型   Shift+Ctrl+P app.mo...</div></div></div></a><a class="pagination-related" href="/2026/08/10/Warp%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9AAgentic-Development-Environment%E5%85%A8%E9%87%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Warp 中文文档：Agentic Development Environment 操作指南（十一章）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-10</div><div class="info-item-2">Warp 中文文档：Agentic Development Environment 操作指南（十一章）</div></div><div class="info-2"><div class="info-item-1">Warp 中文文档：Agentic Development Environment 操作指南 本文基于 Warp 官方文档 归纳整理为 11 章操作指南，方便上手与日常查阅。原文持续更新，细节与截图以官方为准。 Warp 是开源的 智能体开发环境（Agentic Development Environment）：高性能终端 + 内置/第三方 Agents；智能体能力由 Oz 编排，可本地交互，也可云端自动化。  目录导航 一、认识 Warp 与 Oz 二、安装、迁移与自定义 三、终端核心：Blocks 与输入编辑器 四、窗口、会话与外观 五、本地 Agents 与编程工作流 六、代码编辑与 Code Review 七、知识与协作：Warp Drive 八、Warp Agent CLI 九、Oz 平台与云端智能体 十、企业版与安全 十一、账单、隐私与排障   一、认识 Warp 与 Oz1.1 Warp 是什么Warp 把「现代终端」和「编码 Agent」放在同一产品里：    能力 作用    终端 / Agent 双模式 干净跑命令，或进入多轮对话让 Agent 写代码、调试、...</div></div></div></a><a class="pagination-related" href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" title="LangGraph 入门：核心组件与架构详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-23</div><div class="info-item-2">LangGraph 入门：核心组件与架构详解</div></div><div class="info-2"><div class="info-item-1">LangGraph 入门：核心组件与架构详解如果你已经用 LangChain 写过 RAG 或 Agent，大概率会遇到这样的困境：对话轮次一多，状态管理变得混乱；多 Agent 协作时，流程难以控制；关键操作需要人工审批，却没有优雅的暂停/恢复机制。 LangGraph 是 LangChain 团队推出的有状态图编排框架，专门用于构建可持久化、可中断、可观测的 Agent 工作流。它把 Agent 的执行过程建模为一张有向图：节点负责执行业务逻辑，边负责路由决策，全局 State 在各节点之间流转。 本文将系统梳理 LangGraph 的各个核心组件，并配合代码示例说明它们如何协同工作。 一、LangGraph 是什么？在传统的 Chain 中，数据通常是单向流水线传递的：A 的输出作为 B 的输入，很难表达循环、分支和共享状态。 LangGraph 的核心思路是： 1State（共享状态） ←→ Node（计算单元） ←→ Edge（路由规则）     对比维度 传统 Chain LangGraph    状态管理 隐式传递 显式共享 State   控制流 线性为主 支持循...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Pi-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91"><span class="toc-number">1.</span> <span class="toc-text">Pi 中文文档：官方文档长文翻译</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E5%AF%BC%E8%88%AA"><span class="toc-number">1.1.</span> <span class="toc-text">目录导航</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E8%A7%88%E4%B8%8E%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="toc-number">1.2.</span> <span class="toc-text">一、概览与快速开始</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Pi-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 Pi 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%AE%A4%E8%AF%81"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3 认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BC%9A%E8%AF%9D"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.4 第一次会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E9%A1%B9%E7%9B%AE%E6%8C%87%E4%BB%A4%EF%BC%88Context-Files%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.5 项目指令（Context Files）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8-Pi"><span class="toc-number">1.3.</span> <span class="toc-text">二、使用 Pi</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BA%A4%E4%BA%92%E7%95%8C%E9%9D%A2"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 交互界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%BC%96%E8%BE%91%E5%99%A8%E5%8A%9F%E8%83%BD"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 编辑器功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 斜杠命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4 消息队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E4%BC%9A%E8%AF%9D-CLI-%E5%85%A5%E5%8F%A3"><span class="toc-number">1.3.5.</span> <span class="toc-text">2.5 会话 CLI 入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E4%BB%BB%EF%BC%88Usage-%E8%8A%82%E6%91%98%E8%A6%81%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">2.6 项目信任（Usage 节摘要）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E5%AF%BC%E5%87%BA%E4%B8%8E%E5%88%86%E4%BA%AB"><span class="toc-number">1.3.7.</span> <span class="toc-text">2.7 导出与分享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-CLI-%E5%8F%82%E8%80%83"><span class="toc-number">1.3.8.</span> <span class="toc-text">2.8 CLI 参考</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%85%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.8.1.</span> <span class="toc-text">包命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.8.2.</span> <span class="toc-text">模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%80%89%E9%A1%B9"><span class="toc-number">1.3.8.3.</span> <span class="toc-text">模型选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%9A%E8%AF%9D%E9%80%89%E9%A1%B9"><span class="toc-number">1.3.8.4.</span> <span class="toc-text">会话选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E9%80%89%E9%A1%B9"><span class="toc-number">1.3.8.5.</span> <span class="toc-text">工具选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%80%89%E9%A1%B9"><span class="toc-number">1.3.8.6.</span> <span class="toc-text">资源选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">1.3.8.7.</span> <span class="toc-text">其他</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8F%82%E6%95%B0%E4%B8%8E%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.3.8.8.</span> <span class="toc-text">文件参数与示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8F%90%E4%BE%9B%E5%95%86%E4%B8%8E%E8%AE%A4%E8%AF%81"><span class="toc-number">1.4.</span> <span class="toc-text">三、提供商与认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%AE%A2%E9%98%85%EF%BC%88-login%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 订阅（&#x2F;login）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-API-Key-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%88%E8%8A%82%E9%80%89%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 API Key 环境变量（节选）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-auth-json"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 auth.json</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E4%BA%91%E5%8E%82%E5%95%86%E8%A6%81%E7%82%B9"><span class="toc-number">1.4.4.</span> <span class="toc-text">3.4 云厂商要点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-llama-cpp-%E8%87%AA%E5%AE%9A%E4%B9%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">3.5 llama.cpp &#x2F; 自定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%87%AD%E6%8D%AE%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.4.6.</span> <span class="toc-text">3.6 凭据解析顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%BC%9A%E8%AF%9D%E3%80%81%E6%A0%91%E4%B8%8E%E5%8E%8B%E7%BC%A9"><span class="toc-number">1.5.</span> <span class="toc-text">四、会话、树与压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AD%98%E5%82%A8"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%81%A2%E5%A4%8D%E4%B8%8E%E5%88%A0%E9%99%A4"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 恢复与删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%91%BD%E5%90%8D"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-tree-%E5%88%86%E6%94%AF%E5%AF%BC%E8%88%AA"><span class="toc-number">1.5.4.</span> <span class="toc-text">4.4 &#x2F;tree 分支导航</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-tree-vs-fork-vs-clone"><span class="toc-number">1.5.5.</span> <span class="toc-text">4.5 &#x2F;tree vs &#x2F;fork vs &#x2F;clone</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E5%88%86%E6%94%AF%E6%91%98%E8%A6%81"><span class="toc-number">1.5.6.</span> <span class="toc-text">4.6 分支摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-Compaction"><span class="toc-number">1.5.7.</span> <span class="toc-text">4.7 Compaction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.6.</span> <span class="toc-text">五、设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E6%A8%A1%E5%9E%8B%E4%B8%8E-Thinking"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 模型与 Thinking</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-UI-%E4%BF%A1%E4%BB%BB-TUI"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 UI &#x2F; 信任 &#x2F; TUI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E7%BD%91%E7%BB%9C-%E5%8E%8B%E7%BC%A9-%E9%87%8D%E8%AF%95-%E6%B6%88%E6%81%AF%E6%8A%95%E9%80%92"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 网络 &#x2F; 压缩 &#x2F; 重试 &#x2F; 消息投递</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-Shell-%E5%B7%A5%E5%85%B7-%E4%BC%9A%E8%AF%9D-%E8%B5%84%E6%BA%90"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 Shell &#x2F; 工具 &#x2F; 会话 &#x2F; 资源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.7.</span> <span class="toc-text">六、快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%B8%B8%E7%94%A8%E5%BA%94%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.7.1.</span> <span class="toc-text">6.1 常用应用快捷键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%A4%BA%E4%BE%8B%EF%BC%88Emacs-%E9%A3%8E%E6%A0%BC%E5%8E%86%E5%8F%B2%EF%BC%89"><span class="toc-number">1.7.2.</span> <span class="toc-text">6.2 自定义示例（Emacs 风格历史）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%AE%9A%E5%88%B6%EF%BC%9A%E6%89%A9%E5%B1%95-Skills-%E6%A8%A1%E6%9D%BF-%E4%B8%BB%E9%A2%98-%E5%8C%85"><span class="toc-number">1.8.</span> <span class="toc-text">七、定制：扩展 &#x2F; Skills &#x2F; 模板 &#x2F; 主题 &#x2F; 包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-Extensions"><span class="toc-number">1.8.1.</span> <span class="toc-text">7.1 Extensions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-Skills"><span class="toc-number">1.8.2.</span> <span class="toc-text">7.2 Skills</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-Prompt-Templates"><span class="toc-number">1.8.3.</span> <span class="toc-text">7.3 Prompt Templates</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-Themes"><span class="toc-number">1.8.4.</span> <span class="toc-text">7.4 Themes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-5-Pi-Packages"><span class="toc-number">1.8.5.</span> <span class="toc-text">7.5 Pi Packages</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%AE%89%E5%85%A8%E4%B8%8E%E5%AE%B9%E5%99%A8%E5%8C%96"><span class="toc-number">1.9.</span> <span class="toc-text">八、安全与容器化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E4%BB%BB-%E2%89%A0-%E6%B2%99%E7%AE%B1"><span class="toc-number">1.9.1.</span> <span class="toc-text">8.1 项目信任 ≠ 沙箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%97%A0%E5%86%85%E7%BD%AE%E6%B2%99%E7%AE%B1"><span class="toc-number">1.9.2.</span> <span class="toc-text">8.2 无内置沙箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%AE%B9%E5%99%A8%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.9.3.</span> <span class="toc-text">8.3 容器化模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%94%A8%E6%B3%95"><span class="toc-number">1.10.</span> <span class="toc-text">九、程序化用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-SDK-%E9%80%9F%E8%A7%88"><span class="toc-number">1.10.1.</span> <span class="toc-text">9.1 SDK 速览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-RPC-JSON-%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="toc-number">1.10.2.</span> <span class="toc-text">9.2 RPC &#x2F; JSON 事件流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99%E4%B8%8E%E7%BA%A6%E5%AE%9A"><span class="toc-number">1.11.</span> <span class="toc-text">十、设计原则与约定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-%E5%88%BB%E6%84%8F%E4%B8%8D%E5%81%9A%E7%9A%84%E4%BA%8B"><span class="toc-number">1.11.1.</span> <span class="toc-text">10.1 刻意不做的事</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-%E7%BA%A6%E5%AE%9A%E9%80%9F%E8%AE%B0"><span class="toc-number">1.11.2.</span> <span class="toc-text">10.2 约定速记</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-%E5%AE%98%E6%96%B9%E5%AF%BC%E8%88%AA"><span class="toc-number">1.11.3.</span> <span class="toc-text">10.3 官方导航</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">1.12.</span> <span class="toc-text">结语</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Kiro">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Kiro</a><time datetime="2026-08-17T07:30:00.000Z" title="发表于 2026-08-17 15:30:00">2026-08-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门">从零写一个 Pi Extension：自定义工具、命令与权限门</a><time datetime="2026-08-13T04:00:00.000Z" title="发表于 2026-08-13 12:00:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译">Pi 中文文档：官方文档长文翻译</a><time datetime="2026-08-13T03:50:00.000Z" title="发表于 2026-08-13 11:50:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南">Pi 中文文档：终端编码 Agent 操作指南</a><time datetime="2026-08-13T03:40:00.000Z" title="发表于 2026-08-13 11:40:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/" title="Oh My Pi (omp) 全量快捷键指南">Oh My Pi (omp) 全量快捷键指南</a><time datetime="2026-08-13T02:00:00.000Z" title="发表于 2026-08-13 10:00:00">2026-08-13</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
         }
-
-        if ($li.children('.toc-toggle').length === 0) {
-          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
-        }
-        updateTocToggle($li, $childList);
-      });
-      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var $li = jQuery(this).parent('.toc-list-item');
-        var $childList = $li.children('ol');
-        if ($childList.length === 0) { return; }
-        $childList.toggleClass('tocbot-is-collapsed');
-        updateTocToggle($li, $childList);
-      });
-      if (!window.__tocToggleObserver) {
-        window.__tocToggleObserver = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
-            var $list = jQuery(mutation.target);
-            var $li = $list.parent('.toc-list-item');
-            if ($li.length === 0) { return; }
-            updateTocToggle($li, $list);
-          });
-        });
-        jQuery('#toc-body ol').each(function() {
-          window.__tocToggleObserver.observe(this, { attributes: true });
-        });
       }
     }
-    var tocConfig = Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc);
-    if (isExpandAllEnabled()) {
-      tocConfig.collapseDepth = 6;
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey: 'qsPlalDJdtYgh4AFO3oiFAox',
+      avatar: 'mm',
+      serverURLs: 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
     }
-    window.tocbot.init(tocConfig);
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine@1.5.3/dist/Valine.min.js')
+      initValine(el, path)
     }
-    expandAllToc();
-    bindTocToggle();
+  }
 
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-        expandAllToc();
-        bindTocToggle();
-      }
-    });
-  });
-</script>
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
 
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
-    }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-</body>
-</html>
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
