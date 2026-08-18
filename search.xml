@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Kiro</title>
+    <title>2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Kiro</title>
     <url>/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/</url>
-    <content><![CDATA[<h1 id="2026-流行-Coding-Agent-能力对比：Oh-My-Pi、Claude-Code、Reasonix、Cursor、Zed、OpenCode、Kiro"><a href="#2026-流行-Coding-Agent-能力对比：Oh-My-Pi、Claude-Code、Reasonix、Cursor、Zed、OpenCode、Kiro" class="headerlink" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Kiro"></a>2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Kiro</h1><p>2026 年再问「哪个 Coding Agent 最强」，答案几乎一定是错的——因为它们已经不是同一类产品。</p>
+    <content><![CDATA[<h1 id="2026-流行-Coding-Agent-能力对比：Oh-My-Pi、Claude-Code、Reasonix、Cursor、Zed、OpenCode、Crush、Kiro"><a href="#2026-流行-Coding-Agent-能力对比：Oh-My-Pi、Claude-Code、Reasonix、Cursor、Zed、OpenCode、Crush、Kiro" class="headerlink" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Kiro"></a>2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Kiro</h1><p>2026 年再问「哪个 Coding Agent 最强」，答案几乎一定是错的——因为它们已经不是同一类产品。</p>
 <p>都能读仓库、改文件、跑命令、接 MCP，这只说明 <strong>Agent 循环已经商品化</strong>。真正拉开差距的，是循环外面那一层：模型锁不锁定、上下文怎么压、编辑会不会改坏文件、长任务能不能留着跑、失败了能不能回退、以及 Agent 到底住在终端、编辑器，还是云端虚拟机里。</p>
-<p>本文对比七个当下最常被并列讨论的选手：</p>
+<p>本文对比八个当下最常被并列讨论的选手：</p>
 <table>
 <thead>
 <tr>
@@ -38,14 +38,18 @@
 <td>开源、多提供商、终端/桌面/IDE 都有的通用 harness</td>
 </tr>
 <tr>
+<td><a href="https://github.com/charmbracelet/crush">Crush</a></td>
+<td>Charm 的终端 Agent，TUI 漂亮、会话中途可换模型</td>
+</tr>
+<tr>
 <td><a href="https://kiro.dev/">Kiro</a></td>
 <td>AWS 的规格驱动（spec-driven）Agentic IDE/CLI</td>
 </tr>
 </tbody></table>
 <p>对比口径以 <strong>2026 年 8 月</strong> 的公开文档与产品定位为准。各家迭代很快，具体命令和定价请以官网为准。</p>
 <hr>
-<h2 id="一、先别比功能清单，先看它住在哪一层"><a href="#一、先别比功能清单，先看它住在哪一层" class="headerlink" title="一、先别比功能清单，先看它住在哪一层"></a>一、先别比功能清单，先看它住在哪一层</h2><p>把七个产品摊成一张功能表，会得到「大家都有 Plan Mode、MCP、Skills」这种没有信息量的结论。更有用的是先分三层：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">┌──────────────────────────────────────────────┐</span><br><span class="line">│  协议层：MCP（工具） / ACP（编辑器↔Agent） / Agent Skills │</span><br><span class="line">└──────────────────────────────────────────────┘</span><br><span class="line">                      ▲</span><br><span class="line">        ┌─────────────┼─────────────┐</span><br><span class="line">        │             │             │</span><br><span class="line">┌───────┴──────┐ ┌────┴─────┐ ┌────┴──────────┐</span><br><span class="line">│ 终端 Harness │ │ AI 原生IDE│ │ 规格驱动 IDE  │</span><br><span class="line">│ Claude Code  │ │ Cursor    │ │ Kiro          │</span><br><span class="line">│ Oh My Pi     │ │ Zed*      │ └───────────────┘</span><br><span class="line">│ OpenCode     │ └──────────┘</span><br><span class="line">│ Reasonix     │</span><br><span class="line">└──────────────┘</span><br></pre></td></tr></table></figure>
+<h2 id="一、先别比功能清单，先看它住在哪一层"><a href="#一、先别比功能清单，先看它住在哪一层" class="headerlink" title="一、先别比功能清单，先看它住在哪一层"></a>一、先别比功能清单，先看它住在哪一层</h2><p>把八个产品摊成一张功能表，会得到「大家都有 Plan Mode、MCP、Skills」这种没有信息量的结论。更有用的是先分三层：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">┌──────────────────────────────────────────────┐</span><br><span class="line">│  协议层：MCP（工具） / ACP（编辑器↔Agent） / Agent Skills │</span><br><span class="line">└──────────────────────────────────────────────┘</span><br><span class="line">                      ▲</span><br><span class="line">        ┌─────────────┼─────────────┐</span><br><span class="line">        │             │             │</span><br><span class="line">┌───────┴──────┐ ┌────┴─────┐ ┌────┴──────────┐</span><br><span class="line">│ 终端 Harness │ │ AI 原生IDE│ │ 规格驱动 IDE  │</span><br><span class="line">│ Claude Code  │ │ Cursor    │ │ Kiro          │</span><br><span class="line">│ Oh My Pi     │ │ Zed*      │ └───────────────┘</span><br><span class="line">│ OpenCode     │ └──────────┘</span><br><span class="line">│ Crush        │</span><br><span class="line">│ Reasonix     │</span><br><span class="line">└──────────────┘</span><br></pre></td></tr></table></figure>
 
 <p><code>Zed*</code> 比较特殊：它既有自己的 <strong>Zed Agent</strong>，更关键的战略是当 <strong>ACP 宿主</strong>——Claude Code、OpenCode、Pi、Codex、Gemini CLI 都可以进同一个 Agent Panel。</p>
 <p>三类产品解决的不是同一个痛点：</p>
@@ -59,7 +63,7 @@
 </thead>
 <tbody><tr>
 <td>终端 / 多入口 Harness</td>
-<td>Claude Code、omp、OpenCode、Reasonix</td>
+<td>Claude Code、omp、OpenCode、Crush、Reasonix</td>
 <td>Agent 循环本身：工具面、权限、会话、子代理、可脚本化</td>
 </tr>
 <tr>
@@ -75,7 +79,7 @@
 </tbody></table>
 <p>所以后文会按 <strong>能力轴</strong> 比，而不是按「谁功能更多」。上下文怎么管，可以对照前文 <a href="/2026/08/11/Cursor%E4%B8%8EClaude-Code%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Agent%E4%B8%8D%E6%98%AF%E4%B8%80%E8%82%A1%E8%84%91%E5%A1%9E%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95/">Cursor 与 Claude Code 的上下文工程</a>。</p>
 <hr>
-<h2 id="二、七个选手：各自在优化什么"><a href="#二、七个选手：各自在优化什么" class="headerlink" title="二、七个选手：各自在优化什么"></a>二、七个选手：各自在优化什么</h2><h3 id="2-1-Oh-My-Pi（omp）：把-IDE-工具面塞进终端"><a href="#2-1-Oh-My-Pi（omp）：把-IDE-工具面塞进终端" class="headerlink" title="2.1 Oh My Pi（omp）：把 IDE 工具面塞进终端"></a>2.1 Oh My Pi（omp）：把 IDE 工具面塞进终端</h3><p><a href="https://omp.sh/">omp</a> 是 Mario Zechner 的 <a href="https://github.com/badlogic/pi-mono">Pi</a> 的编码向分支。定位很明确：给长期泡在终端、跨仓库工作的人一套 <strong>和自己同等能力</strong> 的工具面。</p>
+<h2 id="二、八个选手：各自在优化什么"><a href="#二、八个选手：各自在优化什么" class="headerlink" title="二、八个选手：各自在优化什么"></a>二、八个选手：各自在优化什么</h2><h3 id="2-1-Oh-My-Pi（omp）：把-IDE-工具面塞进终端"><a href="#2-1-Oh-My-Pi（omp）：把-IDE-工具面塞进终端" class="headerlink" title="2.1 Oh My Pi（omp）：把 IDE 工具面塞进终端"></a>2.1 Oh My Pi（omp）：把 IDE 工具面塞进终端</h3><p><a href="https://omp.sh/">omp</a> 是 Mario Zechner 的 <a href="https://github.com/badlogic/pi-mono">Pi</a> 的编码向分支。定位很明确：给长期泡在终端、跨仓库工作的人一套 <strong>和自己同等能力</strong> 的工具面。</p>
 <p>它和其他终端 Agent 拉开差距的，不是「又能读文件了」，而是这几件硬能力：</p>
 <ul>
 <li><strong>哈希行编辑（hashline）</strong>：每一行带短内容哈希锚点，模型按锚点改，不必复现空白；过期锚点会在写坏文件前被拦住。</li>
@@ -145,7 +149,49 @@
 <li>另有 Zen：官方测过、专门给 coding agent 用的模型通道</li>
 </ul>
 <p>它和 omp 的分工可以记成：OpenCode 赢在 <strong>覆盖面和社区规模</strong>；omp 赢在 <strong>编辑可靠性与调试器/LSP 工具深度</strong>。和 Claude Code 比，同样接 Claude 模型，OpenCode 通常拿不到官方 harness 那层调参红利，但换模型、换本地、审计源码是它的主场。</p>
-<h3 id="2-7-Kiro：先写规格，再让-Agent-按图施工"><a href="#2-7-Kiro：先写规格，再让-Agent-按图施工" class="headerlink" title="2.7 Kiro：先写规格，再让 Agent 按图施工"></a>2.7 Kiro：先写规格，再让 Agent 按图施工</h3><p><a href="https://kiro.dev/">Kiro</a> 是 AWS 的 Agentic 工程产品，核心不是「聊两句就改仓库」，而是 <strong>spec-driven development</strong>：</p>
+<p>名字上容易和 Crush 搅在一起：最早有一个 Go 写的 OpenCode，作者后来把代码带到 Charm，演变成今天的 Crush；现在大家说的 <a href="https://opencode.ai/">OpenCode</a> 是另一条 TypeScript 产品线。两家都接多模型、都活在终端，但 <strong>不是同一个项目的两个名字</strong>——OpenCode 是 MIT，Crush 是 FSL-1.1-MIT。</p>
+<h3 id="2-7-Crush：把终端本身做成一等产品"><a href="#2-7-Crush：把终端本身做成一等产品" class="headerlink" title="2.7 Crush：把终端本身做成一等产品"></a>2.7 Crush：把终端本身做成一等产品</h3><p><a href="https://github.com/charmbracelet/crush">Crush</a> 是 <a href="https://charm.land/">Charm</a> 的终端编码 Agent。Charm 做过 Bubble Tea、Lip Gloss、Glow 这一整套 TUI 基建，Crush 的产品直觉很明确：<strong>Agent 循环可以商品化，终端体验还没有。</strong></p>
+<p>公开能力里最能站住脚的几条：</p>
+<ul>
+<li><strong>会话中途换模型还不丢上下文</strong>：Anthropic、OpenAI、Gemini、Bedrock、Copilot、OpenRouter、Groq，以及 OpenAI / Anthropic 兼容端点；本地可走 Ollama / LM Studio。<code>Ctrl+L</code> 或 <code>/model</code> 当场切。</li>
+<li><strong>LSP 当一等上下文</strong>：诊断、引用、符号；配置 <code>gopls</code> / <code>nil</code> 这类语言服务器后，模型做重构时能用到和编辑器同一层的代码智能。</li>
+<li><strong>项目级会话</strong>：同一仓库可挂多个 named session，停下来还能从原处续。</li>
+<li><strong>MCP + Agent Skills</strong>：<code>http</code> / <code>stdio</code> / <code>sse</code>；Skills 走 <code>SKILL.md</code> 开放标准，可从 <code>~/.config/crush/skills/</code> 或项目路径按需加载。</li>
+<li><strong>Hooks 对齐 Claude Code</strong>：当前主力是 <code>PreToolUse</code>，用 shell 脚本拦危险命令、改工具入参、注入上下文；配置形态和 Claude Code 接近，不少现成 hook 能直接搬。</li>
+<li><strong>单文件 Go 二进制，终端覆盖面极宽</strong>：macOS / Linux / Windows（PowerShell 与 WSL）、Android、FreeBSD / OpenBSD / NetBSD。</li>
+<li>官方模型通道是 <a href="https://charm.land/">Hyper</a>：订阅制、有免费档、宣传零数据保留（ZDR）。当然也可以完全 BYOK。</li>
+</ul>
+<p>它和同场终端选手的分工也比较清楚：</p>
+<table>
+<thead>
+<tr>
+<th>你更想要…</th>
+<th>更该看</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TUI 手感、中途换模型、跨奇葩平台</td>
+<td>Crush</td>
+</tr>
+<tr>
+<td>桌面端 / IDE 扩展 / 最大提供商目录</td>
+<td>OpenCode</td>
+</tr>
+<tr>
+<td>DAP 调试器、hashline、会话树</td>
+<td>Oh My Pi</td>
+</tr>
+<tr>
+<td>官方 Claude 调参与多入口续跑</td>
+<td>Claude Code</td>
+</tr>
+<tr>
+<td>长挂机 + DeepSeek 缓存</td>
+<td>Reasonix</td>
+</tr>
+</tbody></table>
+<p>代价同样具体：主入口仍是终端，没有 Cursor 那种补全工作台，也没有 Claude Code 那套桌面/手机/云端 Routines。许可证是 <strong>FSL-1.1-MIT</strong>（源码可见，两年后转 MIT，期间限制拿它做竞争性商业产品），团队采购时不要把它当成纯 MIT。ACP 方向在推进（可作为 agent 接到编辑器），但目前远不如它自己的 TUI 成熟。</p>
+<h3 id="2-8-Kiro：先写规格，再让-Agent-按图施工"><a href="#2-8-Kiro：先写规格，再让-Agent-按图施工" class="headerlink" title="2.8 Kiro：先写规格，再让 Agent 按图施工"></a>2.8 Kiro：先写规格，再让 Agent 按图施工</h3><p><a href="https://kiro.dev/">Kiro</a> 是 AWS 的 Agentic 工程产品，核心不是「聊两句就改仓库」，而是 <strong>spec-driven development</strong>：</p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">自然语言描述</span><br><span class="line">  → requirements.md（用户故事 / 验收标准）</span><br><span class="line">  → design.md（架构、时序、实现约束）</span><br><span class="line">  → tasks.md（可勾选任务）</span><br><span class="line">  → 并行 Agent 按依赖波次执行</span><br></pre></td></tr></table></figure>
 
 <p>配套还有：</p>
@@ -205,13 +251,19 @@
 <td>是（MIT）</td>
 </tr>
 <tr>
+<td>Crush</td>
+<td>终端 TUI</td>
+<td><code>crush serve</code> / ACP 方向</td>
+<td>源码可见（FSL-1.1-MIT）</td>
+</tr>
+<tr>
 <td>Kiro</td>
 <td>Spec IDE</td>
 <td>CLI、云端、CI headless</td>
 <td>否（AWS）</td>
 </tr>
 </tbody></table>
-<p>读这张表时有一个实用结论：<strong>终端 Agent 和 IDE 越来越不是互斥关系</strong>。Claude Code 能进 Cursor / Zed；Reasonix / OpenCode / Pi 能走 ACP；Kiro Agent 也宣称兼容 ACP。2026 年更常见的用法是 <strong>一个宿主 + 多个循环</strong>。</p>
+<p>读这张表时有一个实用结论：<strong>终端 Agent 和 IDE 越来越不是互斥关系</strong>。Claude Code 能进 Cursor / Zed；Reasonix / OpenCode / Pi 能走 ACP；Crush 也在补 ACP；Kiro Agent 也宣称兼容 ACP。2026 年更常见的用法是 <strong>一个宿主 + 多个循环</strong>。</p>
 <h3 id="3-2-模型策略"><a href="#3-2-模型策略" class="headerlink" title="3.2 模型策略"></a>3.2 模型策略</h3><table>
 <thead>
 <tr>
@@ -256,6 +308,12 @@
 <td>任意提供商；可用 Zen</td>
 <td>很强（75+）</td>
 <td>一等公民</td>
+</tr>
+<tr>
+<td>Crush</td>
+<td>Hyper 官方通道 + 任意兼容端点</td>
+<td>强；<strong>会话中途可换模型</strong></td>
+<td>Ollama / LM Studio</td>
 </tr>
 <tr>
 <td>Kiro</td>
@@ -313,6 +371,12 @@
 <td>TUI diff 审阅</td>
 <td>auto-compact；Plan/Build 分阶段</td>
 <td><code>/undo</code> <code>/redo</code>、git snapshot</td>
+</tr>
+<tr>
+<td>Crush</td>
+<td>view / edit / write / multiedit</td>
+<td>多 named session；LSP 诊断与符号进上下文</td>
+<td>权限门 + <code>--yolo</code>；无独立 checkpoint 叙事</td>
 </tr>
 <tr>
 <td>Kiro</td>
@@ -387,6 +451,14 @@
 <td>LSP 自动加载、会话分享</td>
 </tr>
 <tr>
+<td>Crush</td>
+<td>有</td>
+<td>有（Agent Skills 标准）</td>
+<td><code>PreToolUse</code>（兼容 Claude Code）</td>
+<td>多 session；子代理不是卖点</td>
+<td>LSP 符号/诊断、中途换模型、Charm TUI</td>
+</tr>
+<tr>
 <td>Kiro</td>
 <td>有</td>
 <td>有</td>
@@ -395,7 +467,7 @@
 <td>Spec 三件套、属性测试、Steering</td>
 </tr>
 </tbody></table>
-<p>Skills 怎么写才不会把窗口挤爆，见 <a href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">Agent Skills 编写最佳实践</a>。2026 年的现实是：<code>SKILL.md</code> / <code>AGENTS.md</code> / <code>CLAUDE.md</code> / Cursor Rules 正在收敛成同一类「给 Agent 看的仓库说明书」，但 <strong>加载策略和触发时机仍是各家 harness 的秘密酱汁</strong>。</p>
+<p>Skills 怎么写才不会把窗口挤爆，见 <a href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/">Agent Skills 编写最佳实践</a>。2026 年的现实是：<code>SKILL.md</code> / <code>AGENTS.md</code> / <code>CLAUDE.md</code> / <code>CRUSH.md</code> / Cursor Rules 正在收敛成同一类「给 Agent 看的仓库说明书」，但 <strong>加载策略和触发时机仍是各家 harness 的秘密酱汁</strong>。</p>
 <h3 id="3-5-自治程度与安全默认"><a href="#3-5-自治程度与安全默认" class="headerlink" title="3.5 自治程度与安全默认"></a>3.5 自治程度与安全默认</h3><table>
 <thead>
 <tr>
@@ -433,6 +505,11 @@
 <td>OpenCode</td>
 <td>相对更敢跑，靠 snapshot 回滚</td>
 <td>中长</td>
+</tr>
+<tr>
+<td>Crush</td>
+<td>工具可预授权；<code>--yolo</code> 跳过确认</td>
+<td>中；交互式终端循环，不是挂机型</td>
 </tr>
 <tr>
 <td>Kiro</td>
@@ -481,6 +558,11 @@
 <td>官方称不存代码；请求去你选的提供商</td>
 </tr>
 <tr>
+<td>Crush</td>
+<td>Hyper 订阅或 BYOK</td>
+<td>本机 TUI；请求去 Hyper 或你选的提供商</td>
+</tr>
+<tr>
 <td>Kiro</td>
 <td>AWS / Kiro 积分</td>
 <td>AWS 管控面，企业合同和合规选项最多</td>
@@ -493,19 +575,22 @@
 <p>你需要的是 Tab、内联改、多文件 diff、随时插一句「不对，那边也要改」。Claude Code 的 IDE 插件能补这层，但编辑器本体仍是 Cursor / VS Code / Zed 的主场。Kiro 也能写，不过它会先拉你去补规格——小改动时这是税，大功能时这是资产。</p>
 <h3 id="4-2-模糊需求、跨模块重构、质量优先"><a href="#4-2-模糊需求、跨模块重构、质量优先" class="headerlink" title="4.2 模糊需求、跨模块重构、质量优先"></a>4.2 模糊需求、跨模块重构、质量优先</h3><p><strong>Claude Code 第一。</strong></p>
 <p>官方循环对 Claude 模型的发挥最稳：计划、改、跑测试、读错误、再改。Cursor Agent 配 Claude / Composer 也很强，尤其人还想盯着 diff。开源 harness 接同一模型，上限通常略低一档，但换来可控性和价格。</p>
-<h3 id="4-3-要调试器、LSP-重构、并发编辑别写坏文件"><a href="#4-3-要调试器、LSP-重构、并发编辑别写坏文件" class="headerlink" title="4.3 要调试器、LSP 重构、并发编辑别写坏文件"></a>4.3 要调试器、LSP 重构、并发编辑别写坏文件</h3><p><strong>Oh My Pi。</strong></p>
-<p>这是目前这张名单里，唯一把 DAP 和哈希锚点编辑当成一等能力的终端 Agent。写系统软件、改编译器、需要「先在调试器里看 locals 再决定补丁」时，它不是玩具功能。</p>
+<h3 id="4-3-要调试器、LSP-重构、并发编辑别写坏文件"><a href="#4-3-要调试器、LSP-重构、并发编辑别写坏文件" class="headerlink" title="4.3 要调试器、LSP 重构、并发编辑别写坏文件"></a>4.3 要调试器、LSP 重构、并发编辑别写坏文件</h3><p><strong>Oh My Pi。</strong> Crush 也有 LSP（诊断、符号、rename 一类），但没有 DAP，编辑也不是 hashline。写系统软件、改编译器、需要「先在调试器里看 locals 再决定补丁」时，仍是 omp。只是想让终端 Agent 看懂类型和引用，Crush / OpenCode 通常够用。</p>
 <h3 id="4-4-长任务挂机、DeepSeek-成本敏感"><a href="#4-4-长任务挂机、DeepSeek-成本敏感" class="headerlink" title="4.4 长任务挂机、DeepSeek 成本敏感"></a>4.4 长任务挂机、DeepSeek 成本敏感</h3><p><strong>Reasonix。</strong></p>
 <p>产品是按「开着过夜、每轮可回退、缓存尽量命中」设计的。OpenCode / omp 也能长跑，但 Reasonix 把 cache 稳定性和 checkpoint 做成了默认骨架。</p>
-<h3 id="4-5-要换模型、要本地、要审计源码、团队不想锁死厂商"><a href="#4-5-要换模型、要本地、要审计源码、团队不想锁死厂商" class="headerlink" title="4.5 要换模型、要本地、要审计源码、团队不想锁死厂商"></a>4.5 要换模型、要本地、要审计源码、团队不想锁死厂商</h3><p><strong>OpenCode 或 Oh My Pi。</strong></p>
+<h3 id="4-5-要换模型、要本地、要审计源码、团队不想锁死厂商"><a href="#4-5-要换模型、要本地、要审计源码、团队不想锁死厂商" class="headerlink" title="4.5 要换模型、要本地、要审计源码、团队不想锁死厂商"></a>4.5 要换模型、要本地、要审计源码、团队不想锁死厂商</h3><p><strong>OpenCode、Crush 或 Oh My Pi。</strong></p>
 <ul>
 <li>要社区、桌面端、提供商目录、Copilot/ChatGPT 登录：OpenCode</li>
-<li>要工具深度、会话分支、hashline：omp<br>两者都可以当 ACP 外部 Agent 塞进 Zed。</li>
+<li>要终端手感、会话中途换模型、BSD/Android 也能跑：Crush</li>
+<li>要工具深度、会话分支、hashline：omp</li>
 </ul>
+<p>OpenCode / Pi 都可以当 ACP 外部 Agent 塞进 Zed；Crush 的 ACP 还在补，现阶段更适合就在自己的 TUI 里用。</p>
 <h3 id="4-6-企业里要对齐需求、设计和实现，且已在-AWS-体系"><a href="#4-6-企业里要对齐需求、设计和实现，且已在-AWS-体系" class="headerlink" title="4.6 企业里要对齐需求、设计和实现，且已在 AWS 体系"></a>4.6 企业里要对齐需求、设计和实现，且已在 AWS 体系</h3><p><strong>Kiro。</strong></p>
 <p><code>requirements.md</code> / <code>design.md</code> / <code>tasks.md</code> 能进 Git，产品经理和合规能读。Steering + Hooks 把「别忘了写测试、别忘了更新文档」从口头叮嘱变成事件。这不是 vibe coding 工具。</p>
 <h3 id="4-7-想在一个编辑器里来回换-Agent"><a href="#4-7-想在一个编辑器里来回换-Agent" class="headerlink" title="4.7 想在一个编辑器里来回换 Agent"></a>4.7 想在一个编辑器里来回换 Agent</h3><p><strong>Zed（ACP）。</strong></p>
-<p>这是 2026 年最被低估的用法：Zed 当快编辑器，Claude Code 做重活，OpenCode 做便宜/本地活，Pi/omp 做需要 LSP/DAP 的活。Cursor 也能装 Claude Code 插件，但「任意 Agent 热插拔」这件事，Zed 的协议叙事更干净。</p>
+<p>这是 2026 年最被低估的用法：Zed 当快编辑器，Claude Code 做重活，OpenCode 做便宜/本地活，Pi/omp 做需要 LSP/DAP 的活。Cursor 也能装 Claude Code 插件，但「任意 Agent 热插拔」这件事，Zed 的协议叙事更干净。Crush 目前仍以自己的 TUI 为家，想塞进编辑器要等 ACP 更稳。</p>
+<h3 id="4-8-终端里长时间对着-Agent-干活，在意-TUI"><a href="#4-8-终端里长时间对着-Agent-干活，在意-TUI" class="headerlink" title="4.8 终端里长时间对着 Agent 干活，在意 TUI"></a>4.8 终端里长时间对着 Agent 干活，在意 TUI</h3><p><strong>Crush。</strong></p>
+<p>Charm 五年 TUI 基建砸在这一个产品上。中途换模型、多 session、LSP 上下文、Claude Code 风格 hook，都围着「人还坐在终端前面」转。它不是挂机型（那是 Reasonix），也不是多入口型（那是 Claude Code / OpenCode），就是把终端 Agent 本身做漂亮、做顺手。</p>
 <hr>
 <h2 id="五、一张决策表"><a href="#五、一张决策表" class="headerlink" title="五、一张决策表"></a>五、一张决策表</h2><table>
 <thead>
@@ -539,6 +624,10 @@
 <td>OpenCode</td>
 </tr>
 <tr>
+<td>终端 TUI、中途换模型、跨平台</td>
+<td>Crush</td>
+</tr>
+<tr>
 <td>规格、波次任务、AWS 治理</td>
 <td>Kiro</td>
 </tr>
@@ -551,24 +640,28 @@
 <li>用 Cursor 却从不设 Rules/Skills，等于每轮重新教一遍项目规矩。</li>
 <li>用 Claude Code 却拒绝写 <code>CLAUDE.md</code>，和裸模型聊天差不多。</li>
 <li>用 Zed 却只开原生 Agent、从不装 ACP，等于买了插座不插电器。</li>
+<li>用 Crush 却期待桌面端、云端 Routines 或 DAP，会找错产品。</li>
+<li>把 Crush 和 OpenCode 当成同一个项目的两个名字，会把许可证和入口都搞混。</li>
 </ul>
 <hr>
 <h2 id="六、我更建议的实际搭配"><a href="#六、我更建议的实际搭配" class="headerlink" title="六、我更建议的实际搭配"></a>六、我更建议的实际搭配</h2><p>单工具信仰在 2026 年已经有点过时。更稳的是 <strong>一条主路径 + 一条专长路径</strong>：</p>
 <ol>
 <li><strong>以编辑器为家</strong>：Cursor 日常 + Claude Code 处理长重构 / 云端任务。  </li>
-<li><strong>以终端为家</strong>：Claude Code 或 OpenCode 做默认循环；遇到脏补丁、要调试器时切 omp。  </li>
-<li><strong>成本优先</strong>：Reasonix（DeepSeek）或 OpenCode（本地 / 开源权重）做执行器；关键设计仍丢给 Claude。  </li>
+<li><strong>以终端为家</strong>：Claude Code 或 Crush / OpenCode 做默认循环；遇到脏补丁、要调试器时切 omp。  </li>
+<li><strong>成本优先</strong>：Reasonix（DeepSeek）或 OpenCode / Crush（本地 / 开源权重）做执行器；关键设计仍丢给 Claude。  </li>
 <li><strong>协议优先</strong>：Zed 当宿主，按任务切 Claude Code / OpenCode / Pi。  </li>
-<li><strong>规格优先</strong>：Kiro 管需求到任务；实现阶段仍可把 ACP Agent 换成熟悉的循环。</li>
+<li><strong>规格优先</strong>：Kiro 管需求到任务；实现阶段仍可把 ACP Agent 换成熟悉的循环。  </li>
+<li><strong>终端体验优先</strong>：Crush 当日常 TUI；OpenCode 补桌面和提供商目录。</li>
 </ol>
 <p>这和「再做一个 All-in-one」的营销相反，但符合工具现状：循环在收敛，<strong>工作台、模型、治理、长任务策略</strong> 还没有收敛。</p>
 <hr>
-<h2 id="七、结语"><a href="#七、结语" class="headerlink" title="七、结语"></a>七、结语</h2><p>七个产品里，没有一个在所有轴上同时第一。</p>
+<h2 id="七、结语"><a href="#七、结语" class="headerlink" title="七、结语"></a>七、结语</h2><p>八个产品里，没有一个在所有轴上同时第一。</p>
 <ul>
 <li><strong>Claude Code</strong> 仍是质量与生态的参照系。  </li>
 <li><strong>Cursor</strong> 仍是「人还在写代码」时最完整的工作台。  </li>
 <li><strong>Zed</strong> 把 Agent 从编辑器功能升级成了可插拔协议。  </li>
 <li><strong>OpenCode</strong> 把开源、多模型和社区做到了最大公约数。  </li>
+<li><strong>Crush</strong> 把终端 TUI 和会话中途换模型做成了主菜。  </li>
 <li><strong>Oh My Pi</strong> 把 IDE 才有的语言智能和调试器，做成了终端 Agent 的一等工具。  </li>
 <li><strong>Reasonix</strong> 认真对待了长会话的钱和可撤销性。  </li>
 <li><strong>Kiro</strong> 认真对待了「代码对不对得上当初说的话」。</li>
@@ -585,7 +678,8 @@
 <ul>
 <li><a href="https://omp.sh/docs">omp 文档</a> · <a href="https://code.claude.com/docs/en/overview">Claude Code Overview</a> · <a href="https://reasonix.io/">Reasonix</a></li>
 <li><a href="https://cursor.com/docs/agent/overview">Cursor Agent</a> · <a href="https://zed.dev/docs/ai/overview">Zed AI</a> · <a href="https://zed.dev/acp">ACP</a></li>
-<li><a href="https://opencode.ai/">OpenCode</a> · <a href="https://kiro.dev/">Kiro</a> · <a href="https://kiro.dev/docs/specs/">Kiro Specs</a></li>
+<li><a href="https://opencode.ai/">OpenCode</a> · <a href="https://github.com/charmbracelet/crush">Crush</a> · <a href="https://charmbracelet-crush.mintlify.app/">Crush 文档</a></li>
+<li><a href="https://kiro.dev/">Kiro</a> · <a href="https://kiro.dev/docs/specs/">Kiro Specs</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -599,6 +693,7 @@
         <tag>cursor</tag>
         <tag>zed</tag>
         <tag>opencode</tag>
+        <tag>crush</tag>
         <tag>kiro</tag>
         <tag>acp</tag>
         <tag>mcp</tag>
@@ -8520,6 +8615,429 @@
       </tags>
   </entry>
   <entry>
+    <title>Warp 中文文档：Agentic Development Environment 操作指南（十一章）</title>
+    <url>/2026/08/10/Warp%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9AAgentic-Development-Environment%E5%85%A8%E9%87%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="Warp-中文文档：Agentic-Development-Environment-操作指南"><a href="#Warp-中文文档：Agentic-Development-Environment-操作指南" class="headerlink" title="Warp 中文文档：Agentic Development Environment 操作指南"></a>Warp 中文文档：Agentic Development Environment 操作指南</h1><blockquote>
+<p>本文基于 <a href="https://docs.warp.dev/">Warp 官方文档</a> 归纳整理为 <strong>11 章操作指南</strong>，方便上手与日常查阅。原文持续更新，细节与截图以官方为准。</p>
+<p><strong>Warp</strong> 是开源的 <strong>智能体开发环境（Agentic Development Environment）</strong>：高性能终端 + 内置/第三方 Agents；智能体能力由 <strong>Oz</strong> 编排，可本地交互，也可云端自动化。</p>
+</blockquote>
+<h2 id="目录导航"><a href="#目录导航" class="headerlink" title="目录导航"></a>目录导航</h2><ul>
+<li><a href="#%E4%B8%80%E8%AE%A4%E8%AF%86-warp-%E4%B8%8E-oz">一、认识 Warp 与 Oz</a></li>
+<li><a href="#%E4%BA%8C%E5%AE%89%E8%A3%85%E8%BF%81%E7%A7%BB%E4%B8%8E%E8%87%AA%E5%AE%9A%E4%B9%89">二、安装、迁移与自定义</a></li>
+<li><a href="#%E4%B8%89%E7%BB%88%E7%AB%AF%E6%A0%B8%E5%BF%83blocks-%E4%B8%8E%E8%BE%93%E5%85%A5%E7%BC%96%E8%BE%91%E5%99%A8">三、终端核心：Blocks 与输入编辑器</a></li>
+<li><a href="#%E5%9B%9B%E7%AA%97%E5%8F%A3%E4%BC%9A%E8%AF%9D%E4%B8%8E%E5%A4%96%E8%A7%82">四、窗口、会话与外观</a></li>
+<li><a href="#%E4%BA%94%E6%9C%AC%E5%9C%B0-agents-%E4%B8%8E%E7%BC%96%E7%A8%8B%E5%B7%A5%E4%BD%9C%E6%B5%81">五、本地 Agents 与编程工作流</a></li>
+<li><a href="#%E5%85%AD%E4%BB%A3%E7%A0%81%E7%BC%96%E8%BE%91%E4%B8%8E-code-review">六、代码编辑与 Code Review</a></li>
+<li><a href="#%E4%B8%83%E7%9F%A5%E8%AF%86%E4%B8%8E%E5%8D%8F%E4%BD%9Cwarp-drive">七、知识与协作：Warp Drive</a></li>
+<li><a href="#%E5%85%ABwarp-agent-cli">八、Warp Agent CLI</a></li>
+<li><a href="#%E4%B9%9Doz-%E5%B9%B3%E5%8F%B0%E4%B8%8E%E4%BA%91%E7%AB%AF%E6%99%BA%E8%83%BD%E4%BD%93">九、Oz 平台与云端智能体</a></li>
+<li><a href="#%E5%8D%81%E4%BC%81%E4%B8%9A%E7%89%88%E4%B8%8E%E5%AE%89%E5%85%A8">十、企业版与安全</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80%E8%B4%A6%E5%8D%95%E9%9A%90%E7%A7%81%E4%B8%8E%E6%8E%92%E9%9A%9C">十一、账单、隐私与排障</a></li>
+</ul>
+<hr>
+<h2 id="一、认识-Warp-与-Oz"><a href="#一、认识-Warp-与-Oz" class="headerlink" title="一、认识 Warp 与 Oz"></a>一、认识 Warp 与 Oz</h2><h3 id="1-1-Warp-是什么"><a href="#1-1-Warp-是什么" class="headerlink" title="1.1 Warp 是什么"></a>1.1 Warp 是什么</h3><p>Warp 把「现代终端」和「编码 Agent」放在同一产品里：</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>终端 / Agent 双模式</td>
+<td>干净跑命令，或进入多轮对话让 Agent 写代码、调试、跑任务</td>
+</tr>
+<tr>
+<td>现代终端 UX</td>
+<td>Block 导航、多行编辑、语法高亮、补全；Rust 实现</td>
+</tr>
+<tr>
+<td>内置代码编辑器</td>
+<td>文件树、LSP、交互式 Code Review</td>
+</tr>
+<tr>
+<td>第三方 CLI Agents</td>
+<td>在 Warp 里跑 Claude Code、Codex、OpenCode，并叠加富输入、通知、审查等</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-Oz-是什么"><a href="#1-2-Oz-是什么" class="headerlink" title="1.2 Oz 是什么"></a>1.2 Oz 是什么</h3><p><strong>Oz</strong> 是 Warp 智能能力的编排平台，支持多模型，分两种运行形态：</p>
+<ul>
+<li><strong>本地 Agents</strong>：在 Warp 应用内实时交互——写/改代码、调试、跑命令、多步规划；你可中途纠偏、审批操作。</li>
+<li><strong>云端 Agents</strong>：在 Warp（或自建）基础设施后台跑——Slack/Linear/GitHub/Webhook 触发、定时任务、多仓并行、可审计可分享。</li>
+</ul>
+<p>二者可交接：云端开的任务可在本地接管；<a href="https://docs.warp.dev/knowledge-and-collaboration/warp-drive/">Warp Drive</a>、<a href="https://docs.warp.dev/agents/capabilities/rules/">Rules</a>、<a href="https://docs.warp.dev/agents/capabilities/mcp/">MCP</a> 两边共用。</p>
+<h3 id="1-3-约-10-分钟快速上手"><a href="#1-3-约-10-分钟快速上手" class="headerlink" title="1.3 约 10 分钟快速上手"></a>1.3 约 10 分钟快速上手</h3><ol>
+<li><strong>安装</strong>：从 <a href="https://www.warp.dev/download">下载页</a> 安装，或 <code>brew install --cask warp</code> / <code>winget install Warp.Warp</code>。</li>
+<li><strong>跑命令看 Blocks</strong>：例如 <code>ls -la</code>。命令与输出组成一个 <strong>Block</strong>，可单独复制、筛选、跳转。</li>
+<li><strong>试用输入编辑器</strong>：<code>Shift+Enter</code> 多行；可鼠标点选编辑，像文本编辑器。</li>
+<li><strong>自动建议 / Tab 补全</strong>：历史淡色建议按 <code>→</code> 接受；<code>Tab</code> 补全命令与路径；输错会提示纠正。</li>
+<li><strong>第一次问 Agent</strong>：<code>⌘↩</code>（macOS）或 <code>Ctrl+Shift+Enter</code>（Windows/Linux）进入 Agent Mode，例如：</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Explain the architecture of this project</span><br></pre></td></tr></table></figure>
+
+<p>在终端模式里直接打自然语言时，Warp 也会识别并提示发给 Agent。</p>
+<p>官方入口：<a href="https://docs.warp.dev/quickstart/">Quickstart</a> · <a href="https://docs.warp.dev/">docs.warp.dev</a></p>
+<hr>
+<h2 id="二、安装、迁移与自定义"><a href="#二、安装、迁移与自定义" class="headerlink" title="二、安装、迁移与自定义"></a>二、安装、迁移与自定义</h2><h3 id="2-1-安装与环境要求"><a href="#2-1-安装与环境要求" class="headerlink" title="2.1 安装与环境要求"></a>2.1 安装与环境要求</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td>10.14+，支持 Metal；Homebrew cask 或拖入 Applications</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>Win10 1903+ / Server 2022+（需 ConPTY）；WinGet：<code>Warp.Warp</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>glibc ≥ 2.31，OpenGL ES 3.0+ 或 Vulkan；deb/rpm/pacman/AppImage 等</td>
+</tr>
+</tbody></table>
+<p>可选登录账号；首次联网后可离线使用（AI、实时协作等需网络）。默认加载 login shell，支持 bash / zsh / fish / PowerShell；可在 <strong>Settings → Features → Session</strong> 改启动 shell。</p>
+<p>客户端 AGPL v3 开源：<a href="https://github.com/warpdotdev/warp"><code>warpdotdev/warp</code></a>。日常建议用官方包；自编译 <code>warp-oss</code> 使用独立配置目录、不自动更新。</p>
+<p>详解：<a href="https://docs.warp.dev/getting-started/quickstart/installation-and-setup/">Installation and setup</a></p>
+<h3 id="2-2-从其他工具迁过来"><a href="#2-2-从其他工具迁过来" class="headerlink" title="2.2 从其他工具迁过来"></a>2.2 从其他工具迁过来</h3><p>官方按来源提供迁移页（设置对照 + 部分自动导入）：</p>
+<ul>
+<li><strong>iTerm2</strong>：内置导入器，可迁主题、字体、热键窗口等</li>
+<li><strong>Cursor / VS Code / Ghostty / Terminal.app / Windows Terminal</strong>：可用 Agent + <code>modify-settings</code> skill 帮你把配置写进 <code>settings.toml</code></li>
+<li><strong>Claude Code</strong>：可继续在 Warp 终端里跑 <code>claude</code>；也可切到内置 Agent Mode（项目规则对应 <code>AGENTS.md</code> / <code>WARP.md</code>）</li>
+</ul>
+<p>总入口：<a href="https://docs.warp.dev/getting-started/migrate-to-warp/">Migrate to Warp</a></p>
+<h3 id="2-3-自定义速查"><a href="#2-3-自定义速查" class="headerlink" title="2.3 自定义速查"></a>2.3 自定义速查</h3><table>
+<thead>
+<tr>
+<th>想改什么</th>
+<th>去哪</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主题 / 字体 / 图标 / 透明度</td>
+<td>Settings → Appearance</td>
+</tr>
+<tr>
+<td>Prompt chips（目录、git 分支等）</td>
+<td>右键提示符 → Edit prompt</td>
+</tr>
+<tr>
+<td>快捷键</td>
+<td>Settings → Keyboard shortcuts；可从其他终端导入</td>
+</tr>
+<tr>
+<td>垂直标签 / Tab Configs</td>
+<td>Appearance → Tabs；Features 或 <code>/</code> 菜单</td>
+</tr>
+<tr>
+<td>AI 模型</td>
+<td>Agent 对话里的模型选择器（Claude / GPT / Gemini / Auto）</td>
+</tr>
+<tr>
+<td>Agent 自主度</td>
+<td>Settings → Agents → Profiles</td>
+</tr>
+<tr>
+<td>新标签默认终端 or Agent</td>
+<td>Settings → Agents → Warp Agent → Input</td>
+</tr>
+<tr>
+<td>直接改配置文件</td>
+<td>Settings 底部 Open settings file → <code>settings.toml</code></td>
+</tr>
+</tbody></table>
+<p>详解：<a href="https://docs.warp.dev/getting-started/quickstart/customizing-warp/">Customizing Warp</a></p>
+<h3 id="2-4-常用快捷键（macOS-Win·Linux）"><a href="#2-4-常用快捷键（macOS-Win·Linux）" class="headerlink" title="2.4 常用快捷键（macOS / Win·Linux）"></a>2.4 常用快捷键（macOS / Win·Linux）</h3><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>macOS</th>
+<th>Windows / Linux</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命令面板</td>
+<td><code>⌘P</code></td>
+<td><code>Ctrl+Shift+P</code></td>
+</tr>
+<tr>
+<td>上一/下一块</td>
+<td><code>⌘↑</code> / <code>⌘↓</code></td>
+<td><code>Ctrl+↑</code> / <code>Ctrl+↓</code></td>
+</tr>
+<tr>
+<td>复制 Block 输出</td>
+<td>选中后 <code>⌘C</code></td>
+<td><code>Ctrl+Shift+C</code></td>
+</tr>
+<tr>
+<td>切到 Agent Mode</td>
+<td><code>⌘↩</code> 或 <code>⌘I</code></td>
+<td><code>Ctrl+Shift+Enter</code> 或 <code>Ctrl+I</code></td>
+</tr>
+<tr>
+<td>新标签 / 左右分屏</td>
+<td><code>⌘T</code> / <code>⌘D</code></td>
+<td><code>Ctrl+Shift+T</code> / <code>Ctrl+Shift+D</code></td>
+</tr>
+<tr>
+<td>Warp Drive</td>
+<td><code>⌘\</code></td>
+<td><code>Ctrl+Shift+\</code></td>
+</tr>
+<tr>
+<td>命令搜索</td>
+<td><code>Ctrl+R</code></td>
+<td><code>Ctrl+R</code></td>
+</tr>
+</tbody></table>
+<p>完整表：<a href="https://docs.warp.dev/getting-started/keyboard-shortcuts/">Keyboard shortcuts</a></p>
+<hr>
+<h2 id="三、终端核心：Blocks-与输入编辑器"><a href="#三、终端核心：Blocks-与输入编辑器" class="headerlink" title="三、终端核心：Blocks 与输入编辑器"></a>三、终端核心：Blocks 与输入编辑器</h2><h3 id="3-1-Blocks-是什么"><a href="#3-1-Blocks-是什么" class="headerlink" title="3.1 Blocks 是什么"></a>3.1 Blocks 是什么</h3><p>每个「命令 + 输出」组成一个 <strong>Block</strong>：</p>
+<ul>
+<li>非零退出码的 Block 会用红色侧栏/背景标出</li>
+<li>可单选、多选（<code>⌘</code>/<code>Shift</code> 或 <code>Ctrl+Shift</code>）、书签、分享、重新输入（含 sudo）</li>
+<li>长输出可用 Sticky Command Header 钉住命令行；块内可滚到顶/底</li>
+</ul>
+<p>基础操作见 <a href="https://docs.warp.dev/terminal/blocks/block-basics/">Block basics</a>。还有过滤、查找、后台 Blocks、Block 分享等扩展能力。</p>
+<h3 id="3-2-输入不只是-prompt"><a href="#3-2-输入不只是-prompt" class="headerlink" title="3.2 输入不只是 prompt"></a>3.2 输入不只是 prompt</h3><p>Warp 输入区是真正的编辑器：</p>
+<ul>
+<li>多行、多光标、折叠、Vim 键位（可开）</li>
+<li>别名展开、Command Inspector（退出码、耗时、工作目录）</li>
+<li>语法与错误高亮、命令纠正</li>
+</ul>
+<h3 id="3-3-补全与命令历史"><a href="#3-3-补全与命令历史" class="headerlink" title="3.3 补全与命令历史"></a>3.3 补全与命令历史</h3><ul>
+<li><strong>Autosuggestions</strong>：基于历史的行内淡色建议</li>
+<li><strong>Tab completions</strong>：增强版补全</li>
+<li><strong>Command search / history</strong>：<code>Ctrl+R</code> 等</li>
+<li><strong>YAML Workflows</strong>：可复用命令工作流</li>
+<li><strong>同步输入</strong>：多分屏同步打字（适合对照环境）</li>
+</ul>
+<h3 id="3-4-Warpify-与-SSH"><a href="#3-4-Warpify-与-SSH" class="headerlink" title="3.4 Warpify 与 SSH"></a>3.4 Warpify 与 SSH</h3><p>通过 <strong>Warpify</strong>，子 shell / SSH 会话也能用上 Blocks、工作目录跟踪等 Warp 特性。详见 <a href="https://docs.warp.dev/terminal/warpify/">Warpify overview</a>。</p>
+<hr>
+<h2 id="四、窗口、会话与外观"><a href="#四、窗口、会话与外观" class="headerlink" title="四、窗口、会话与外观"></a>四、窗口、会话与外观</h2><h3 id="4-1-标签与分屏"><a href="#4-1-标签与分屏" class="headerlink" title="4.1 标签与分屏"></a>4.1 标签与分屏</h3><ul>
+<li><strong>Tabs / Vertical Tabs</strong>：多会话；可着色、改标题</li>
+<li><strong>Split panes</strong>：左右/上下拆分，可调大小、最大化当前窗格</li>
+<li><strong>Tab Configs</strong>：保存布局 + 启动命令，一键恢复工作区</li>
+<li><strong>Global hotkey（Quake 模式）</strong>：全局热键呼出/隐藏 Warp</li>
+</ul>
+<h3 id="4-2-会话"><a href="#4-2-会话" class="headerlink" title="4.2 会话"></a>4.2 会话</h3><ul>
+<li>会话导航、恢复：重启后尽量恢复标签与窗格布局（注意：CLI Agent 进程通常不会随恢复自动继续跑，需各自 resume）</li>
+<li>旧版 Launch Configurations 仍有文档，新工作流优先 Tab Configs</li>
+</ul>
+<h3 id="4-3-外观与设置文件"><a href="#4-3-外观与设置文件" class="headerlink" title="4.3 外观与设置文件"></a>4.3 外观与设置文件</h3><p>主题（含 YAML 自定义主题）、Prompt、输入位置（顶/底）、透明度与模糊、Pane 变暗、Blocks/Tabs 行为等均可配。</p>
+<p>配置可版本管理：<code>settings.toml</code> 路径因平台而异（macOS <code>~/.warp/</code>，Linux XDG，Windows <code>%APPDATA%</code> 等）。见 <a href="https://docs.warp.dev/terminal/settings/">Settings</a> · <a href="https://docs.warp.dev/terminal/settings/files/">File locations</a>。</p>
+<p>Settings Sync（Beta）可跨机器同步设置。</p>
+<hr>
+<h2 id="五、本地-Agents-与编程工作流"><a href="#五、本地-Agents-与编程工作流" class="headerlink" title="五、本地 Agents 与编程工作流"></a>五、本地 Agents 与编程工作流</h2><h3 id="5-1-Terminal-Mode-vs-Agent-Mode"><a href="#5-1-Terminal-Mode-vs-Agent-Mode" class="headerlink" title="5.1 Terminal Mode vs Agent Mode"></a>5.1 Terminal Mode vs Agent Mode</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>Terminal Mode</th>
+<th>Agent Mode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用途</td>
+<td>正常 shell</td>
+<td>与 Oz / Agent 多轮对话</td>
+</tr>
+<tr>
+<td>切换</td>
+<td>—</td>
+<td><code>⌘I</code> / <code>Ctrl+I</code>，或 <code>⌘↩</code> / <code>Ctrl+Shift+Enter</code></td>
+</tr>
+<tr>
+<td>特点</td>
+<td>Blocks、补全</td>
+<td>自然语言、工具调用、可挂上下文</td>
+</tr>
+</tbody></table>
+<p>对话可排队提示、分叉、云同步；Agent 可能中途提问，可回答/跳过。也支持语音输入。</p>
+<h3 id="5-2-给-Agent-的上下文"><a href="#5-2-给-Agent-的上下文" class="headerlink" title="5.2 给 Agent 的上下文"></a>5.2 给 Agent 的上下文</h3><ul>
+<li><strong>Codebase Context</strong>：索引 Git 跟踪代码（<strong>代码不上传存到 Warp 服务器</strong>）；大仓可用 <code>.warpindexingignore</code> 排除</li>
+<li><strong>@ 引用</strong>：文件、代码、选区</li>
+<li><strong>Blocks / 图片 / URL</strong> 作为上下文</li>
+<li><strong>Warp Drive</strong>：Workflows、Notebooks、Prompts、环境变量（默认可作为 Agent 上下文）</li>
+<li><strong>Rules</strong>：全局规则（Drive）或项目根 <code>AGENTS.md</code> / <code>WARP.md</code>（必须大写文件名）</li>
+<li><strong>MCP</strong>：接外部工具与数据源</li>
+</ul>
+<p>首次进仓库时，Warp 常会引导索引并生成 <code>AGENTS.md</code>。Agent Mode 里 <code>/init</code> 也可生成规则文件。</p>
+<h3 id="5-3-能力清单（常用）"><a href="#5-3-能力清单（常用）" class="headerlink" title="5.3 能力清单（常用）"></a>5.3 能力清单（常用）</h3><ul>
+<li><strong>模型选择</strong> / BYOK / 自定义端点与路由器</li>
+<li><strong>Profiles &amp; Permissions</strong>：允许自动执行什么、命令白黑名单</li>
+<li><strong>Planning / Task Lists / Web Search</strong></li>
+<li><strong>Full Terminal Use / Computer Use / Browser Use</strong>（视套餐与预览功能）</li>
+<li><strong>Skills / Slash Commands</strong>：可复用任务说明与斜杠命令</li>
+<li><strong>Active AI</strong>：根据报错主动建议修复</li>
+<li><strong>Interactive Code Review</strong>：审 Agent 的 diff、留评论让它改</li>
+</ul>
+<h3 id="5-4-第三方-CLI-Agents"><a href="#5-4-第三方-CLI-Agents" class="headerlink" title="5.4 第三方 CLI Agents"></a>5.4 第三方 CLI Agents</h3><p>在 <strong>终端模式</strong> 运行例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">claude</span><br></pre></td></tr></table></figure>
+
+<p>Warp 可识别并提供：富输入（如 <code>Ctrl+G</code>）、通知插件、内联 Code Review、垂直标签元数据、Remote Control、Tab Configs 等。</p>
+<p>同类：Codex、OpenCode。总览：<a href="https://docs.warp.dev/agents/cli-agents/overview/">CLI agents</a></p>
+<h3 id="5-5-在仓库里写代码"><a href="#5-5-在仓库里写代码" class="headerlink" title="5.5 在仓库里写代码"></a>5.5 在仓库里写代码</h3><p>进 Git 仓后可触发索引与代码生成流：单文件到批量改、按报错修、按自然语言加功能。实践上：打开项目 → 确认索引 → 用 Rules 固化团队约定 → Agent Mode 描述任务 → Code Review 面板审 diff。</p>
+<p>导览：<a href="https://docs.warp.dev/getting-started/quickstart/coding-in-warp/">Coding in Warp</a> · <a href="https://docs.warp.dev/agents/local-agents/overview/">Agents overview</a></p>
+<p>AI 可在 <strong>Settings → Agents → Warp Agent</strong> 全局关闭。Warp SOC 2；与签约 LLM 有 Zero Data Retention 策略。</p>
+<hr>
+<h2 id="六、代码编辑与-Code-Review"><a href="#六、代码编辑与-Code-Review" class="headerlink" title="六、代码编辑与 Code Review"></a>六、代码编辑与 Code Review</h2><h3 id="6-1-内置编辑器"><a href="#6-1-内置编辑器" class="headerlink" title="6.1 内置编辑器"></a>6.1 内置编辑器</h3><ul>
+<li>文件树（Project Explorer）</li>
+<li>编辑器 + <strong>LSP</strong></li>
+<li>查找替换</li>
+<li>Vim 键绑定（编辑器侧）</li>
+<li>命令行可用 <code>warp .</code> 打开目录</li>
+</ul>
+<h3 id="6-2-Code-Review-与-Worktrees"><a href="#6-2-Code-Review-与-Worktrees" class="headerlink" title="6.2 Code Review 与 Worktrees"></a>6.2 Code Review 与 Worktrees</h3><ul>
+<li><strong>Code Review 面板</strong>：集中看 Agent（或本地）变更、行内评论、让 Agent 跟进</li>
+<li><strong>Git Worktrees</strong>：在 Warp 里管理并行工作树，方便多分支/多 Agent</li>
+</ul>
+<p>SSH 场景下部分编辑器能力有支持矩阵，见官方 <a href="https://docs.warp.dev/code/feature-support-over-ssh/">Feature support over SSH</a>。</p>
+<hr>
+<h2 id="七、知识与协作：Warp-Drive"><a href="#七、知识与协作：Warp-Drive" class="headerlink" title="七、知识与协作：Warp Drive"></a>七、知识与协作：Warp Drive</h2><p>Warp Drive 是团队知识库与协作面：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Notebooks</td>
+<td>可分享的笔记/文档</td>
+</tr>
+<tr>
+<td>Workflows</td>
+<td>可复用命令工作流</td>
+</tr>
+<tr>
+<td>Prompts</td>
+<td>保存的提示词</td>
+</tr>
+<tr>
+<td>Environment variables</td>
+<td>跨会话环境变量（少把密钥写进 shell rc）</td>
+</tr>
+<tr>
+<td>Rules</td>
+<td>给 Agent 的持久规则</td>
+</tr>
+<tr>
+<td>AI-Integrated Objects</td>
+<td>与 Agent 联动的 Drive 对象</td>
+</tr>
+</tbody></table>
+<p>还可：Agent Mode 里钉选文件/笔记本、Web 上的 Warp Drive、会话分享、团队管理与 Admin Panel。</p>
+<p>入口：<a href="https://docs.warp.dev/knowledge-and-collaboration/warp-drive/">Warp Drive overview</a></p>
+<hr>
+<h2 id="八、Warp-Agent-CLI"><a href="#八、Warp-Agent-CLI" class="headerlink" title="八、Warp Agent CLI"></a>八、Warp Agent CLI</h2><p>不必开 GUI，也能在任意终端用 <strong>Warp Agent CLI</strong> 跑 Agent 对话、权限配置、与云端编排交接。</p>
+<p>典型用途：</p>
+<ul>
+<li>CI / 远程机器上启动对话</li>
+<li>自定义配置、模型与用量</li>
+<li>权限 Profiles</li>
+<li>云端 handoff / 编排相关命令</li>
+</ul>
+<p>从 <a href="https://docs.warp.dev/cli/">CLI overview</a> · <a href="https://docs.warp.dev/cli/quickstart/">CLI quickstart</a> · <a href="https://docs.warp.dev/cli/reference/">CLI reference</a> 入手。更完整的 Oz CLI/API 见第九、十章相关参考。</p>
+<hr>
+<h2 id="九、Oz-平台与云端智能体"><a href="#九、Oz-平台与云端智能体" class="headerlink" title="九、Oz 平台与云端智能体"></a>九、Oz 平台与云端智能体</h2><h3 id="9-1-何时用云端-Agents"><a href="#9-1-何时用云端-Agents" class="headerlink" title="9.1 何时用云端 Agents"></a>9.1 何时用云端 Agents</h3><p>适合「不用盯着屏幕」的工作：PR 审查、Issue 分流、依赖升级、定时清理、集成驱动流水线。能力关键词：<strong>Triggers、Schedules、Parallelism、Observability</strong>。</p>
+<p>控制台：<a href="https://oz.warp.dev/">oz.warp.dev</a> · 文档：<a href="https://docs.warp.dev/platform/">Cloud agents</a> · <a href="https://docs.warp.dev/platform/overview/">Oz Platform</a></p>
+<h3 id="9-2-Environments、Secrets、Runners"><a href="#9-2-Environments、Secrets、Runners" class="headerlink" title="9.2 Environments、Secrets、Runners"></a>9.2 Environments、Secrets、Runners</h3><ul>
+<li><strong>Environments</strong>：云端执行上下文（仓库、setup 命令、镜像等）</li>
+<li><strong>Secrets</strong>：密钥管理与轮换</li>
+<li><strong>Runners</strong>：Warp 托管或自托管 worker（Direct / Docker / Kubernetes 等）</li>
+<li><strong>Harnesses</strong>：Warp Agent、Claude Code、Codex 等运行载体；可做第三方认证</li>
+</ul>
+<p>本地 ↔ 云端、云端 ↔ 云端支持 <strong>Handoff</strong>；可配置工作区快照等高级能力。</p>
+<h3 id="9-3-集成与触发"><a href="#9-3-集成与触发" class="headerlink" title="9.3 集成与触发"></a>9.3 集成与触发</h3><p>常见集成：Slack、Linear、GitHub / GitHub Actions、GitLab、Bitbucket、Jira、Azure DevOps 等。Triggers 与 Scheduled Agents 覆盖事件驱动与周期任务。</p>
+<p>Skills as Agents、Software factory、多智能体编排等面向规模化自动化场景。</p>
+<h3 id="9-4-参考面（CLI-API-SDK）"><a href="#9-4-参考面（CLI-API-SDK）" class="headerlink" title="9.4 参考面（CLI / API / SDK）"></a>9.4 参考面（CLI / API / SDK）</h3><ul>
+<li>Oz CLI：创建/查询 runs、会话共享、MCP、Skills、Artifacts 等</li>
+<li>API &amp; SDK：可编程创建与监控；含错误码、鉴权、联合身份令牌等</li>
+<li>排障页与 quickstart 文档齐全</li>
+</ul>
+<p>入口：<a href="https://docs.warp.dev/reference/api-and-sdk/">API &amp; SDK</a> · <a href="https://docs.warp.dev/reference/cli/">Oz CLI reference</a></p>
+<h3 id="9-5-Guides-怎么用"><a href="#9-5-Guides-怎么用" class="headerlink" title="9.5 Guides 怎么用"></a>9.5 Guides 怎么用</h3><p>官方 <a href="https://docs.warp.dev/guides/">Guides</a> 是面向任务的教程（并行 Agents、无人值守、Rules/Skills、MCP 实战、对比 Claude Code、Code Review 等）。上手顺序建议：</p>
+<ol>
+<li>本地 Quickstart + Coding in Warp  </li>
+<li>Rules + Codebase Context  </li>
+<li>一条云端 Scheduled / GitHub 触发流水线  </li>
+<li>需要时再上自托管 Runner  </li>
+</ol>
+<hr>
+<h2 id="十、企业版与安全"><a href="#十、企业版与安全" class="headerlink" title="十、企业版与安全"></a>十、企业版与安全</h2><p>面向团队/公司的能力概览：</p>
+<ul>
+<li>SSO、角色与权限、团队 Admin、账单</li>
+<li>架构与部署选项、Trust Center</li>
+<li><strong>BYOLLM</strong>（如 Bedrock、Vertex）、团队托管的 API Key/端点</li>
+<li>Analytics API、安全概览与 FAQ</li>
+</ul>
+<p>入口：<a href="https://docs.warp.dev/enterprise/">Enterprise</a> · <a href="https://docs.warp.dev/enterprise/security/">Security</a> · <a href="https://docs.warp.dev/enterprise/sso/">SSO</a></p>
+<p>个人/小团队多数功能在标准 Agents + Drive + Oz Web 已够用；企业特性按合同开通。</p>
+<hr>
+<h2 id="十一、账单、隐私与排障"><a href="#十一、账单、隐私与排障" class="headerlink" title="十一、账单、隐私与排障"></a>十一、账单、隐私与排障</h2><h3 id="11-1-套餐与信用额度"><a href="#11-1-套餐与信用额度" class="headerlink" title="11.1 套餐与信用额度"></a>11.1 套餐与信用额度</h3><p>文档涵盖套餐定价、平台 credit、附加额度、退款 FAQ 等。以官网定价页与账户账单为准：<a href="https://docs.warp.dev/support-and-community/plans-and-billing/">Plans &amp; billing</a></p>
+<h3 id="11-2-隐私与数据"><a href="#11-2-隐私与数据" class="headerlink" title="11.2 隐私与数据"></a>11.2 隐私与数据</h3><ul>
+<li>SOC 2；签约 LLM 零数据保留（不用于训练）</li>
+<li>可关闭 AI；Codebase 索引不把源码存到 Warp 服务器（按官方说明）</li>
+<li>Secret Redaction、隐私与数据控制、遥测相关说明见 Support 文档</li>
+</ul>
+<h3 id="11-3-常见排障"><a href="#11-3-常见排障" class="headerlink" title="11.3 常见排障"></a>11.3 常见排障</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>登录失败</td>
+<td><a href="https://docs.warp.dev/support-and-community/troubleshooting-and-support/troubleshooting-login-issues/">Login troubleshooting</a></td>
+</tr>
+<tr>
+<td>安装/显示/Shell 异常</td>
+<td><a href="https://docs.warp.dev/support-and-community/troubleshooting-and-support/known-issues/">Known issues</a></td>
+</tr>
+<tr>
+<td>更新</td>
+<td>应用内更新或包管理器渠道</td>
+</tr>
+<tr>
+<td>离线</td>
+<td>首次启动后可离线；AI/协作不可用</td>
+</tr>
+<tr>
+<td>卸载/登出</td>
+<td>官方 Logout &amp; uninstall 页</td>
+</tr>
+<tr>
+<td>反馈</td>
+<td>发送反馈与日志（含各平台日志路径）</td>
+</tr>
+</tbody></table>
+<p>社区：贡献指南、Preview/Alpha、推荐计划、Slack 等见 <a href="https://docs.warp.dev/support-and-community/">Support &amp; Community</a>。</p>
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>把 Warp 想成三层即可：</p>
+<ol>
+<li><strong>终端层</strong>：Blocks + 编辑器级输入，先把它当更好用的终端。  </li>
+<li><strong>本地 Agent 层</strong>：Agent Mode / 第三方 CLI + Rules / MCP / Drive，解决「在仓库里干活」。  </li>
+<li><strong>Oz 云端层</strong>：触发、调度、并行、自托管，解决「不用盯着的自动化」。</li>
+</ol>
+<p>需要某一页的逐步截图或完整参数表时，从本文对应章节跳到 <a href="https://docs.warp.dev/">docs.warp.dev</a> 同名页面即可。</p>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>ai</tag>
+        <tag>agent</tag>
+        <tag>cli</tag>
+        <tag>terminal</tag>
+        <tag>warp</tag>
+        <tag>oz</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Pi 中文文档：终端编码 Agent 操作指南</title>
     <url>/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<h1 id="Pi-中文文档：终端编码-Agent-操作指南"><a href="#Pi-中文文档：终端编码-Agent-操作指南" class="headerlink" title="Pi 中文文档：终端编码 Agent 操作指南"></a>Pi 中文文档：终端编码 Agent 操作指南</h1><blockquote>
@@ -9183,429 +9701,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Warp 中文文档：Agentic Development Environment 操作指南（十一章）</title>
-    <url>/2026/08/10/Warp%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9AAgentic-Development-Environment%E5%85%A8%E9%87%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="Warp-中文文档：Agentic-Development-Environment-操作指南"><a href="#Warp-中文文档：Agentic-Development-Environment-操作指南" class="headerlink" title="Warp 中文文档：Agentic Development Environment 操作指南"></a>Warp 中文文档：Agentic Development Environment 操作指南</h1><blockquote>
-<p>本文基于 <a href="https://docs.warp.dev/">Warp 官方文档</a> 归纳整理为 <strong>11 章操作指南</strong>，方便上手与日常查阅。原文持续更新，细节与截图以官方为准。</p>
-<p><strong>Warp</strong> 是开源的 <strong>智能体开发环境（Agentic Development Environment）</strong>：高性能终端 + 内置/第三方 Agents；智能体能力由 <strong>Oz</strong> 编排，可本地交互，也可云端自动化。</p>
-</blockquote>
-<h2 id="目录导航"><a href="#目录导航" class="headerlink" title="目录导航"></a>目录导航</h2><ul>
-<li><a href="#%E4%B8%80%E8%AE%A4%E8%AF%86-warp-%E4%B8%8E-oz">一、认识 Warp 与 Oz</a></li>
-<li><a href="#%E4%BA%8C%E5%AE%89%E8%A3%85%E8%BF%81%E7%A7%BB%E4%B8%8E%E8%87%AA%E5%AE%9A%E4%B9%89">二、安装、迁移与自定义</a></li>
-<li><a href="#%E4%B8%89%E7%BB%88%E7%AB%AF%E6%A0%B8%E5%BF%83blocks-%E4%B8%8E%E8%BE%93%E5%85%A5%E7%BC%96%E8%BE%91%E5%99%A8">三、终端核心：Blocks 与输入编辑器</a></li>
-<li><a href="#%E5%9B%9B%E7%AA%97%E5%8F%A3%E4%BC%9A%E8%AF%9D%E4%B8%8E%E5%A4%96%E8%A7%82">四、窗口、会话与外观</a></li>
-<li><a href="#%E4%BA%94%E6%9C%AC%E5%9C%B0-agents-%E4%B8%8E%E7%BC%96%E7%A8%8B%E5%B7%A5%E4%BD%9C%E6%B5%81">五、本地 Agents 与编程工作流</a></li>
-<li><a href="#%E5%85%AD%E4%BB%A3%E7%A0%81%E7%BC%96%E8%BE%91%E4%B8%8E-code-review">六、代码编辑与 Code Review</a></li>
-<li><a href="#%E4%B8%83%E7%9F%A5%E8%AF%86%E4%B8%8E%E5%8D%8F%E4%BD%9Cwarp-drive">七、知识与协作：Warp Drive</a></li>
-<li><a href="#%E5%85%ABwarp-agent-cli">八、Warp Agent CLI</a></li>
-<li><a href="#%E4%B9%9Doz-%E5%B9%B3%E5%8F%B0%E4%B8%8E%E4%BA%91%E7%AB%AF%E6%99%BA%E8%83%BD%E4%BD%93">九、Oz 平台与云端智能体</a></li>
-<li><a href="#%E5%8D%81%E4%BC%81%E4%B8%9A%E7%89%88%E4%B8%8E%E5%AE%89%E5%85%A8">十、企业版与安全</a></li>
-<li><a href="#%E5%8D%81%E4%B8%80%E8%B4%A6%E5%8D%95%E9%9A%90%E7%A7%81%E4%B8%8E%E6%8E%92%E9%9A%9C">十一、账单、隐私与排障</a></li>
-</ul>
-<hr>
-<h2 id="一、认识-Warp-与-Oz"><a href="#一、认识-Warp-与-Oz" class="headerlink" title="一、认识 Warp 与 Oz"></a>一、认识 Warp 与 Oz</h2><h3 id="1-1-Warp-是什么"><a href="#1-1-Warp-是什么" class="headerlink" title="1.1 Warp 是什么"></a>1.1 Warp 是什么</h3><p>Warp 把「现代终端」和「编码 Agent」放在同一产品里：</p>
-<table>
-<thead>
-<tr>
-<th>能力</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>终端 / Agent 双模式</td>
-<td>干净跑命令，或进入多轮对话让 Agent 写代码、调试、跑任务</td>
-</tr>
-<tr>
-<td>现代终端 UX</td>
-<td>Block 导航、多行编辑、语法高亮、补全；Rust 实现</td>
-</tr>
-<tr>
-<td>内置代码编辑器</td>
-<td>文件树、LSP、交互式 Code Review</td>
-</tr>
-<tr>
-<td>第三方 CLI Agents</td>
-<td>在 Warp 里跑 Claude Code、Codex、OpenCode，并叠加富输入、通知、审查等</td>
-</tr>
-</tbody></table>
-<h3 id="1-2-Oz-是什么"><a href="#1-2-Oz-是什么" class="headerlink" title="1.2 Oz 是什么"></a>1.2 Oz 是什么</h3><p><strong>Oz</strong> 是 Warp 智能能力的编排平台，支持多模型，分两种运行形态：</p>
-<ul>
-<li><strong>本地 Agents</strong>：在 Warp 应用内实时交互——写/改代码、调试、跑命令、多步规划；你可中途纠偏、审批操作。</li>
-<li><strong>云端 Agents</strong>：在 Warp（或自建）基础设施后台跑——Slack/Linear/GitHub/Webhook 触发、定时任务、多仓并行、可审计可分享。</li>
-</ul>
-<p>二者可交接：云端开的任务可在本地接管；<a href="https://docs.warp.dev/knowledge-and-collaboration/warp-drive/">Warp Drive</a>、<a href="https://docs.warp.dev/agents/capabilities/rules/">Rules</a>、<a href="https://docs.warp.dev/agents/capabilities/mcp/">MCP</a> 两边共用。</p>
-<h3 id="1-3-约-10-分钟快速上手"><a href="#1-3-约-10-分钟快速上手" class="headerlink" title="1.3 约 10 分钟快速上手"></a>1.3 约 10 分钟快速上手</h3><ol>
-<li><strong>安装</strong>：从 <a href="https://www.warp.dev/download">下载页</a> 安装，或 <code>brew install --cask warp</code> / <code>winget install Warp.Warp</code>。</li>
-<li><strong>跑命令看 Blocks</strong>：例如 <code>ls -la</code>。命令与输出组成一个 <strong>Block</strong>，可单独复制、筛选、跳转。</li>
-<li><strong>试用输入编辑器</strong>：<code>Shift+Enter</code> 多行；可鼠标点选编辑，像文本编辑器。</li>
-<li><strong>自动建议 / Tab 补全</strong>：历史淡色建议按 <code>→</code> 接受；<code>Tab</code> 补全命令与路径；输错会提示纠正。</li>
-<li><strong>第一次问 Agent</strong>：<code>⌘↩</code>（macOS）或 <code>Ctrl+Shift+Enter</code>（Windows/Linux）进入 Agent Mode，例如：</li>
-</ol>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Explain the architecture of this project</span><br></pre></td></tr></table></figure>
-
-<p>在终端模式里直接打自然语言时，Warp 也会识别并提示发给 Agent。</p>
-<p>官方入口：<a href="https://docs.warp.dev/quickstart/">Quickstart</a> · <a href="https://docs.warp.dev/">docs.warp.dev</a></p>
-<hr>
-<h2 id="二、安装、迁移与自定义"><a href="#二、安装、迁移与自定义" class="headerlink" title="二、安装、迁移与自定义"></a>二、安装、迁移与自定义</h2><h3 id="2-1-安装与环境要求"><a href="#2-1-安装与环境要求" class="headerlink" title="2.1 安装与环境要求"></a>2.1 安装与环境要求</h3><table>
-<thead>
-<tr>
-<th>平台</th>
-<th>要点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>macOS</td>
-<td>10.14+，支持 Metal；Homebrew cask 或拖入 Applications</td>
-</tr>
-<tr>
-<td>Windows</td>
-<td>Win10 1903+ / Server 2022+（需 ConPTY）；WinGet：<code>Warp.Warp</code></td>
-</tr>
-<tr>
-<td>Linux</td>
-<td>glibc ≥ 2.31，OpenGL ES 3.0+ 或 Vulkan；deb/rpm/pacman/AppImage 等</td>
-</tr>
-</tbody></table>
-<p>可选登录账号；首次联网后可离线使用（AI、实时协作等需网络）。默认加载 login shell，支持 bash / zsh / fish / PowerShell；可在 <strong>Settings → Features → Session</strong> 改启动 shell。</p>
-<p>客户端 AGPL v3 开源：<a href="https://github.com/warpdotdev/warp"><code>warpdotdev/warp</code></a>。日常建议用官方包；自编译 <code>warp-oss</code> 使用独立配置目录、不自动更新。</p>
-<p>详解：<a href="https://docs.warp.dev/getting-started/quickstart/installation-and-setup/">Installation and setup</a></p>
-<h3 id="2-2-从其他工具迁过来"><a href="#2-2-从其他工具迁过来" class="headerlink" title="2.2 从其他工具迁过来"></a>2.2 从其他工具迁过来</h3><p>官方按来源提供迁移页（设置对照 + 部分自动导入）：</p>
-<ul>
-<li><strong>iTerm2</strong>：内置导入器，可迁主题、字体、热键窗口等</li>
-<li><strong>Cursor / VS Code / Ghostty / Terminal.app / Windows Terminal</strong>：可用 Agent + <code>modify-settings</code> skill 帮你把配置写进 <code>settings.toml</code></li>
-<li><strong>Claude Code</strong>：可继续在 Warp 终端里跑 <code>claude</code>；也可切到内置 Agent Mode（项目规则对应 <code>AGENTS.md</code> / <code>WARP.md</code>）</li>
-</ul>
-<p>总入口：<a href="https://docs.warp.dev/getting-started/migrate-to-warp/">Migrate to Warp</a></p>
-<h3 id="2-3-自定义速查"><a href="#2-3-自定义速查" class="headerlink" title="2.3 自定义速查"></a>2.3 自定义速查</h3><table>
-<thead>
-<tr>
-<th>想改什么</th>
-<th>去哪</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>主题 / 字体 / 图标 / 透明度</td>
-<td>Settings → Appearance</td>
-</tr>
-<tr>
-<td>Prompt chips（目录、git 分支等）</td>
-<td>右键提示符 → Edit prompt</td>
-</tr>
-<tr>
-<td>快捷键</td>
-<td>Settings → Keyboard shortcuts；可从其他终端导入</td>
-</tr>
-<tr>
-<td>垂直标签 / Tab Configs</td>
-<td>Appearance → Tabs；Features 或 <code>/</code> 菜单</td>
-</tr>
-<tr>
-<td>AI 模型</td>
-<td>Agent 对话里的模型选择器（Claude / GPT / Gemini / Auto）</td>
-</tr>
-<tr>
-<td>Agent 自主度</td>
-<td>Settings → Agents → Profiles</td>
-</tr>
-<tr>
-<td>新标签默认终端 or Agent</td>
-<td>Settings → Agents → Warp Agent → Input</td>
-</tr>
-<tr>
-<td>直接改配置文件</td>
-<td>Settings 底部 Open settings file → <code>settings.toml</code></td>
-</tr>
-</tbody></table>
-<p>详解：<a href="https://docs.warp.dev/getting-started/quickstart/customizing-warp/">Customizing Warp</a></p>
-<h3 id="2-4-常用快捷键（macOS-Win·Linux）"><a href="#2-4-常用快捷键（macOS-Win·Linux）" class="headerlink" title="2.4 常用快捷键（macOS / Win·Linux）"></a>2.4 常用快捷键（macOS / Win·Linux）</h3><table>
-<thead>
-<tr>
-<th>动作</th>
-<th>macOS</th>
-<th>Windows / Linux</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>命令面板</td>
-<td><code>⌘P</code></td>
-<td><code>Ctrl+Shift+P</code></td>
-</tr>
-<tr>
-<td>上一/下一块</td>
-<td><code>⌘↑</code> / <code>⌘↓</code></td>
-<td><code>Ctrl+↑</code> / <code>Ctrl+↓</code></td>
-</tr>
-<tr>
-<td>复制 Block 输出</td>
-<td>选中后 <code>⌘C</code></td>
-<td><code>Ctrl+Shift+C</code></td>
-</tr>
-<tr>
-<td>切到 Agent Mode</td>
-<td><code>⌘↩</code> 或 <code>⌘I</code></td>
-<td><code>Ctrl+Shift+Enter</code> 或 <code>Ctrl+I</code></td>
-</tr>
-<tr>
-<td>新标签 / 左右分屏</td>
-<td><code>⌘T</code> / <code>⌘D</code></td>
-<td><code>Ctrl+Shift+T</code> / <code>Ctrl+Shift+D</code></td>
-</tr>
-<tr>
-<td>Warp Drive</td>
-<td><code>⌘\</code></td>
-<td><code>Ctrl+Shift+\</code></td>
-</tr>
-<tr>
-<td>命令搜索</td>
-<td><code>Ctrl+R</code></td>
-<td><code>Ctrl+R</code></td>
-</tr>
-</tbody></table>
-<p>完整表：<a href="https://docs.warp.dev/getting-started/keyboard-shortcuts/">Keyboard shortcuts</a></p>
-<hr>
-<h2 id="三、终端核心：Blocks-与输入编辑器"><a href="#三、终端核心：Blocks-与输入编辑器" class="headerlink" title="三、终端核心：Blocks 与输入编辑器"></a>三、终端核心：Blocks 与输入编辑器</h2><h3 id="3-1-Blocks-是什么"><a href="#3-1-Blocks-是什么" class="headerlink" title="3.1 Blocks 是什么"></a>3.1 Blocks 是什么</h3><p>每个「命令 + 输出」组成一个 <strong>Block</strong>：</p>
-<ul>
-<li>非零退出码的 Block 会用红色侧栏/背景标出</li>
-<li>可单选、多选（<code>⌘</code>/<code>Shift</code> 或 <code>Ctrl+Shift</code>）、书签、分享、重新输入（含 sudo）</li>
-<li>长输出可用 Sticky Command Header 钉住命令行；块内可滚到顶/底</li>
-</ul>
-<p>基础操作见 <a href="https://docs.warp.dev/terminal/blocks/block-basics/">Block basics</a>。还有过滤、查找、后台 Blocks、Block 分享等扩展能力。</p>
-<h3 id="3-2-输入不只是-prompt"><a href="#3-2-输入不只是-prompt" class="headerlink" title="3.2 输入不只是 prompt"></a>3.2 输入不只是 prompt</h3><p>Warp 输入区是真正的编辑器：</p>
-<ul>
-<li>多行、多光标、折叠、Vim 键位（可开）</li>
-<li>别名展开、Command Inspector（退出码、耗时、工作目录）</li>
-<li>语法与错误高亮、命令纠正</li>
-</ul>
-<h3 id="3-3-补全与命令历史"><a href="#3-3-补全与命令历史" class="headerlink" title="3.3 补全与命令历史"></a>3.3 补全与命令历史</h3><ul>
-<li><strong>Autosuggestions</strong>：基于历史的行内淡色建议</li>
-<li><strong>Tab completions</strong>：增强版补全</li>
-<li><strong>Command search / history</strong>：<code>Ctrl+R</code> 等</li>
-<li><strong>YAML Workflows</strong>：可复用命令工作流</li>
-<li><strong>同步输入</strong>：多分屏同步打字（适合对照环境）</li>
-</ul>
-<h3 id="3-4-Warpify-与-SSH"><a href="#3-4-Warpify-与-SSH" class="headerlink" title="3.4 Warpify 与 SSH"></a>3.4 Warpify 与 SSH</h3><p>通过 <strong>Warpify</strong>，子 shell / SSH 会话也能用上 Blocks、工作目录跟踪等 Warp 特性。详见 <a href="https://docs.warp.dev/terminal/warpify/">Warpify overview</a>。</p>
-<hr>
-<h2 id="四、窗口、会话与外观"><a href="#四、窗口、会话与外观" class="headerlink" title="四、窗口、会话与外观"></a>四、窗口、会话与外观</h2><h3 id="4-1-标签与分屏"><a href="#4-1-标签与分屏" class="headerlink" title="4.1 标签与分屏"></a>4.1 标签与分屏</h3><ul>
-<li><strong>Tabs / Vertical Tabs</strong>：多会话；可着色、改标题</li>
-<li><strong>Split panes</strong>：左右/上下拆分，可调大小、最大化当前窗格</li>
-<li><strong>Tab Configs</strong>：保存布局 + 启动命令，一键恢复工作区</li>
-<li><strong>Global hotkey（Quake 模式）</strong>：全局热键呼出/隐藏 Warp</li>
-</ul>
-<h3 id="4-2-会话"><a href="#4-2-会话" class="headerlink" title="4.2 会话"></a>4.2 会话</h3><ul>
-<li>会话导航、恢复：重启后尽量恢复标签与窗格布局（注意：CLI Agent 进程通常不会随恢复自动继续跑，需各自 resume）</li>
-<li>旧版 Launch Configurations 仍有文档，新工作流优先 Tab Configs</li>
-</ul>
-<h3 id="4-3-外观与设置文件"><a href="#4-3-外观与设置文件" class="headerlink" title="4.3 外观与设置文件"></a>4.3 外观与设置文件</h3><p>主题（含 YAML 自定义主题）、Prompt、输入位置（顶/底）、透明度与模糊、Pane 变暗、Blocks/Tabs 行为等均可配。</p>
-<p>配置可版本管理：<code>settings.toml</code> 路径因平台而异（macOS <code>~/.warp/</code>，Linux XDG，Windows <code>%APPDATA%</code> 等）。见 <a href="https://docs.warp.dev/terminal/settings/">Settings</a> · <a href="https://docs.warp.dev/terminal/settings/files/">File locations</a>。</p>
-<p>Settings Sync（Beta）可跨机器同步设置。</p>
-<hr>
-<h2 id="五、本地-Agents-与编程工作流"><a href="#五、本地-Agents-与编程工作流" class="headerlink" title="五、本地 Agents 与编程工作流"></a>五、本地 Agents 与编程工作流</h2><h3 id="5-1-Terminal-Mode-vs-Agent-Mode"><a href="#5-1-Terminal-Mode-vs-Agent-Mode" class="headerlink" title="5.1 Terminal Mode vs Agent Mode"></a>5.1 Terminal Mode vs Agent Mode</h3><table>
-<thead>
-<tr>
-<th></th>
-<th>Terminal Mode</th>
-<th>Agent Mode</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>用途</td>
-<td>正常 shell</td>
-<td>与 Oz / Agent 多轮对话</td>
-</tr>
-<tr>
-<td>切换</td>
-<td>—</td>
-<td><code>⌘I</code> / <code>Ctrl+I</code>，或 <code>⌘↩</code> / <code>Ctrl+Shift+Enter</code></td>
-</tr>
-<tr>
-<td>特点</td>
-<td>Blocks、补全</td>
-<td>自然语言、工具调用、可挂上下文</td>
-</tr>
-</tbody></table>
-<p>对话可排队提示、分叉、云同步；Agent 可能中途提问，可回答/跳过。也支持语音输入。</p>
-<h3 id="5-2-给-Agent-的上下文"><a href="#5-2-给-Agent-的上下文" class="headerlink" title="5.2 给 Agent 的上下文"></a>5.2 给 Agent 的上下文</h3><ul>
-<li><strong>Codebase Context</strong>：索引 Git 跟踪代码（<strong>代码不上传存到 Warp 服务器</strong>）；大仓可用 <code>.warpindexingignore</code> 排除</li>
-<li><strong>@ 引用</strong>：文件、代码、选区</li>
-<li><strong>Blocks / 图片 / URL</strong> 作为上下文</li>
-<li><strong>Warp Drive</strong>：Workflows、Notebooks、Prompts、环境变量（默认可作为 Agent 上下文）</li>
-<li><strong>Rules</strong>：全局规则（Drive）或项目根 <code>AGENTS.md</code> / <code>WARP.md</code>（必须大写文件名）</li>
-<li><strong>MCP</strong>：接外部工具与数据源</li>
-</ul>
-<p>首次进仓库时，Warp 常会引导索引并生成 <code>AGENTS.md</code>。Agent Mode 里 <code>/init</code> 也可生成规则文件。</p>
-<h3 id="5-3-能力清单（常用）"><a href="#5-3-能力清单（常用）" class="headerlink" title="5.3 能力清单（常用）"></a>5.3 能力清单（常用）</h3><ul>
-<li><strong>模型选择</strong> / BYOK / 自定义端点与路由器</li>
-<li><strong>Profiles &amp; Permissions</strong>：允许自动执行什么、命令白黑名单</li>
-<li><strong>Planning / Task Lists / Web Search</strong></li>
-<li><strong>Full Terminal Use / Computer Use / Browser Use</strong>（视套餐与预览功能）</li>
-<li><strong>Skills / Slash Commands</strong>：可复用任务说明与斜杠命令</li>
-<li><strong>Active AI</strong>：根据报错主动建议修复</li>
-<li><strong>Interactive Code Review</strong>：审 Agent 的 diff、留评论让它改</li>
-</ul>
-<h3 id="5-4-第三方-CLI-Agents"><a href="#5-4-第三方-CLI-Agents" class="headerlink" title="5.4 第三方 CLI Agents"></a>5.4 第三方 CLI Agents</h3><p>在 <strong>终端模式</strong> 运行例如：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">claude</span><br></pre></td></tr></table></figure>
-
-<p>Warp 可识别并提供：富输入（如 <code>Ctrl+G</code>）、通知插件、内联 Code Review、垂直标签元数据、Remote Control、Tab Configs 等。</p>
-<p>同类：Codex、OpenCode。总览：<a href="https://docs.warp.dev/agents/cli-agents/overview/">CLI agents</a></p>
-<h3 id="5-5-在仓库里写代码"><a href="#5-5-在仓库里写代码" class="headerlink" title="5.5 在仓库里写代码"></a>5.5 在仓库里写代码</h3><p>进 Git 仓后可触发索引与代码生成流：单文件到批量改、按报错修、按自然语言加功能。实践上：打开项目 → 确认索引 → 用 Rules 固化团队约定 → Agent Mode 描述任务 → Code Review 面板审 diff。</p>
-<p>导览：<a href="https://docs.warp.dev/getting-started/quickstart/coding-in-warp/">Coding in Warp</a> · <a href="https://docs.warp.dev/agents/local-agents/overview/">Agents overview</a></p>
-<p>AI 可在 <strong>Settings → Agents → Warp Agent</strong> 全局关闭。Warp SOC 2；与签约 LLM 有 Zero Data Retention 策略。</p>
-<hr>
-<h2 id="六、代码编辑与-Code-Review"><a href="#六、代码编辑与-Code-Review" class="headerlink" title="六、代码编辑与 Code Review"></a>六、代码编辑与 Code Review</h2><h3 id="6-1-内置编辑器"><a href="#6-1-内置编辑器" class="headerlink" title="6.1 内置编辑器"></a>6.1 内置编辑器</h3><ul>
-<li>文件树（Project Explorer）</li>
-<li>编辑器 + <strong>LSP</strong></li>
-<li>查找替换</li>
-<li>Vim 键绑定（编辑器侧）</li>
-<li>命令行可用 <code>warp .</code> 打开目录</li>
-</ul>
-<h3 id="6-2-Code-Review-与-Worktrees"><a href="#6-2-Code-Review-与-Worktrees" class="headerlink" title="6.2 Code Review 与 Worktrees"></a>6.2 Code Review 与 Worktrees</h3><ul>
-<li><strong>Code Review 面板</strong>：集中看 Agent（或本地）变更、行内评论、让 Agent 跟进</li>
-<li><strong>Git Worktrees</strong>：在 Warp 里管理并行工作树，方便多分支/多 Agent</li>
-</ul>
-<p>SSH 场景下部分编辑器能力有支持矩阵，见官方 <a href="https://docs.warp.dev/code/feature-support-over-ssh/">Feature support over SSH</a>。</p>
-<hr>
-<h2 id="七、知识与协作：Warp-Drive"><a href="#七、知识与协作：Warp-Drive" class="headerlink" title="七、知识与协作：Warp Drive"></a>七、知识与协作：Warp Drive</h2><p>Warp Drive 是团队知识库与协作面：</p>
-<table>
-<thead>
-<tr>
-<th>对象</th>
-<th>用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Notebooks</td>
-<td>可分享的笔记/文档</td>
-</tr>
-<tr>
-<td>Workflows</td>
-<td>可复用命令工作流</td>
-</tr>
-<tr>
-<td>Prompts</td>
-<td>保存的提示词</td>
-</tr>
-<tr>
-<td>Environment variables</td>
-<td>跨会话环境变量（少把密钥写进 shell rc）</td>
-</tr>
-<tr>
-<td>Rules</td>
-<td>给 Agent 的持久规则</td>
-</tr>
-<tr>
-<td>AI-Integrated Objects</td>
-<td>与 Agent 联动的 Drive 对象</td>
-</tr>
-</tbody></table>
-<p>还可：Agent Mode 里钉选文件/笔记本、Web 上的 Warp Drive、会话分享、团队管理与 Admin Panel。</p>
-<p>入口：<a href="https://docs.warp.dev/knowledge-and-collaboration/warp-drive/">Warp Drive overview</a></p>
-<hr>
-<h2 id="八、Warp-Agent-CLI"><a href="#八、Warp-Agent-CLI" class="headerlink" title="八、Warp Agent CLI"></a>八、Warp Agent CLI</h2><p>不必开 GUI，也能在任意终端用 <strong>Warp Agent CLI</strong> 跑 Agent 对话、权限配置、与云端编排交接。</p>
-<p>典型用途：</p>
-<ul>
-<li>CI / 远程机器上启动对话</li>
-<li>自定义配置、模型与用量</li>
-<li>权限 Profiles</li>
-<li>云端 handoff / 编排相关命令</li>
-</ul>
-<p>从 <a href="https://docs.warp.dev/cli/">CLI overview</a> · <a href="https://docs.warp.dev/cli/quickstart/">CLI quickstart</a> · <a href="https://docs.warp.dev/cli/reference/">CLI reference</a> 入手。更完整的 Oz CLI/API 见第九、十章相关参考。</p>
-<hr>
-<h2 id="九、Oz-平台与云端智能体"><a href="#九、Oz-平台与云端智能体" class="headerlink" title="九、Oz 平台与云端智能体"></a>九、Oz 平台与云端智能体</h2><h3 id="9-1-何时用云端-Agents"><a href="#9-1-何时用云端-Agents" class="headerlink" title="9.1 何时用云端 Agents"></a>9.1 何时用云端 Agents</h3><p>适合「不用盯着屏幕」的工作：PR 审查、Issue 分流、依赖升级、定时清理、集成驱动流水线。能力关键词：<strong>Triggers、Schedules、Parallelism、Observability</strong>。</p>
-<p>控制台：<a href="https://oz.warp.dev/">oz.warp.dev</a> · 文档：<a href="https://docs.warp.dev/platform/">Cloud agents</a> · <a href="https://docs.warp.dev/platform/overview/">Oz Platform</a></p>
-<h3 id="9-2-Environments、Secrets、Runners"><a href="#9-2-Environments、Secrets、Runners" class="headerlink" title="9.2 Environments、Secrets、Runners"></a>9.2 Environments、Secrets、Runners</h3><ul>
-<li><strong>Environments</strong>：云端执行上下文（仓库、setup 命令、镜像等）</li>
-<li><strong>Secrets</strong>：密钥管理与轮换</li>
-<li><strong>Runners</strong>：Warp 托管或自托管 worker（Direct / Docker / Kubernetes 等）</li>
-<li><strong>Harnesses</strong>：Warp Agent、Claude Code、Codex 等运行载体；可做第三方认证</li>
-</ul>
-<p>本地 ↔ 云端、云端 ↔ 云端支持 <strong>Handoff</strong>；可配置工作区快照等高级能力。</p>
-<h3 id="9-3-集成与触发"><a href="#9-3-集成与触发" class="headerlink" title="9.3 集成与触发"></a>9.3 集成与触发</h3><p>常见集成：Slack、Linear、GitHub / GitHub Actions、GitLab、Bitbucket、Jira、Azure DevOps 等。Triggers 与 Scheduled Agents 覆盖事件驱动与周期任务。</p>
-<p>Skills as Agents、Software factory、多智能体编排等面向规模化自动化场景。</p>
-<h3 id="9-4-参考面（CLI-API-SDK）"><a href="#9-4-参考面（CLI-API-SDK）" class="headerlink" title="9.4 参考面（CLI / API / SDK）"></a>9.4 参考面（CLI / API / SDK）</h3><ul>
-<li>Oz CLI：创建/查询 runs、会话共享、MCP、Skills、Artifacts 等</li>
-<li>API &amp; SDK：可编程创建与监控；含错误码、鉴权、联合身份令牌等</li>
-<li>排障页与 quickstart 文档齐全</li>
-</ul>
-<p>入口：<a href="https://docs.warp.dev/reference/api-and-sdk/">API &amp; SDK</a> · <a href="https://docs.warp.dev/reference/cli/">Oz CLI reference</a></p>
-<h3 id="9-5-Guides-怎么用"><a href="#9-5-Guides-怎么用" class="headerlink" title="9.5 Guides 怎么用"></a>9.5 Guides 怎么用</h3><p>官方 <a href="https://docs.warp.dev/guides/">Guides</a> 是面向任务的教程（并行 Agents、无人值守、Rules/Skills、MCP 实战、对比 Claude Code、Code Review 等）。上手顺序建议：</p>
-<ol>
-<li>本地 Quickstart + Coding in Warp  </li>
-<li>Rules + Codebase Context  </li>
-<li>一条云端 Scheduled / GitHub 触发流水线  </li>
-<li>需要时再上自托管 Runner  </li>
-</ol>
-<hr>
-<h2 id="十、企业版与安全"><a href="#十、企业版与安全" class="headerlink" title="十、企业版与安全"></a>十、企业版与安全</h2><p>面向团队/公司的能力概览：</p>
-<ul>
-<li>SSO、角色与权限、团队 Admin、账单</li>
-<li>架构与部署选项、Trust Center</li>
-<li><strong>BYOLLM</strong>（如 Bedrock、Vertex）、团队托管的 API Key/端点</li>
-<li>Analytics API、安全概览与 FAQ</li>
-</ul>
-<p>入口：<a href="https://docs.warp.dev/enterprise/">Enterprise</a> · <a href="https://docs.warp.dev/enterprise/security/">Security</a> · <a href="https://docs.warp.dev/enterprise/sso/">SSO</a></p>
-<p>个人/小团队多数功能在标准 Agents + Drive + Oz Web 已够用；企业特性按合同开通。</p>
-<hr>
-<h2 id="十一、账单、隐私与排障"><a href="#十一、账单、隐私与排障" class="headerlink" title="十一、账单、隐私与排障"></a>十一、账单、隐私与排障</h2><h3 id="11-1-套餐与信用额度"><a href="#11-1-套餐与信用额度" class="headerlink" title="11.1 套餐与信用额度"></a>11.1 套餐与信用额度</h3><p>文档涵盖套餐定价、平台 credit、附加额度、退款 FAQ 等。以官网定价页与账户账单为准：<a href="https://docs.warp.dev/support-and-community/plans-and-billing/">Plans &amp; billing</a></p>
-<h3 id="11-2-隐私与数据"><a href="#11-2-隐私与数据" class="headerlink" title="11.2 隐私与数据"></a>11.2 隐私与数据</h3><ul>
-<li>SOC 2；签约 LLM 零数据保留（不用于训练）</li>
-<li>可关闭 AI；Codebase 索引不把源码存到 Warp 服务器（按官方说明）</li>
-<li>Secret Redaction、隐私与数据控制、遥测相关说明见 Support 文档</li>
-</ul>
-<h3 id="11-3-常见排障"><a href="#11-3-常见排障" class="headerlink" title="11.3 常见排障"></a>11.3 常见排障</h3><table>
-<thead>
-<tr>
-<th>问题</th>
-<th>方向</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>登录失败</td>
-<td><a href="https://docs.warp.dev/support-and-community/troubleshooting-and-support/troubleshooting-login-issues/">Login troubleshooting</a></td>
-</tr>
-<tr>
-<td>安装/显示/Shell 异常</td>
-<td><a href="https://docs.warp.dev/support-and-community/troubleshooting-and-support/known-issues/">Known issues</a></td>
-</tr>
-<tr>
-<td>更新</td>
-<td>应用内更新或包管理器渠道</td>
-</tr>
-<tr>
-<td>离线</td>
-<td>首次启动后可离线；AI/协作不可用</td>
-</tr>
-<tr>
-<td>卸载/登出</td>
-<td>官方 Logout &amp; uninstall 页</td>
-</tr>
-<tr>
-<td>反馈</td>
-<td>发送反馈与日志（含各平台日志路径）</td>
-</tr>
-</tbody></table>
-<p>社区：贡献指南、Preview/Alpha、推荐计划、Slack 等见 <a href="https://docs.warp.dev/support-and-community/">Support &amp; Community</a>。</p>
-<hr>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>把 Warp 想成三层即可：</p>
-<ol>
-<li><strong>终端层</strong>：Blocks + 编辑器级输入，先把它当更好用的终端。  </li>
-<li><strong>本地 Agent 层</strong>：Agent Mode / 第三方 CLI + Rules / MCP / Drive，解决「在仓库里干活」。  </li>
-<li><strong>Oz 云端层</strong>：触发、调度、并行、自托管，解决「不用盯着的自动化」。</li>
-</ol>
-<p>需要某一页的逐步截图或完整参数表时，从本文对应章节跳到 <a href="https://docs.warp.dev/">docs.warp.dev</a> 同名页面即可。</p>
-]]></content>
-      <categories>
-        <category>AI</category>
-      </categories>
-      <tags>
-        <tag>ai</tag>
-        <tag>agent</tag>
-        <tag>cli</tag>
-        <tag>terminal</tag>
-        <tag>warp</tag>
-        <tag>oz</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>git命令小记</title>
     <url>/2021/07/30/git%E5%91%BD%E4%BB%A4%E5%B0%8F%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="Git命令小记"><a href="#Git命令小记" class="headerlink" title="Git命令小记"></a>Git命令小记</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">本地分支与远程分支关联</span></span><br><span class="line">git remote add origin https://github.com/qngolg/qngolg-blog-source.git</span><br><span class="line">/Users/qgl/Library/Application Support/typora-user-images/image-20210730101503550.png</span><br></pre></td></tr></table></figure>
@@ -9995,48 +10090,6 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式：解决常见问题的有效方法</title>
-    <url>/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="设计模式：解决常见问题的有效方法"><a href="#设计模式：解决常见问题的有效方法" class="headerlink" title="设计模式：解决常见问题的有效方法"></a>设计模式：解决常见问题的有效方法</h1><p>设计模式是软件开发中常用的一种解决方案，它是对特定问题的可重用解决方案的抽象描述。通过使用设计模式，开发人员可以提高代码的可维护性、可读性和可扩展性，同时减少代码的重复编写。<br>在软件开发中，我们经常会遇到一些常见的问题，例如对象之间的通信、代码的复用、系统的扩展等等。设计模式提供了一些经过验证的解决方案，帮助我们解决这些问题。</p>
-<h2 id="设计模式6大原则"><a href="#设计模式6大原则" class="headerlink" title="设计模式6大原则"></a>设计模式6大原则</h2><p>在设计模式中，有 6 大原则是非常重要的，它们指导我们如何设计高质量、可扩展和易于维护的软件系统。</p>
-<ol>
-<li>单一职责原则（Single Responsibility Principle，SRP）：一个类应该只有一个引起它变化的原因。即一个类只负责一个功能领域中的相应职责。</li>
-<li>开放封闭原则（Open-Closed Principle，OCP）：软件实体（类、模块、函数等）应该是可以扩展的，但不可以修改。</li>
-<li>里氏替换原则（Liskov Substitution Principle，LSP）：子类型必须能够替换掉它们的父类型。</li>
-<li>依赖倒置原则（Dependency Inversion Principle，DIP）：高层模块不应该依赖底层模块，而是应该依赖于抽象。抽象不应该依赖于细节，细节应该依赖于抽象。</li>
-<li>接口隔离原则（Interface Segregation Principle，ISP）：不应该强迫客户依赖于他们不使用的接口。</li>
-<li>迪米特法则（Law of Demeter，LoD）：一个软件实体应当尽可能少地与其他实体发生相互作用。<br>这些原则是设计模式的基础，它们指导我们如何设计高质量、可扩展和易于维护的软件系统。在实际开发中，我们可以根据具体情况选择合适的设计模式来实现这些原则。</li>
-</ol>
-<h2 id="设计模式类型"><a href="#设计模式类型" class="headerlink" title="设计模式类型"></a>设计模式类型</h2><table>
-<thead>
-<tr>
-<th>分类</th>
-<th>设计模式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>创建型</td>
-<td>工厂方法模式（factory Method）,抽象工厂模式（Abstract Factory）、建造者模式（Builder）、原型模式（Prototype）、单例模式（singleton）</td>
-</tr>
-<tr>
-<td>结构型</td>
-<td>适配器模式（Adapter）、桥接模式（Bridge）、组合模式（composite）、装饰器模式（Decorator）、门面模式（Facade）、享元模式（Flyweight）、代理模式（Proxy）</td>
-</tr>
-<tr>
-<td>行为型</td>
-<td>解释器模式（Interpreter）、模板方法模式（Template Method）、责任链模式（Chain of Responsibility）、命令模式（Command）、迭代器模式（Iterator）、调解器模式（Mediator）、备忘录模式（Memento）、观察者模式（Observer）、状态模式（State）、策略模式（Strategy）、访问者模式（Visitor）</td>
-</tr>
-</tbody></table>
-<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a href="https://github.com/qngolg/design-patterns">https://github.com/qngolg/design-patterns</a> ，里面包含了各类设计模式的案例和样例代码。</p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>微服务网关</title>
     <url>/2021/08/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/</url>
     <content><![CDATA[<h1 id="微服务网关"><a href="#微服务网关" class="headerlink" title="微服务网关"></a>微服务网关</h1><h2 id="什么是网关"><a href="#什么是网关" class="headerlink" title="什么是网关"></a>什么是网关</h2><h2 id="网络技术："><a href="#网络技术：" class="headerlink" title="网络技术："></a>网络技术：</h2><p>核心技术：反向代理</p>
@@ -10123,6 +10176,48 @@
       <tags>
         <tag>微服务</tag>
         <tag>spring cloud</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式：解决常见问题的有效方法</title>
+    <url>/2023/11/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%9A%84%E6%9C%89%E6%95%88%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="设计模式：解决常见问题的有效方法"><a href="#设计模式：解决常见问题的有效方法" class="headerlink" title="设计模式：解决常见问题的有效方法"></a>设计模式：解决常见问题的有效方法</h1><p>设计模式是软件开发中常用的一种解决方案，它是对特定问题的可重用解决方案的抽象描述。通过使用设计模式，开发人员可以提高代码的可维护性、可读性和可扩展性，同时减少代码的重复编写。<br>在软件开发中，我们经常会遇到一些常见的问题，例如对象之间的通信、代码的复用、系统的扩展等等。设计模式提供了一些经过验证的解决方案，帮助我们解决这些问题。</p>
+<h2 id="设计模式6大原则"><a href="#设计模式6大原则" class="headerlink" title="设计模式6大原则"></a>设计模式6大原则</h2><p>在设计模式中，有 6 大原则是非常重要的，它们指导我们如何设计高质量、可扩展和易于维护的软件系统。</p>
+<ol>
+<li>单一职责原则（Single Responsibility Principle，SRP）：一个类应该只有一个引起它变化的原因。即一个类只负责一个功能领域中的相应职责。</li>
+<li>开放封闭原则（Open-Closed Principle，OCP）：软件实体（类、模块、函数等）应该是可以扩展的，但不可以修改。</li>
+<li>里氏替换原则（Liskov Substitution Principle，LSP）：子类型必须能够替换掉它们的父类型。</li>
+<li>依赖倒置原则（Dependency Inversion Principle，DIP）：高层模块不应该依赖底层模块，而是应该依赖于抽象。抽象不应该依赖于细节，细节应该依赖于抽象。</li>
+<li>接口隔离原则（Interface Segregation Principle，ISP）：不应该强迫客户依赖于他们不使用的接口。</li>
+<li>迪米特法则（Law of Demeter，LoD）：一个软件实体应当尽可能少地与其他实体发生相互作用。<br>这些原则是设计模式的基础，它们指导我们如何设计高质量、可扩展和易于维护的软件系统。在实际开发中，我们可以根据具体情况选择合适的设计模式来实现这些原则。</li>
+</ol>
+<h2 id="设计模式类型"><a href="#设计模式类型" class="headerlink" title="设计模式类型"></a>设计模式类型</h2><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>设计模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>创建型</td>
+<td>工厂方法模式（factory Method）,抽象工厂模式（Abstract Factory）、建造者模式（Builder）、原型模式（Prototype）、单例模式（singleton）</td>
+</tr>
+<tr>
+<td>结构型</td>
+<td>适配器模式（Adapter）、桥接模式（Bridge）、组合模式（composite）、装饰器模式（Decorator）、门面模式（Facade）、享元模式（Flyweight）、代理模式（Proxy）</td>
+</tr>
+<tr>
+<td>行为型</td>
+<td>解释器模式（Interpreter）、模板方法模式（Template Method）、责任链模式（Chain of Responsibility）、命令模式（Command）、迭代器模式（Iterator）、调解器模式（Mediator）、备忘录模式（Memento）、观察者模式（Observer）、状态模式（State）、策略模式（Strategy）、访问者模式（Visitor）</td>
+</tr>
+</tbody></table>
+<p>这些只是设计模式中的一小部分，每种模式都有其特定的应用场景和优点。在实际开发中，我们可以根据具体问题选择合适的设计模式来解决问题。<br>总之，设计模式是软件开发中非常重要的一部分。通过学习和应用设计模式，我们可以提高代码的质量和可维护性，使我们的代码更加灵活、易于扩展和复用。<br>详情见样例仓库：<a href="https://github.com/qngolg/design-patterns">https://github.com/qngolg/design-patterns</a> ，里面包含了各类设计模式的案例和样例代码。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
       </tags>
   </entry>
 </search>
