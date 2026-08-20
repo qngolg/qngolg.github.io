@@ -1,0 +1,636 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="从传统 RAG 与 Microsoft GraphRAG 的痛点出发，系统拆解 HKUDS LightRAG 的图索引、双层检索、增量更新与工程架构，并对比三者在成本、延迟与问答质量上的差异。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比">
+<meta property="og:url" content="https://qngolg.github.io/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="从传统 RAG 与 Microsoft GraphRAG 的痛点出发，系统拆解 HKUDS LightRAG 的图索引、双层检索、增量更新与工程架构，并对比三者在成本、延迟与问答质量上的差异。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-08-20T08:40:00.000Z">
+<meta property="article:modified_time" content="2026-08-20T08:50:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="lightrag">
+<meta property="article:tag" content="graphrag">
+<meta property="article:tag" content="rag">
+<meta property="article:tag" content="knowledge-graph">
+<meta property="article:tag" content="llm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qngolg.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比",
+  "url": "https://qngolg.github.io/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/",
+  "image": "https://qngolg.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-08-20T08:40:00.000Z",
+  "dateModified": "2026-08-20T08:50:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "菜鸟程序员",
+      "url": "https://qngolg.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qngolg.github.io/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">42</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-20T08:40:00.000Z" title="发表于 2026-08-20 16:40:00">2026-08-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-20T08:50:00.000Z" title="更新于 2026-08-20 16:50:00">2026-08-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="LightRAG-深度解析：双层检索架构与-GraphRAG、传统-RAG-对比"><a href="#LightRAG-深度解析：双层检索架构与-GraphRAG、传统-RAG-对比" class="headerlink" title="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比"></a>LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</h1><p>做过企业知识库或垂直域问答的人，多半会碰到同一类问题：</p>
+<blockquote>
+<p>传统向量 RAG 能答细节，但跨文档推理发飘；GraphRAG 能做全局 sensemaking，但索引贵、查询慢、增量更新几乎要推倒重来。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG">LightRAG</a>（港大 HKUDS，论文 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.05779">arXiv:2410.05779</a>，EMNLP 2025 Findings）正是冲着这个缝隙来的：<strong>用知识图谱补上「关系与全局」能力，却刻意避开 GraphRAG 那套社区报告 + 社区遍历的重路径。</strong></p>
+<p>本文将从问题动机讲起，对比三种 RAG 范式，再深入 LightRAG 的索引、检索、生成与工程落地。</p>
+<hr>
+<h2 id="一、为什么需要「图增强」的-RAG？"><a href="#一、为什么需要「图增强」的-RAG？" class="headerlink" title="一、为什么需要「图增强」的 RAG？"></a>一、为什么需要「图增强」的 RAG？</h2><p>经典 RAG 可形式化为：</p>
+<p>$$<br>\mathcal{M}(q;\mathcal{D})=\mathcal{G}\big(q,\ \psi(q;\hat{\mathcal{D}})\big),\quad \hat{\mathcal{D}}=\varphi(\mathcal{D})<br>$$</p>
+<p>其中 $\varphi$ 负责索引，$\psi$ 负责检索，$\mathcal{G}$ 负责生成。工程上，大多数系统把 $\varphi$ 做成「切块 + Embedding」，把 $\psi$ 做成「Top-K 向量相似度」。</p>
+<p>这在事实型、单点查询上够用，但面对这类问题时会碎：</p>
+<blockquote>
+<p>「电动车普及如何影响城市空气质量，进而影响公共交通基础设施规划？」</p>
+</blockquote>
+<p>Naive RAG 往往分别捞到「电动车」「空气污染」「公交」几段孤立文本，却难以把因果链与跨文档依赖拼成连贯答案。<strong>根因不是 LLM 不会写，而是检索层没有显式建模实体间关系。</strong></p>
+<p>于是出现两条进化线：</p>
+<table>
+<thead>
+<tr>
+<th>路线</th>
+<th>代表</th>
+<th>核心思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>强化检索策略</td>
+<td>HyDE、RQ-RAG</td>
+<td>改写/分解查询，仍基于 chunk</td>
+</tr>
+<tr>
+<td>强化知识表示</td>
+<td>GraphRAG、LightRAG</td>
+<td>用图结构索引实体与关系</td>
+</tr>
+</tbody></table>
+<p>LightRAG 的主张可以概括成一句话：<strong>图要建，但检索不要走社区遍历；用「图结构 + 向量检索 + 双层关键词」换取质量与成本的平衡。</strong></p>
+<hr>
+<h2 id="二、三种范式总览：Naive-RAG-vs-GraphRAG-vs-LightRAG"><a href="#二、三种范式总览：Naive-RAG-vs-GraphRAG-vs-LightRAG" class="headerlink" title="二、三种范式总览：Naive RAG vs GraphRAG vs LightRAG"></a>二、三种范式总览：Naive RAG vs GraphRAG vs LightRAG</h2><p><img src="/images/lightrag/01-rag-comparison.png" alt="三种 RAG 范式对比：Naive RAG / GraphRAG / LightRAG"></p>
+<h3 id="2-1-传统-RAG（Naive-Dense-RAG）"><a href="#2-1-传统-RAG（Naive-Dense-RAG）" class="headerlink" title="2.1 传统 RAG（Naive / Dense RAG）"></a>2.1 传统 RAG（Naive / Dense RAG）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">文档 → Chunk → Embedding → Vector DB</span><br><span class="line">                ↑</span><br><span class="line">用户问题 → Embedding → Top-K 相似块 → 拼进 Prompt → LLM 生成</span><br></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：实现简单、延迟低、增量更新容易（新文档 embed 后插入即可）。<br><strong>缺点</strong>：扁平表示；跨 hop 推理弱；全局总结依赖偶然命中；易受 chunk 边界切割影响。</p>
+<h3 id="2-2-Microsoft-GraphRAG"><a href="#2-2-Microsoft-GraphRAG" class="headerlink" title="2.2 Microsoft GraphRAG"></a>2.2 Microsoft GraphRAG</h3><p>GraphRAG（Edge et al., 2024）大致流程是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">文档 → 实体/关系抽取 → 知识图谱</span><br><span class="line">                    ↓</span><br><span class="line">              Leiden 社区划分</span><br><span class="line">                    ↓</span><br><span class="line">           为每个社区生成 Summary Report</span><br><span class="line">                    ↓</span><br><span class="line">查询时：按社区报告做 Map-Reduce / 遍历聚合 → 生成答案</span><br></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：全局 sensemaking 强，适合「整库级」主题问答。<br><strong>代价</strong>（论文在 Legal 数据集上的对比很直观）：</p>
+<ul>
+<li>检索阶段可能要消费大量社区报告 token（实验中约 610 个 level-2 社区 × ~1000 tokens），并产生数百次 API 调用；</li>
+<li>增量更新时往往需要拆旧社区、重建报告，开销接近「再索引一遍」。</li>
+</ul>
+<h3 id="2-3-LightRAG：轻量图-RAG"><a href="#2-3-LightRAG：轻量图-RAG" class="headerlink" title="2.3 LightRAG：轻量图 RAG"></a>2.3 LightRAG：轻量图 RAG</h3><p>LightRAG 同样抽实体与关系建图，但关键差异在于：</p>
+<ol>
+<li><strong>不为社区批量生成长报告</strong>作为检索主路径；</li>
+<li>用 LLM 为实体/关系生成 <strong>可向量检索的 key-value 摘要</strong>；</li>
+<li>查询时抽出 <strong>low-level / high-level 关键词</strong>，在向量库里命中实体与关系，再扩一跳邻居；</li>
+<li>新文档只做局部抽取与图并集，<strong>无需重建全局社区结构</strong>。</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────┐</span><br><span class="line">│         LightRAG 核心思想          │</span><br><span class="line">│  图提供结构，向量提供速度，双层提供广度 │</span><br><span class="line">└─────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-横向对比表"><a href="#2-4-横向对比表" class="headerlink" title="2.4 横向对比表"></a>2.4 横向对比表</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统 RAG</th>
+<th>GraphRAG</th>
+<th>LightRAG</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>知识表示</td>
+<td>Chunk 向量</td>
+<td>图 + 社区报告</td>
+<td>图 + 实体/关系 KV + Chunk</td>
+</tr>
+<tr>
+<td>全局理解</td>
+<td>弱</td>
+<td>强（社区摘要）</td>
+<td>强（high-level + 多跳邻居）</td>
+</tr>
+<tr>
+<td>细节事实</td>
+<td>强（直接命中块）</td>
+<td>中（偏主题）</td>
+<td>强（local + naive/mix）</td>
+</tr>
+<tr>
+<td>索引成本</td>
+<td>低</td>
+<td>很高（社区报告）</td>
+<td>中（抽取 + Profiling）</td>
+</tr>
+<tr>
+<td>查询成本</td>
+<td>低（1 次向量检索）</td>
+<td>很高（社区遍历）</td>
+<td>低（关键词生成 + 向量检索）</td>
+</tr>
+<tr>
+<td>增量更新</td>
+<td>易</td>
+<td>难（常需重建社区）</td>
+<td>易（图并集）</td>
+</tr>
+<tr>
+<td>典型延迟</td>
+<td>毫秒~秒级检索</td>
+<td>显著更慢</td>
+<td>接近传统 RAG 量级</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>FAQ、单点事实</td>
+<td>长文档全局分析</td>
+<td>细节 + 主题兼顾的生产问答</td>
+</tr>
+</tbody></table>
+<p>论文在 Agriculture / CS / Legal / Mix 等 UltraDomain 数据集上，用 LLM-as-Judge 比较 Comprehensiveness、Diversity、Empowerment、Overall：LightRAG 相对 NaiveRAG、RQ-RAG、HyDE 优势明显；相对 GraphRAG 在大体量语料上整体更优，尤其是 <strong>Diversity</strong>。</p>
+<hr>
+<h2 id="三、整体架构设计"><a href="#三、整体架构设计" class="headerlink" title="三、整体架构设计"></a>三、整体架构设计</h2><h3 id="3-1-逻辑分层"><a href="#3-1-逻辑分层" class="headerlink" title="3.1 逻辑分层"></a>3.1 逻辑分层</h3><p><img src="/images/lightrag/03-lightrag-architecture.png" alt="LightRAG 分层架构：App → Orchestrator → 三类存储 → 模型层"></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                         应用 / API / WebUI                         │</span><br><span class="line">│              insert / query / delete / graph visualize             │</span><br><span class="line">├──────────────────────────────────────────────────────────────────┤</span><br><span class="line">│                         LightRAG Orchestrator                      │</span><br><span class="line">│   Chunking │ Entity Extract │ Profiling │ Dual Retrieval │ Generate │</span><br><span class="line">├─────────────────┬──────────────────┬───────────────────────────────┤</span><br><span class="line">│   KV Storage    │  Vector Storage  │         Graph Storage          │</span><br><span class="line">│  text_chunks    │  entities/rels   │   NetworkX / Neo4j / Memgraph  │</span><br><span class="line">│  llm_response   │  chunks embed    │   nodes=entities, edges=rels   │</span><br><span class="line">│  full_docs ...  │  keywords ...    │                               │</span><br><span class="line">├─────────────────┴──────────────────┴───────────────────────────────┤</span><br><span class="line">│              LLM Roles: EXTRACT / KEYWORDS / QUERY / VLM             │</span><br><span class="line">│              Embedding │（可选）Reranker │ Doc Parser (MinerU 等)      │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>开源实现里，LightRAG 明确依赖 <strong>四类存储</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>存储类型</th>
+<th>存什么</th>
+<th>常见后端</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KV</td>
+<td>原文块、文档元数据、LLM 缓存等</td>
+<td>JSON / Redis / PG / Mongo / OpenSearch</td>
+</tr>
+<tr>
+<td>Vector</td>
+<td>chunk、entity、relation、keyword 向量</td>
+<td>nano-vectordb / Milvus / Qdrant / PG</td>
+</tr>
+<tr>
+<td>Graph</td>
+<td>实体节点与关系边</td>
+<td>NetworkX 文件 / Neo4j / Memgraph</td>
+</tr>
+<tr>
+<td>Doc Status</td>
+<td>文档处理状态、失败重试等</td>
+<td>与 KV 同类后端</td>
+</tr>
+</tbody></table>
+<p>默认是「内存 + 本地文件」便于试用；生产建议 PostgreSQL / MongoDB / OpenSearch 一站式，或向量库 + 图库组合。</p>
+<h3 id="3-2-端到端数据流（总览图）"><a href="#3-2-端到端数据流（总览图）" class="headerlink" title="3.2 端到端数据流（总览图）"></a>3.2 端到端数据流（总览图）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">                         【索引阶段 Indexing】</span><br><span class="line">┌─────────┐   chunk    ┌──────────┐  LLM Recog  ┌─────────────┐</span><br><span class="line">│ 原始文档  │ ────────► │ Text Chunks│ ──────────► │ 实体 V / 关系 E │</span><br><span class="line">└─────────┘            └──────────┘             └──────┬──────┘</span><br><span class="line">                                                       │</span><br><span class="line">                              LLM Profiling (K,V)      │</span><br><span class="line">                                                       ▼</span><br><span class="line">                                              ┌────────────────┐</span><br><span class="line">                                              │ Deduplicate    │</span><br><span class="line">                                              │ 合并同名实体/边  │</span><br><span class="line">                                              └────────┬───────┘</span><br><span class="line">                       ┌───────────────────────────────┼───────────────────────────────┐</span><br><span class="line">                       ▼                               ▼                               ▼</span><br><span class="line">                ┌─────────────┐                 ┌─────────────┐                 ┌─────────────┐</span><br><span class="line">                │ Graph Store │                 │ Vector Store│                 │  KV Store   │</span><br><span class="line">                │ V, E 结构   │                 │ 实体/关系/块 │                 │ chunk 原文等 │</span><br><span class="line">                └─────────────┘                 └─────────────┘                 └─────────────┘</span><br><span class="line"></span><br><span class="line">                         【查询阶段 Querying】</span><br><span class="line">┌─────────┐  LLM 抽关键词  ┌──────────────────┐</span><br><span class="line">│ 用户问题  │ ────────────► │ k^(l) low-level  │──► 向量匹配实体 ──► 取一跳邻居</span><br><span class="line">└────┬────┘               │ k^(g) high-level │──► 向量匹配关系 ──► 取一跳邻居</span><br><span class="line">     │                    └──────────────────┘</span><br><span class="line">     │  （可选）naive：直接向量检索 chunks</span><br><span class="line">     │  （可选）rerank：对候选上下文重排</span><br><span class="line">     ▼</span><br><span class="line">┌─────────────────────────────────────────┐</span><br><span class="line">│ 拼接：实体描述 + 关系描述 +（可选）原文片段 │</span><br><span class="line">└────────────────────┬────────────────────┘</span><br><span class="line">                     ▼</span><br><span class="line">              LLM 生成最终答案</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、实现原理拆解"><a href="#四、实现原理拆解" class="headerlink" title="四、实现原理拆解"></a>四、实现原理拆解</h2><h3 id="4-1-Graph-based-Text-Indexing（图增强文本索引）"><a href="#4-1-Graph-based-Text-Indexing（图增强文本索引）" class="headerlink" title="4.1 Graph-based Text Indexing（图增强文本索引）"></a>4.1 Graph-based Text Indexing（图增强文本索引）</h3><p>论文把索引写成：</p>
+<p>$$<br>\hat{\mathcal{D}}=(\hat{\mathcal{V}},\hat{\mathcal{E}})=\mathrm{Dedupe}\circ\mathrm{Prof}(\mathcal{V},\mathcal{E}),\quad<br>\mathcal{V},\mathcal{E}=\bigcup_{\mathcal{D}_i\in\mathcal{D}}\mathrm{Recog}(\mathcal{D}_i)<br>$$</p>
+<p>三步流水线：</p>
+<h4 id="（1）Recog：实体与关系抽取"><a href="#（1）Recog：实体与关系抽取" class="headerlink" title="（1）Recog：实体与关系抽取"></a>（1）Recog：实体与关系抽取</h4><p>文档先按 chunk size（论文实验默认 1200 tokens）切分，再对每个 chunk 调用 LLM，抽出：</p>
+<ul>
+<li><strong>实体（节点）</strong>：人名、组织、概念、事件、指标等；</li>
+<li><strong>关系（边）</strong>：实体间的谓词与连接语义。</li>
+</ul>
+<p>例如从「心内科医生根据症状评估潜在心脏问题」可抽出：</p>
+<ul>
+<li>实体：<code>Cardiologists</code>、<code>Heart Disease</code></li>
+<li>关系：<code>Cardiologists diagnose Heart Disease</code></li>
+</ul>
+<p>开源实现还支持 <strong>gleaning</strong>（二次补抽），以及面向开源模型的抽取提示优化，降低漏抽。</p>
+<h4 id="（2）Prof：LLM-Profiling，生成可检索的-KV"><a href="#（2）Prof：LLM-Profiling，生成可检索的-KV" class="headerlink" title="（2）Prof：LLM Profiling，生成可检索的 KV"></a>（2）Prof：LLM Profiling，生成可检索的 KV</h4><p>对每个实体、每条关系，再用 LLM 生成 key-value：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实体</td>
+<td>实体名本身</td>
+<td>对该实体的摘要描述，可含原文摘录</td>
+</tr>
+<tr>
+<td>关系</td>
+<td>一个或多个「主题/概念」型关键词</td>
+<td>关系说明与上下文摘要</td>
+</tr>
+</tbody></table>
+<p>这一步非常关键：<strong>图负责存结构，向量负责按语义找入口</strong>。关系侧故意生成偏「全局主题」的 keys，正好喂给 high-level 检索。</p>
+<h4 id="（3）Dedupe：跨-chunk-去重合并"><a href="#（3）Dedupe：跨-chunk-去重合并" class="headerlink" title="（3）Dedupe：跨 chunk 去重合并"></a>（3）Dedupe：跨 chunk 去重合并</h4><p>不同 chunk 可能抽到同名实体或等价关系。去重后：</p>
+<ul>
+<li>图规模下降，后续邻居扩展更干净；</li>
+<li>同一实体的多段描述可合并，形成更完整的节点画像。</li>
+</ul>
+<p><strong>相对 GraphRAG 的本质差异</strong>：LightRAG 在索引阶段<strong>不构建 Leiden 社区、不预生成社区报告</strong>。全局信息被编码进「关系 keys + 多跳邻居 + hybrid/mix 模式」，而不是预计算成巨量 summary 文本。</p>
+<h3 id="4-2-Dual-level-Retrieval（双层检索）"><a href="#4-2-Dual-level-Retrieval（双层检索）" class="headerlink" title="4.2 Dual-level Retrieval（双层检索）"></a>4.2 Dual-level Retrieval（双层检索）</h3><p><img src="/images/lightrag/02-dual-level-retrieval.png" alt="LightRAG 双层检索：low-level 实体 + high-level 关系 → 一跳扩展 → 生成"></p>
+<p>LightRAG 把查询粗分为两类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>例子</th>
+<th>需要的信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Specific（具体）</td>
+<td>「《傲慢与偏见》的作者是谁？」</td>
+<td>精确实体与属性</td>
+</tr>
+<tr>
+<td>Abstract（抽象）</td>
+<td>「AI 如何影响现代教育？」</td>
+<td>跨实体主题与关系链</td>
+</tr>
+</tbody></table>
+<p>对应两种检索：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Query q</span><br><span class="line">   │</span><br><span class="line">   ├─► 抽取 local keywords  k^(l)  ──► 向量匹配「实体」──► 实体 + 一跳邻居</span><br><span class="line">   │</span><br><span class="line">   └─► 抽取 global keywords k^(g)  ──► 向量匹配「关系」──► 关系 + 一跳邻居</span><br><span class="line">                                              │</span><br><span class="line">                                              ▼</span><br><span class="line">                                    合并上下文 V（描述/摘录）</span><br><span class="line">                                              │</span><br><span class="line">                                              ▼</span><br><span class="line">                                         LLM 生成答案</span><br></pre></td></tr></table></figure>
+
+<p>细节上有三点值得抠：</p>
+<ol>
+<li><strong>关键词生成只调一次 LLM</strong>，token 消耗通常 &lt;100，远小于 GraphRAG 读社区报告；</li>
+<li><strong>命中后扩一跳邻居</strong>，把局部子图结构拼进上下文，相当于廉价的「弱多跳」；</li>
+<li><strong>Low / High 必须配合</strong>：消融实验里只留一边都会掉点——只 low 缺广度，只 high 缺深度，hybrid 才平衡。</li>
+</ol>
+<p>论文还有一个有趣的消融：<strong>去掉原文 chunk（-Origin）不一定掉很多</strong>，说明图上的实体/关系摘要已经承载了大量可答信息；原文有时反而引入噪声。工程上仍建议保留 naive/mix，作为细节兜底。</p>
+<h3 id="4-3-查询模式（开源实现的五种-Mode）"><a href="#4-3-查询模式（开源实现的五种-Mode）" class="headerlink" title="4.3 查询模式（开源实现的五种 Mode）"></a>4.3 查询模式（开源实现的五种 Mode）</h3><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>行为</th>
+<th>适合什么问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>local</code></td>
+<td>偏实体与局部上下文</td>
+<td>具体对象、精确事实</td>
+</tr>
+<tr>
+<td><code>global</code></td>
+<td>偏关系与宏观主题</td>
+<td>总结、趋势、跨文档主题</td>
+</tr>
+<tr>
+<td><code>hybrid</code></td>
+<td>local + global</td>
+<td>细节与主题兼顾</td>
+</tr>
+<tr>
+<td><code>naive</code></td>
+<td>纯 chunk 向量检索</td>
+<td>传统 RAG 基线 / 简单 FAQ</td>
+</tr>
+<tr>
+<td><code>mix</code></td>
+<td>local + global + naive</td>
+<td><strong>默认推荐</strong>，最全面</td>
+</tr>
+</tbody></table>
+<p>当前默认多为 <code>mix</code>；开启 <strong>Reranker</strong> 后，对混合候选重排，复杂问句质量提升明显（代价大约 1–2 秒，建议本地部署 rerank 模型）。</p>
+<h3 id="4-4-增量更新：为什么比-GraphRAG-轻一个数量级"><a href="#4-4-增量更新：为什么比-GraphRAG-轻一个数量级" class="headerlink" title="4.4 增量更新：为什么比 GraphRAG 轻一个数量级"></a>4.4 增量更新：为什么比 GraphRAG 轻一个数量级</h3><p>新文档 $\mathcal{D}’$ 的处理：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">D&#x27; → 同样的 φ（切块/抽取/Profiling/去重）→ (V&#x27;, E&#x27;)</span><br><span class="line">然后：</span><br><span class="line">  V ← V ∪ V&#x27;</span><br><span class="line">  E ← E ∪ E&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><strong>不重建社区、不重写全库报告</strong>。论文对比 Legal 场景：GraphRAG 增量更新要为大量社区重新生成报告（量级可达 <code>1399 × 2 × 5000</code> tokens 量级的重建开销）；LightRAG 增量成本基本等于对新文档做一次抽取 $T_{extract}$。</p>
+<p>这也是生产环境选 LightRAG 的核心理由之一：<strong>知识库是活的</strong>，每天都有新合同、新手册、新工单。</p>
+<h3 id="4-5-复杂度直觉"><a href="#4-5-复杂度直觉" class="headerlink" title="4.5 复杂度直觉"></a>4.5 复杂度直觉</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>主要开销</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>索引</td>
+<td>约 <code>总 token / chunk_size</code> 次抽取 LLM 调用 + Profiling；无社区报告额外大头</td>
+</tr>
+<tr>
+<td>检索</td>
+<td>1 次关键词 LLM + 向量检索实体/关系（及可选 chunk）+ 1 次生成</td>
+</tr>
+<tr>
+<td>对比 GraphRAG 检索</td>
+<td>避免「按社区报告逐个喂模型」的 Map-Reduce</td>
+</tr>
+</tbody></table>
+<p>因此：<strong>索引比 Naive RAG 贵（因为要抽图），但通常远低于 GraphRAG；查询接近 Naive RAG，远快于 GraphRAG。</strong></p>
+<hr>
+<h2 id="五、与-GraphRAG、传统-RAG-的「决策树」"><a href="#五、与-GraphRAG、传统-RAG-的「决策树」" class="headerlink" title="五、与 GraphRAG、传统 RAG 的「决策树」"></a>五、与 GraphRAG、传统 RAG 的「决策树」</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">你的问题更像哪一种？</span><br><span class="line">│</span><br><span class="line">├─ 主要是 FAQ / 单点事实 / 延迟敏感</span><br><span class="line">│     └─► 传统 RAG（或 LightRAG naive）足够</span><br><span class="line">│</span><br><span class="line">├─ 需要整库级主题综述，且语料相对静态、预算充足</span><br><span class="line">│     └─► GraphRAG 仍有价值（社区报告即「预计算全局记忆」）</span><br><span class="line">│</span><br><span class="line">└─ 既要细节又要跨文档关系，且数据会持续增长</span><br><span class="line">      └─► LightRAG（mix / hybrid + 可选 rerank）更合适</span><br></pre></td></tr></table></figure>
+
+<p>一句话选型：</p>
+<ul>
+<li><strong>要简单</strong>：Naive RAG  </li>
+<li><strong>要极致全局预计算</strong>：GraphRAG  </li>
+<li><strong>要生产可用的图增强</strong>：LightRAG  </li>
+</ul>
+<hr>
+<h2 id="六、代码实战"><a href="#六、代码实战" class="headerlink" title="六、代码实战"></a>六、代码实战</h2><h3 id="6-1-安装与最小可运行示例"><a href="#6-1-安装与最小可运行示例" class="headerlink" title="6.1 安装与最小可运行示例"></a>6.1 安装与最小可运行示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐用 uv</span></span><br><span class="line">uv tool install <span class="string">&quot;lightrag-hku[api]&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或嵌入式依赖</span></span><br><span class="line">pip install lightrag-hku</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> lightrag <span class="keyword">import</span> LightRAG, QueryParam</span><br><span class="line"><span class="keyword">from</span> lightrag.llm.openai <span class="keyword">import</span> gpt_4o_mini_complete, openai_embed</span><br><span class="line"><span class="keyword">from</span> lightrag.utils <span class="keyword">import</span> setup_logger</span><br><span class="line"></span><br><span class="line">setup_logger(<span class="string">&quot;lightrag&quot;</span>, level=<span class="string">&quot;INFO&quot;</span>)</span><br><span class="line">os.environ[<span class="string">&quot;OPENAI_API_KEY&quot;</span>] = <span class="string">&quot;your-key&quot;</span></span><br><span class="line"></span><br><span class="line">WORKING_DIR = <span class="string">&quot;./lightrag_cache&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">initialize_rag</span>() -&gt; LightRAG:</span><br><span class="line">    rag = LightRAG(</span><br><span class="line">        working_dir=WORKING_DIR,</span><br><span class="line">        embedding_func=openai_embed,</span><br><span class="line">        llm_model_func=gpt_4o_mini_complete,</span><br><span class="line">        <span class="comment"># 中文语料可指定抽取语言与实体类型</span></span><br><span class="line">        addon_params=&#123;</span><br><span class="line">            <span class="string">&quot;language&quot;</span>: <span class="string">&quot;Simplified Chinese&quot;</span>,</span><br><span class="line">            <span class="string">&quot;entity_types&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;organization&quot;</span>, <span class="string">&quot;person&quot;</span>, <span class="string">&quot;location&quot;</span>,</span><br><span class="line">                <span class="string">&quot;event&quot;</span>, <span class="string">&quot;category&quot;</span>, <span class="string">&quot;technology&quot;</span>,</span><br><span class="line">            ],</span><br><span class="line">        &#125;,</span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># 必须显式初始化，否则后续 insert/query 会报错</span></span><br><span class="line">    <span class="keyword">await</span> rag.initialize_storages()</span><br><span class="line">    <span class="keyword">return</span> rag</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    rag = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        rag = <span class="keyword">await</span> initialize_rag()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> rag.ainsert(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        LightRAG 将知识图谱与向量检索结合。</span></span><br><span class="line"><span class="string">        查询时抽取 low-level / high-level 关键词，分别匹配实体与关系，并扩展一跳邻居。</span></span><br><span class="line"><span class="string">        与 GraphRAG 不同，它不依赖社区报告的 Map-Reduce 遍历，因此增量更新更轻量。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line">        answer = <span class="keyword">await</span> rag.aquery(</span><br><span class="line">            <span class="string">&quot;LightRAG 和 GraphRAG 的核心区别是什么？&quot;</span>,</span><br><span class="line">            param=QueryParam(mode=<span class="string">&quot;mix&quot;</span>),</span><br><span class="line">        )</span><br><span class="line">        <span class="built_in">print</span>(answer)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="keyword">if</span> rag <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">await</span> rag.finalize_storages()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    asyncio.run(main())</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-五种查询模式对照"><a href="#6-2-五种查询模式对照" class="headerlink" title="6.2 五种查询模式对照"></a>6.2 五种查询模式对照</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">compare_modes</span>(<span class="params">rag: LightRAG, question: <span class="built_in">str</span></span>):</span><br><span class="line">    <span class="keyword">for</span> mode <span class="keyword">in</span> (<span class="string">&quot;naive&quot;</span>, <span class="string">&quot;local&quot;</span>, <span class="string">&quot;global&quot;</span>, <span class="string">&quot;hybrid&quot;</span>, <span class="string">&quot;mix&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\n===== mode=<span class="subst">&#123;mode&#125;</span> =====&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(</span><br><span class="line">            <span class="keyword">await</span> rag.aquery(</span><br><span class="line">                question,</span><br><span class="line">                param=QueryParam(</span><br><span class="line">                    mode=mode,</span><br><span class="line">                    top_k=<span class="number">40</span>,</span><br><span class="line">                    chunk_top_k=<span class="number">12</span>,</span><br><span class="line">                    <span class="comment"># 只想看检索到了什么时，打开下面两个开关之一</span></span><br><span class="line">                    <span class="comment"># only_need_context=True,</span></span><br><span class="line">                    <span class="comment"># only_need_prompt=True,</span></span><br><span class="line">                    enable_rerank=<span class="literal">False</span>,  <span class="comment"># 未配置 rerank 模型时先关掉，避免警告</span></span><br><span class="line">                ),</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 经验：</span></span><br><span class="line"><span class="comment"># - 具体事实 → local / mix</span></span><br><span class="line"><span class="comment"># - 主题总结 → global / hybrid / mix</span></span><br><span class="line"><span class="comment"># - 生产默认 → mix（最全）；配上 rerank 通常更好</span></span><br></pre></td></tr></table></figure>
+
+<p>多轮对话可把历史塞进 <code>conversation_history</code>（只影响生成，不参与检索）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">history = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;先介绍一下 LightRAG&quot;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;assistant&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;LightRAG 是图增强的轻量 RAG……&quot;</span>&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> rag.aquery(</span><br><span class="line">    <span class="string">&quot;那它增量更新怎么做？&quot;</span>,</span><br><span class="line">    param=QueryParam(mode=<span class="string">&quot;mix&quot;</span>, conversation_history=history),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-增量插入与「只取上下文」"><a href="#6-3-增量插入与「只取上下文」" class="headerlink" title="6.3 增量插入与「只取上下文」"></a>6.3 增量插入与「只取上下文」</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新文档直接 ainsert：内部走同一套抽取，再与已有图做并集</span></span><br><span class="line"><span class="keyword">await</span> rag.ainsert(<span class="string">&quot;2026 年公司新增了 Neo4j 作为图存储后端。&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调试检索质量：只要上下文，不要生成</span></span><br><span class="line">ctx = <span class="keyword">await</span> rag.aquery(</span><br><span class="line">    <span class="string">&quot;系统用了哪些图数据库？&quot;</span>,</span><br><span class="line">    param=QueryParam(mode=<span class="string">&quot;hybrid&quot;</span>, only_need_context=<span class="literal">True</span>),</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(ctx)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-4-生产存储：Neo4j-自定义向量阈值"><a href="#6-4-生产存储：Neo4j-自定义向量阈值" class="headerlink" title="6.4 生产存储：Neo4j + 自定义向量阈值"></a>6.4 生产存储：Neo4j + 自定义向量阈值</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">os.environ[<span class="string">&quot;NEO4J_URI&quot;</span>] = <span class="string">&quot;bolt://localhost:7687&quot;</span></span><br><span class="line">os.environ[<span class="string">&quot;NEO4J_USERNAME&quot;</span>] = <span class="string">&quot;neo4j&quot;</span></span><br><span class="line">os.environ[<span class="string">&quot;NEO4J_PASSWORD&quot;</span>] = <span class="string">&quot;your-password&quot;</span></span><br><span class="line"></span><br><span class="line">rag = LightRAG(</span><br><span class="line">    working_dir=<span class="string">&quot;./lightrag_prod&quot;</span>,</span><br><span class="line">    embedding_func=openai_embed,</span><br><span class="line">    llm_model_func=gpt_4o_mini_complete,</span><br><span class="line">    kv_storage=<span class="string">&quot;JsonKVStorage&quot;</span>,          <span class="comment"># 也可换成 PGKVStorage / MongoKVStorage</span></span><br><span class="line">    vector_storage=<span class="string">&quot;NanoVectorDBStorage&quot;</span>, <span class="comment"># 生产可换 Milvus / Qdrant / PGVector</span></span><br><span class="line">    graph_storage=<span class="string">&quot;Neo4JStorage&quot;</span>,</span><br><span class="line">    doc_status_storage=<span class="string">&quot;JsonDocStatusStorage&quot;</span>,</span><br><span class="line">    vector_db_storage_cls_kwargs=&#123;</span><br><span class="line">        <span class="string">&quot;cosine_better_than_threshold&quot;</span>: <span class="number">0.2</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>一站式后端也可用 PostgreSQL / MongoDB / OpenSearch 同时承接 KV、向量、图、文档状态。</p>
+<h3 id="6-5-一键起服务（WebUI）"><a href="#6-5-一键起服务（WebUI）" class="headerlink" title="6.5 一键起服务（WebUI）"></a>6.5 一键起服务（WebUI）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> env.example .<span class="built_in">env</span>   <span class="comment"># 配置 LLM / Embedding / 鉴权</span></span><br><span class="line">lightrag-server       <span class="comment"># 默认 0.0.0.0；对外暴露前务必配 API Key</span></span><br></pre></td></tr></table></figure>
+
+<p>角色化 LLM（EXTRACT / KEYWORDS / QUERY / VLM）是控成本的常用手法：抽取用便宜快模型，问答用更强模型。抽取阶段务必关闭 thinking/reasoning，否则每个 chunk 都会又慢又贵。</p>
+<hr>
+<h2 id="七、工程落地注意点"><a href="#七、工程落地注意点" class="headerlink" title="七、工程落地注意点"></a>七、工程落地注意点</h2><ol>
+<li><strong>Embedding 模型一旦选定，尽量别换</strong>；换了要全量重 embed（实体、关系、chunk）。维度变更时某些后端还需重建表。  </li>
+<li><strong>抽取模型不要开 thinking/reasoning 模式</strong>，否则每个 chunk 又慢又贵。  </li>
+<li><strong>Rerank 可换、Embedding 不宜换</strong>；质量不够时优先开 rerank 与调 <code>mix</code>。  </li>
+<li><strong>默认本地存储只适合试用</strong>；上线用 PG / Neo4j+Milvus / OpenSearch 等。  </li>
+<li><strong>删除文档</strong>时开源版支持基于索引期 LLM cache 重建受影响子图，比暴力全量重建友好得多。  </li>
+<li>评估可用官方 <a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG/blob/main/docs/Reproduce.md">Reproduce</a> 流程，或接入 RAGAS；不要只看「能不能答」，要看 comprehensiveness / diversity。</li>
+</ol>
+<hr>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p>LightRAG 不是「又一个套了图的 RAG」，而是一次清晰的架构取舍：</p>
+<table>
+<thead>
+<tr>
+<th>它保留了什么</th>
+<th>它扔掉了什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实体-关系图带来的结构与可组合性</td>
+<td>GraphRAG 的社区报告预计算与查询期社区遍历</td>
+</tr>
+<tr>
+<td>向量检索的速度与可扩展性</td>
+<td>纯 chunk RAG 对跨文档依赖的无视</td>
+</tr>
+<tr>
+<td>双层关键词覆盖「点」与「面」</td>
+<td>只能二选一的检索策略</td>
+</tr>
+</tbody></table>
+<p>若用三个词概括其原理：<strong>图索引、双层检索、增量并集</strong>。<br>若用一句话对比三者：<strong>Naive RAG 找相似块，GraphRAG 读社区报告，LightRAG 用关键词在图上定位实体与关系并扩邻居。</strong></p>
+<p>相关资源：</p>
+<ul>
+<li>论文：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.05779">LightRAG: Simple and Fast Retrieval-Augmented Generation</a>  </li>
+<li>代码：<a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG">HKUDS/LightRAG</a>  </li>
+<li>项目页：<a target="_blank" rel="noopener" href="https://lightrag.github.io/">lightrag.github.io</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/">https://qngolg.github.io/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/lightrag/">lightrag</a><a class="post-meta__tags" href="/tags/graphrag/">graphrag</a><a class="post-meta__tags" href="/tags/rag/">rag</a><a class="post-meta__tags" href="/tags/knowledge-graph/">knowledge-graph</a><a class="post-meta__tags" href="/tags/llm/">llm</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro</div></div><div class="info-2"><div class="info-item-1">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro2026 年再问「哪个 Coding Agent 最强」，答案几乎一定是错的——因为它们已经不是同一类产品。 都能读仓库、改文件、跑命令、接 MCP，这只说明 Agent 循环已经商品化。真正拉开差距的，是循环外面那一层：模型锁不锁定、上下文怎么压、编辑会不会改坏文件、长任务能不能留着跑、失败了能不能回退、以及 Agent 到底住在终端、编辑器，还是云端虚拟机里。 本文对比九个当下最常被并列讨论的选手：    产品 一句话    Oh My Pi（omp） 开源终端 Agent，把 LSP/DAP/哈希行编辑塞进 harness   Claude Code Anthropic 官方 Agent，多入口、生态最完整   Reasonix DeepSeek 原生、为「一直开着跑」优化的开源 Agent   Cursor AI 原生 IDE，日常写代码体验最完整   Zed 高性能编辑器 + ACP，让你...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/" title="LangChain Data Agent 入门：数据分析智能体与核心组件详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-23</div><div class="info-item-2">LangChain Data Agent 入门：数据分析智能体与核心组件详解</div></div><div class="info-2"><div class="info-item-1">LangChain Data Agent 入门：数据分析智能体与核心组件详解在数据工程和分析场景中，一个高频需求是：用自然语言提问，让 AI 自动查库、跑分析、出图表。 LangChain 生态中的 Data Agent（数据智能体）正是为此设计的。它并不是单一类名，而是一类面向数据任务的 Agent 解决方案，官方文档中主要有两种典型形态：    类型 适用场景 核心入口    SQL Agent 结构化数据库问答（NL → SQL） create_agent + SQL 工具集   Data Analysis Agent CSV/数据集探索、可视化、报告生成 create_deep_agent + 沙箱 Backend   本文将系统介绍 Data Agent 的架构思路、核心组件，以及如何在生产环境中安全使用。 一、Data Agent 解决什么问题？传统 BI 流程是：业务提需求 → 数据分析师写 SQL → 跑数 → 做图 → 出报告。链路长、响应慢。 Data Agent 把这个流程压缩成一次对话： 123用户：「上个月各品类收入是多少？画个柱状图。」  ↓Agent...</div></div></div></a><a class="pagination-related" href="/2026/08/11/Cursor%E4%B8%8EClaude-Code%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Agent%E4%B8%8D%E6%98%AF%E4%B8%80%E8%82%A1%E8%84%91%E5%A1%9E%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95/" title="Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-11</div><div class="info-item-2">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」</div></div><div class="info-2"><div class="info-item-1">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」做过 Agent 开发的人，多半都踩过同一个认知坑：  和大模型对话时，如果想让它「记得」历史上下文，只能把之前的聊天内容一股脑丢回去。  这句话在 API 协议层是对的——Transformer 对话接口本质无状态。但若据此认为 Cursor、Claude Code 也在每轮把完整 transcript 原样塞进 prompt，那就错了。 协议层仍是重放；产品层早已是上下文工程（Context Engineering）。本文从无状态约束讲起，拆解 Cursor 与 Claude Code 的公开机制，并映射回 LangChain / LangGraph，方便自己做 Agent 时直接落地。  一、先分清两件事：无状态 API ≠ 全量聊天重放1.1 模型侧确实没有「会话内存」每次请求大致是： 1request_n = system +（你认为模型「该记得」的一切）+ 本轮输入  所谓「记得上一句」，只是 harness（编排层）又把上一句——或其压缩版——放进了这次 prompt...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到 ~/.omp/agent/sessions/。你可以恢复、派生、创建分支并分享它们。设置、凭...</div></div></div></a><a class="pagination-related" href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" title="LangGraph 入门：核心组件与架构详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-23</div><div class="info-item-2">LangGraph 入门：核心组件与架构详解</div></div><div class="info-2"><div class="info-item-1">LangGraph 入门：核心组件与架构详解如果你已经用 LangChain 写过 RAG 或 Agent，大概率会遇到这样的困境：对话轮次一多，状态管理变得混乱；多 Agent 协作时，流程难以控制；关键操作需要人工审批，却没有优雅的暂停/恢复机制。 LangGraph 是 LangChain 团队推出的有状态图编排框架，专门用于构建可持久化、可中断、可观测的 Agent 工作流。它把 Agent 的执行过程建模为一张有向图：节点负责执行业务逻辑，边负责路由决策，全局 State 在各节点之间流转。 本文将系统梳理 LangGraph 的各个核心组件，并配合代码示例说明它们如何协同工作。 一、LangGraph 是什么？在传统的 Chain 中，数据通常是单向流水线传递的：A 的输出作为 B 的输入，很难表达循环、分支和共享状态。 LangGraph 的核心思路是： 1State（共享状态） ←→ Node（计算单元） ←→ Edge（路由规则）     对比维度 传统 Chain LangGraph    状态管理 隐式传递 显式共享 State   控制流 线性为主 支持循...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/" title="Oh My Pi (omp) 全量快捷键指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Oh My Pi (omp) 全量快捷键指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi (omp) 全量快捷键指南 本文基于 omp 内置文档（keybindings.md、agent-hub.md、tree.md、TUI 运行时文档）归纳整理。快捷键可能随版本调整，在任意 omp 会话内运行 /hotkeys 即可查看当前构建实际生效的全部按键（包含磁盘上的重映射与扩展注册的绑定）。  目录导航 一、快速上手 二、模型与计划模式 三、思考块与工具显示 四、编辑器与消息 五、剪贴板与终端显示 六、语音 七、Agent Hub 八、进程控制：中断、退出与挂起 九、Tree 会话树选择器 十、会话切换器 十一、自定义快捷键 十二、扩展开发者的保留快捷键   一、快速上手 **/hotkeys**：在 omp 会话内运行，列出当前构建生效的全部按键组合。该列表会反映： 用户磁盘上的重映射（~/.omp/agent/keybindings.yml）； 扩展注册的额外绑定。    二、模型与计划模式   快捷键 动作 ID 含义    Ctrl+P app.model.cycleForward 向前循环切换角色模型   Shift+Ctrl+P app.mo...</div></div></div></a><a class="pagination-related" href="/2026/06/23/Agent-Skills%E7%BC%96%E5%86%99%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E9%AB%98%E6%95%88%E5%8F%AF%E5%8F%91%E7%8E%B0%E7%9A%84Skill/" title="Agent Skills 编写最佳实践：如何写出高效可发现的 Skill"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-23</div><div class="info-item-2">Agent Skills 编写最佳实践：如何写出高效可发现的 Skill</div></div><div class="info-2"><div class="info-item-1">Agent Skills 编写最佳实践：如何写出高效可发现的 Skill在 Claude、Cursor 等 AI Agent 平台上，Skill 是一种将领域知识、工作流程和可执行脚本打包复用的机制。一个设计良好的 Skill，能让 Agent 在正确时机自动加载专业知识，稳定完成复杂任务。 但 Skill 写不好，常见问题也很典型：Agent 找不到该用哪个 Skill、加载了却做不对、或者 SKILL.md 太长把上下文挤爆。 本文基于 Claude 官方 Skill 编写最佳实践，结合实战经验，系统梳理 Skill 编写的核心原则、结构规范与常见陷阱。核心结论先行：SKILL.md 要精简，细节往外拆。 一、Skill 是什么？先理解加载机制在动手写之前，先理解 Skill 的三级加载机制，这直接决定了你应该把内容放在哪里： 12345启动时：预加载所有 Skill 的 name + description（元数据）         ↓任务相关时：读取 SKILL.md 正文         ↓需要时：按需读取 reference/、scripts/ 等附属文件  这意味着...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">42</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#LightRAG-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8E-GraphRAG%E3%80%81%E4%BC%A0%E7%BB%9F-RAG-%E5%AF%B9%E6%AF%94"><span class="toc-number">1.</span> <span class="toc-text">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E3%80%8C%E5%9B%BE%E5%A2%9E%E5%BC%BA%E3%80%8D%E7%9A%84-RAG%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">一、为什么需要「图增强」的 RAG？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%89%E7%A7%8D%E8%8C%83%E5%BC%8F%E6%80%BB%E8%A7%88%EF%BC%9ANaive-RAG-vs-GraphRAG-vs-LightRAG"><span class="toc-number">1.2.</span> <span class="toc-text">二、三种范式总览：Naive RAG vs GraphRAG vs LightRAG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BC%A0%E7%BB%9F-RAG%EF%BC%88Naive-Dense-RAG%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 传统 RAG（Naive &#x2F; Dense RAG）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Microsoft-GraphRAG"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 Microsoft GraphRAG</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-LightRAG%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%9B%BE-RAG"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 LightRAG：轻量图 RAG</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 横向对比表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.3.</span> <span class="toc-text">三、整体架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E9%80%BB%E8%BE%91%E5%88%86%E5%B1%82"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 逻辑分层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%AB%AF%E5%88%B0%E7%AB%AF%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%88%E6%80%BB%E8%A7%88%E5%9B%BE%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 端到端数据流（总览图）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%8B%86%E8%A7%A3"><span class="toc-number">1.4.</span> <span class="toc-text">四、实现原理拆解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Graph-based-Text-Indexing%EF%BC%88%E5%9B%BE%E5%A2%9E%E5%BC%BA%E6%96%87%E6%9C%AC%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 Graph-based Text Indexing（图增强文本索引）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89Recog%EF%BC%9A%E5%AE%9E%E4%BD%93%E4%B8%8E%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">（1）Recog：实体与关系抽取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89Prof%EF%BC%9ALLM-Profiling%EF%BC%8C%E7%94%9F%E6%88%90%E5%8F%AF%E6%A3%80%E7%B4%A2%E7%9A%84-KV"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">（2）Prof：LLM Profiling，生成可检索的 KV</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%883%EF%BC%89Dedupe%EF%BC%9A%E8%B7%A8-chunk-%E5%8E%BB%E9%87%8D%E5%90%88%E5%B9%B6"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">（3）Dedupe：跨 chunk 去重合并</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Dual-level-Retrieval%EF%BC%88%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 Dual-level Retrieval（双层检索）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%9F%A5%E8%AF%A2%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%BC%80%E6%BA%90%E5%AE%9E%E7%8E%B0%E7%9A%84%E4%BA%94%E7%A7%8D-Mode%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 查询模式（开源实现的五种 Mode）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%94-GraphRAG-%E8%BD%BB%E4%B8%80%E4%B8%AA%E6%95%B0%E9%87%8F%E7%BA%A7"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 增量更新：为什么比 GraphRAG 轻一个数量级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%9B%B4%E8%A7%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 复杂度直觉</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%8E-GraphRAG%E3%80%81%E4%BC%A0%E7%BB%9F-RAG-%E7%9A%84%E3%80%8C%E5%86%B3%E7%AD%96%E6%A0%91%E3%80%8D"><span class="toc-number">1.5.</span> <span class="toc-text">五、与 GraphRAG、传统 RAG 的「决策树」</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98"><span class="toc-number">1.6.</span> <span class="toc-text">六、代码实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%AE%89%E8%A3%85%E4%B8%8E%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 安装与最小可运行示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E4%BA%94%E7%A7%8D%E6%9F%A5%E8%AF%A2%E6%A8%A1%E5%BC%8F%E5%AF%B9%E7%85%A7"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 五种查询模式对照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E5%A2%9E%E9%87%8F%E6%8F%92%E5%85%A5%E4%B8%8E%E3%80%8C%E5%8F%AA%E5%8F%96%E4%B8%8A%E4%B8%8B%E6%96%87%E3%80%8D"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 增量插入与「只取上下文」</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E7%94%9F%E4%BA%A7%E5%AD%98%E5%82%A8%EF%BC%9ANeo4j-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%90%91%E9%87%8F%E9%98%88%E5%80%BC"><span class="toc-number">1.6.4.</span> <span class="toc-text">6.4 生产存储：Neo4j + 自定义向量阈值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5-%E4%B8%80%E9%94%AE%E8%B5%B7%E6%9C%8D%E5%8A%A1%EF%BC%88WebUI%EF%BC%89"><span class="toc-number">1.6.5.</span> <span class="toc-text">6.5 一键起服务（WebUI）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="toc-number">1.7.</span> <span class="toc-text">七、工程落地注意点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.8.</span> <span class="toc-text">八、总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/" title="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</a><time datetime="2026-08-20T08:40:00.000Z" title="发表于 2026-08-20 16:40:00">2026-08-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro</a><time datetime="2026-08-17T07:30:00.000Z" title="发表于 2026-08-17 15:30:00">2026-08-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门">从零写一个 Pi Extension：自定义工具、命令与权限门</a><time datetime="2026-08-13T04:00:00.000Z" title="发表于 2026-08-13 12:00:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译">Pi 中文文档：官方文档长文翻译</a><time datetime="2026-08-13T03:50:00.000Z" title="发表于 2026-08-13 11:50:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南">Pi 中文文档：终端编码 Agent 操作指南</a><time datetime="2026-08-13T03:40:00.000Z" title="发表于 2026-08-13 11:40:00">2026-08-13</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey: 'qsPlalDJdtYgh4AFO3oiFAox',
+      avatar: 'mm',
+      serverURLs: 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine@1.5.3/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
