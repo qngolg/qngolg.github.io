@@ -1,0 +1,460 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Goose 入门：Block 开源的本机通用 AI Agent | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="介绍 Block 开源、现由 Agentic AI Foundation 治理的 Goose：本机通用 Agent 的定位、桌面&#x2F;CLI&#x2F;API 三入口、MCP 扩展、Recipes、提供商中立与适用场景。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Goose 入门：Block 开源的本机通用 AI Agent">
+<meta property="og:url" content="https://qngolg.github.io/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="介绍 Block 开源、现由 Agentic AI Foundation 治理的 Goose：本机通用 Agent 的定位、桌面&#x2F;CLI&#x2F;API 三入口、MCP 扩展、Recipes、提供商中立与适用场景。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-08-20T09:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-20T09:00:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="goose">
+<meta property="article:tag" content="acp">
+<meta property="article:tag" content="mcp">
+<meta property="article:tag" content="aaif">
+<meta property="article:tag" content="open-source">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qngolg.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Goose 入门：Block 开源的本机通用 AI Agent",
+  "url": "https://qngolg.github.io/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/",
+  "image": "https://qngolg.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-08-20T09:00:00.000Z",
+  "dateModified": "2026-08-20T09:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "菜鸟程序员",
+      "url": "https://qngolg.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qngolg.github.io/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Goose 入门：Block 开源的本机通用 AI Agent',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Goose 入门：Block 开源的本机通用 AI Agent</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Goose 入门：Block 开源的本机通用 AI Agent</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-20T09:00:00.000Z" title="发表于 2026-08-20 17:00:00">2026-08-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-20T09:00:00.000Z" title="更新于 2026-08-20 17:00:00">2026-08-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Goose-入门：Block-开源的本机通用-AI-Agent"><a href="#Goose-入门：Block-开源的本机通用-AI-Agent" class="headerlink" title="Goose 入门：Block 开源的本机通用 AI Agent"></a>Goose 入门：Block 开源的本机通用 AI Agent</h1><p>2026 年的 Coding Agent 已经很多了。若你只是想「聊天改代码」，Claude Code、Cursor、OpenCode 都能上手。</p>
+<p><a target="_blank" rel="noopener" href="https://goose-docs.ai/">Goose</a> 想解决的问题略有不同：它不只是一个 coding CLI，而是一台跑在你电脑上的 <strong>通用 Agent 运行时</strong>——写代码是默认场景，研究、自动化、数据分析、可复用工作流同样在能力圈内。模型你自己选，扩展走 MCP，流程可以固化成 Recipes，还带桌面端和可嵌入的 API。</p>
+<p>本文按「它是什么 → 核心概念 → 怎么装 → 什么时候该用」来介绍。和同场选手的横向对比，可对照前文 <a href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/">2026 流行 Coding Agent 能力对比</a>。</p>
+<hr>
+<h2 id="一、Goose-是什么？"><a href="#一、Goose-是什么？" class="headerlink" title="一、Goose 是什么？"></a>一、Goose 是什么？</h2><p>Goose 最初由 Block（Square / Cash App）开源，现由 Linux Foundation 旗下的 <a target="_blank" rel="noopener" href="https://github.com/aaif-goose/goose">Agentic AI Foundation（AAIF）</a> 治理，协议为 <strong>Apache 2.0</strong>。官方仓库常写的一句话是：</p>
+<blockquote>
+<p>your native open source AI agent — desktop app, CLI, and API — for code, workflows, and everything in between</p>
+</blockquote>
+<p>可以拆成四层意思：</p>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>实际含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>native / on-machine</td>
+<td>Agent 循环跑在本机，能直接碰你的文件、终端、开发环境</td>
+</tr>
+<tr>
+<td>open source</td>
+<td>Apache 2.0；可审计、可 fork、可做定制 distro</td>
+</tr>
+<tr>
+<td>desktop + CLI + API</td>
+<td>同一套引擎，三个入口</td>
+</tr>
+<tr>
+<td>general-purpose</td>
+<td>不锁定「只写代码」；MCP 扩展到什么，能力就到什么</td>
+</tr>
+</tbody></table>
+<p>和「模型厂商自家 Agent」最大的差别是：<strong>Goose 不卖模型，也不锁模型</strong>。你可以用 Anthropic / OpenAI / Google 的 API，也可以走 OpenRouter、Azure、Bedrock，或者本机 Ollama；还可以通过 ACP 接已有的 Claude / ChatGPT / Gemini 订阅。软件本身免费，费用只来自你选的模型提供商。</p>
+<hr>
+<h2 id="二、形态：一套引擎，三个入口"><a href="#二、形态：一套引擎，三个入口" class="headerlink" title="二、形态：一套引擎，三个入口"></a>二、形态：一套引擎，三个入口</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────┐</span><br><span class="line">│              你的工作面（入口）                 │</span><br><span class="line">│   Desktop App  │  CLI  │  REST API / ACP     │</span><br><span class="line">└───────────────────────┬─────────────────────┘</span><br><span class="line">                        │</span><br><span class="line">┌───────────────────────▼─────────────────────┐</span><br><span class="line">│           Goose Agent Runtime（本机）          │</span><br><span class="line">│  Session · 权限模式 · Recipes · Goosehints   │</span><br><span class="line">└───────────────────────┬─────────────────────┘</span><br><span class="line">          ┌─────────────┼─────────────┐</span><br><span class="line">          ▼             ▼             ▼</span><br><span class="line">     Providers      Extensions      本机工具</span><br><span class="line">   （15+ LLM）    （MCP Servers）  （文件/Shell…）</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Desktop</strong>：macOS / Linux / Windows 原生桌面应用，适合不想天天泡终端、又希望可视化管扩展和会话的人。</li>
+<li><strong>CLI</strong>：终端工作流、脚本化、CI/本地自动化；和多数 coding agent 的使用习惯最接近。</li>
+<li><strong>API / ACP</strong>：把 Goose 嵌进自家 UI，或作为外部 Agent 接到 Zed 一类支持 <a target="_blank" rel="noopener" href="https://agentclientprotocol.com/">ACP</a> 的编辑器里。</li>
+</ul>
+<p>核心用 Rust 实现，强调性能和可移植。Block 后来基于 Goose 还做了桌面工作区 <a target="_blank" rel="noopener" href="https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd">Berd</a>——Berd 管项目/会话体验，Goose 继续当底下的 agent loop。对多数个人用户，直接用 Goose 桌面或 CLI 就够。</p>
+<hr>
+<h2 id="三、五个核心概念"><a href="#三、五个核心概念" class="headerlink" title="三、五个核心概念"></a>三、五个核心概念</h2><p>把 Goose 用顺，通常只要摸清这五个词。</p>
+<h3 id="3-1-Providers：谁来思考"><a href="#3-1-Providers：谁来思考" class="headerlink" title="3.1 Providers：谁来思考"></a>3.1 Providers：谁来思考</h3><p>Provider 是 LLM 后端。Goose 官方宣称支持 <strong>15+</strong> 提供商，常见包括：</p>
+<ul>
+<li>云端：Anthropic、OpenAI、Google、OpenRouter、Azure、Bedrock 等</li>
+<li>本地：Ollama 等</li>
+<li>订阅路径：经 ACP 复用已有 Claude / ChatGPT / Gemini 订阅</li>
+</ul>
+<p>选型时记住一点：<strong>同一份模型，不同 harness 分数会差一截</strong>。公开评测里，Goose 在「同一 Claude 模型下的编码基准」往往打不过 Claude Code——它赢在中立、可扩展、可平台化，而不是「同模型极限发挥」。</p>
+<h3 id="3-2-Extensions：能力从哪来"><a href="#3-2-Extensions：能力从哪来" class="headerlink" title="3.2 Extensions：能力从哪来"></a>3.2 Extensions：能力从哪来</h3><p>扩展 = <a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">MCP</a> server。Goose 把 MCP 当成扩展系统本身，而不是外挂插件协议。</p>
+<p>内置扩展大致包括：</p>
+<table>
+<thead>
+<tr>
+<th>扩展</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Developer</td>
+<td>Shell、读改文件、代码分析（日常编码主力）</td>
+</tr>
+<tr>
+<td>Computer Controller</td>
+<td>系统自动化、网页抓取等</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>跨会话持久记忆</td>
+</tr>
+<tr>
+<td>Todo</td>
+<td>会话内任务清单</td>
+</tr>
+<tr>
+<td>Extension Manager</td>
+<td>运行时启停扩展</td>
+</tr>
+<tr>
+<td>Chat Recall</td>
+<td>检索、引用历史对话</td>
+</tr>
+</tbody></table>
+<p>社区与官方扩展目录很宽（文档常写 **70+**），GitHub、Slack、数据库、各类 SaaS 都可以接进来。传输上常见本地 stdio 与远程 SSE。配置一般落在 <code>~/.config/goose/</code>；也可用 <code>goose configure</code> 交互式增减。</p>
+<p>扩展目录：<a target="_blank" rel="noopener" href="https://goose-docs.ai/extensions/">goose-docs.ai/extensions</a></p>
+<h3 id="3-3-Recipes：把「怎么做」固化成配方"><a href="#3-3-Recipes：把「怎么做」固化成配方" class="headerlink" title="3.3 Recipes：把「怎么做」固化成配方"></a>3.3 Recipes：把「怎么做」固化成配方</h3><p>Recipes 是 Goose 最有辨识度的能力之一：用 YAML 把任务说明、所需扩展、参数绑成 <strong>可分享、可重复执行</strong> 的工作流模板。</p>
+<p>思路是：别每次口头重讲「先跑测试、再开 PR、再通知 Slack」，而是写成一份 recipe，团队复用，或用 CLI 非交互跑：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">goose run --recipe path/to/recipe.yaml</span><br></pre></td></tr></table></figure>
+
+<p>适合：发版检查清单、例行代码审查、数据拉取+报告、内部运维剧本。若你的目标是「把 Agent 用法定成组织资产」，Recipes 比纯聊天会话更对口。</p>
+<h3 id="3-4-Sessions：对话状态"><a href="#3-4-Sessions：对话状态" class="headerlink" title="3.4 Sessions：对话状态"></a>3.4 Sessions：对话状态</h3><p>Session 是一次完整的交互上下文。桌面端和 CLI 都会围绕 session 管理历史；配合 Memory / Chat Recall，可以跨会话找回「上次怎么定的」。</p>
+<p>权限模式通常可在偏自治、逐步审批、手动确认、仅聊天之间切换，并叠加 per-tool 规则——本机 Agent 权限面很大，这层开关值得认真配。</p>
+<h3 id="3-5-Goosehints：项目级说明书"><a href="#3-5-Goosehints：项目级说明书" class="headerlink" title="3.5 Goosehints：项目级说明书"></a>3.5 Goosehints：项目级说明书</h3><p>项目根目录放 <code>.goosehints</code>（以及常见的 <code>AGENT.md</code> / <code>AGENTS.md</code> 一类约定）可以告诉 Goose：技术栈偏好、目录约定、禁止操作、测试怎么跑。这和 Cursor Rules、Claude 的项目说明是同一类东西——<strong>把隐性团队知识写成 Agent 可读的约束</strong>。</p>
+<p>配置目录常见结构：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/.config/goose/</span><br><span class="line">├── config.yaml      # 全局偏好</span><br><span class="line">└── profiles.yaml    # Provider / 扩展等配置</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、安装与第一次跑通"><a href="#四、安装与第一次跑通" class="headerlink" title="四、安装与第一次跑通"></a>四、安装与第一次跑通</h2><h3 id="4-1-安装-CLI"><a href="#4-1-安装-CLI" class="headerlink" title="4.1 安装 CLI"></a>4.1 安装 CLI</h3><p>macOS / Linux / Windows：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash</span><br></pre></td></tr></table></figure>
+
+<p>macOS 也可用 Homebrew 装桌面端：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install --cask block-goose</span><br></pre></td></tr></table></figure>
+
+<p>桌面安装包与更多平台说明见：<a target="_blank" rel="noopener" href="https://goose-docs.ai/docs/getting-started/installation">Installation</a></p>
+<h3 id="4-2-配置模型"><a href="#4-2-配置模型" class="headerlink" title="4.2 配置模型"></a>4.2 配置模型</h3><p>首次使用按文档走 <a target="_blank" rel="noopener" href="https://goose-docs.ai/docs/getting-started/providers">Providers</a> 配置：填 API Key，或接本地 Ollama，或走 ACP 订阅路径。没有可用 Provider，Goose 只是空壳。</p>
+<h3 id="4-3-典型第一次对话"><a href="#4-3-典型第一次对话" class="headerlink" title="4.3 典型第一次对话"></a>4.3 典型第一次对话</h3><p>装好后，在项目目录里用 CLI（具体子命令以当前文档为准）让它：</p>
+<ol>
+<li>读 README，说明项目结构  </li>
+<li>跑现有测试  </li>
+<li>修一个明确的小 bug，并说明改了哪些文件  </li>
+</ol>
+<p>同时打开 Developer 扩展，确认它能读文件、跑 shell。这一步跑通，说明「本机循环 + 工具面」已经活了；再往下才是加 MCP、写 Recipe。</p>
+<hr>
+<h2 id="五、适合做什么、不适合做什么"><a href="#五、适合做什么、不适合做什么" class="headerlink" title="五、适合做什么、不适合做什么"></a>五、适合做什么、不适合做什么</h2><h3 id="5-1-很适合"><a href="#5-1-很适合" class="headerlink" title="5.1 很适合"></a>5.1 很适合</h3><ul>
+<li><strong>要模型自由 / 成本可控</strong>：BYOK、本地模型、多云切换  </li>
+<li><strong>要隐私与本机执行</strong>：代码默认只去你选的提供商；可配纯本地路径  </li>
+<li><strong>要把流程固化成资产</strong>：Recipes + 扩展目录，方便团队共享  </li>
+<li><strong>要平台能力</strong>：REST/ACP 嵌入、定制 distro（预装提供商、扩展、品牌）  </li>
+<li><strong>要基金会治理与宽松许可</strong>：AAIF + Apache 2.0，二次分发摩擦小  </li>
+</ul>
+<h3 id="5-2-未必是第一选择"><a href="#5-2-未必是第一选择" class="headerlink" title="5.2 未必是第一选择"></a>5.2 未必是第一选择</h3><table>
+<thead>
+<tr>
+<th>你更想要…</th>
+<th>更该看</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>同一 Claude 模型下的编码质量上限</td>
+<td>Claude Code</td>
+</tr>
+<tr>
+<td>AI 原生 IDE 日常写代码体验</td>
+<td>Cursor</td>
+</tr>
+<tr>
+<td>终端手感、会话树、LSP/DAP</td>
+<td>Oh My Pi（omp）</td>
+</tr>
+<tr>
+<td>规格驱动（先写 requirements/design/tasks）</td>
+<td>Kiro</td>
+</tr>
+<tr>
+<td>长时间挂机、DeepSeek 成本曲线</td>
+<td>Reasonix</td>
+</tr>
+</tbody></table>
+<p>一句话：<strong>Goose 强在「中立的本机 Agent 平台」；弱在「某一家模型的官方 harness 极限发挥」。</strong></p>
+<hr>
+<h2 id="六、和周边生态怎么摆"><a href="#六、和周边生态怎么摆" class="headerlink" title="六、和周边生态怎么摆"></a>六、和周边生态怎么摆</h2><p>2026 年更常见的用法不是「只装一个 Agent」，而是 <strong>一个宿主 + 多个循环</strong>：</p>
+<ul>
+<li>用 <strong>Zed</strong>（或其它 ACP 宿主）当编辑器，Claude Code 做质量敏感的重活，Goose 做便宜/本地/可扩展/可配方化的活  </li>
+<li>用 <strong>Berd</strong>（若你跟 Block 桌面工作区路线）管体验，Goose 继续当 runtime  </li>
+<li>用 <strong>MCP</strong> 把 GitHub、数据库、内部 API 接到扩展目录，而不是给每个 Agent 重写一遍集成  </li>
+</ul>
+<p>若你正在做「挂自家品牌的本机 Agent」或「可审计的企业内部 Agent 发行版」，Goose 的 Custom Distributions 叙事通常比纯 coding TUI 更贴。</p>
+<hr>
+<h2 id="七、小结"><a href="#七、小结" class="headerlink" title="七、小结"></a>七、小结</h2><p>Goose 可以记成三句话：</p>
+<ol>
+<li><strong>本机通用 Agent</strong>：不只写代码，扩展到哪里，能力就到哪里。  </li>
+<li><strong>协议与治理优先</strong>：MCP 当扩展系统，ACP 可嵌编辑器/UI，AAIF + Apache 2.0。  </li>
+<li><strong>Recipes 把用法变成资产</strong>：重复工作流值得写成配方，而不是每次重新聊天。  </li>
+</ol>
+<p>上手路径建议：装 CLI 或桌面 → 配一个 Provider → 用 Developer 扩展改一个小仓库 → 再加一两个 MCP → 最后把高频流程收成 Recipe。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://goose-docs.ai/">Goose 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/aaif-goose/goose">aaif-goose/goose</a></li>
+<li><a target="_blank" rel="noopener" href="https://goose-docs.ai/extensions/">Extensions 目录</a></li>
+<li><a target="_blank" rel="noopener" href="https://goose-docs.ai/docs/guides/recipes/">Recipes 指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">Model Context Protocol</a></li>
+<li>前文：<a href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/">2026 流行 Coding Agent 能力对比</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/">https://qngolg.github.io/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/coding-agent/">coding-agent</a><a class="post-meta__tags" href="/tags/goose/">goose</a><a class="post-meta__tags" href="/tags/acp/">acp</a><a class="post-meta__tags" href="/tags/mcp/">mcp</a><a class="post-meta__tags" href="/tags/aaif/">aaif</a><a class="post-meta__tags" href="/tags/open-source/">open-source</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/" title="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</div></div><div class="info-2"><div class="info-item-1">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比做过企业知识库或垂直域问答的人，多半会碰到同一类问题：  传统向量 RAG 能答细节，但跨文档推理发飘；GraphRAG 能做全局 sensemaking，但索引贵、查询慢、增量更新几乎要推倒重来。  LightRAG（港大 HKUDS，论文 arXiv:2410.05779，EMNLP 2025 Findings）正是冲着这个缝隙来的：用知识图谱补上「关系与全局」能力，却刻意避开 GraphRAG 那套社区报告 + 社区遍历的重路径。 本文将从问题动机讲起，对比三种 RAG 范式，再深入 LightRAG 的索引、检索、生成与工程落地。  一、为什么需要「图增强」的 RAG？经典 RAG 可形式化为： $$\mathcal{M}(q;\mathcal{D})=\mathcal{G}\big(q,\ \psi(q;\hat{\mathcal{D}})\big),\quad \hat{\mathcal{D}}=\varphi(\mathcal{D})$$ 其中 $\varphi$ 负责索引，$\psi$...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-17</div><div class="info-item-2">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro</div></div><div class="info-2"><div class="info-item-1">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro2026 年再问「哪个 Coding Agent 最强」，答案几乎一定是错的——因为它们已经不是同一类产品。 都能读仓库、改文件、跑命令、接 MCP，这只说明 Agent 循环已经商品化。真正拉开差距的，是循环外面那一层：模型锁不锁定、上下文怎么压、编辑会不会改坏文件、长任务能不能留着跑、失败了能不能回退、以及 Agent 到底住在终端、编辑器，还是云端虚拟机里。 本文对比九个当下最常被并列讨论的选手：    产品 一句话    Oh My Pi（omp） 开源终端 Agent，把 LSP/DAP/哈希行编辑塞进 harness   Claude Code Anthropic 官方 Agent，多入口、生态最完整   Reasonix DeepSeek 原生、为「一直开着跑」优化的开源 Agent   Cursor AI 原生 IDE，日常写代码体验最完整   Zed 高性能编辑器 + ACP，让你...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：官方文档长文翻译</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：官方文档长文翻译 本文是 Pi 官方文档 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 pi.dev/docs/latest 为准。 Pi 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 @earendil-works/pi-coding-agent，命令 pi，数据目录 ~/.pi/agent/。 相关文章：操作指南 · 从零写 Extension 注意：本文讲官方 Pi，不是社区分支 Oh My Pi / omp。  目录导航 一、概览与快速开始 二、使用 Pi 三、提供商与认证 四、会话、树与压缩 五、设置 六、快捷键 七、定制：扩展 / Skills / 模板 / 主题 / 包 八、安全与容器化 九、程序化用法 十、设计原则与约定    一、概览与快速开始1.1 Pi 是什么Pi 是一个极简的终端编码 Agent 框架。它在终端里驱动大模型：读文件、改文件、跑命令；同时把「工作流差异」放到扩展...</div></div></div></a><a class="pagination-related" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">从零写一个 Pi Extension：自定义工具、命令与权限门</div></div><div class="info-2"><div class="info-item-1">从零写一个 Pi Extension：自定义工具、命令与权限门 配套阅读：Pi 官方文档长文翻译 · 操作指南 · 官方 Extensions 目标：在本机从空文件开始，做出一个能拦住危险 bash、提供自定义工具与 /todo 命令的扩展，并理解加载位置、热重载与打包。  你将做成什么一个名为 safe-kit 的扩展，具备：  权限门：拦截含 rm -rf、sudo、强制 push 等危险命令，弹确认框 自定义工具：模型可调用的 note 工具，把便签写入项目 .pi/notes/ 斜杠命令：/todo 在页脚显示简易待办，并支持追加 生命周期：session_start / session_shutdown 正确启停  Pi 故意不内置权限弹窗——这正是扩展该做的事。  一、前置条件 已全局安装 Pi：  12npm install -g --ignore-scripts @earendil-works/pi-coding-agentpi -v   能启动一次交互会话（/login 或已设 API Key）。 会一点 TypeScript；扩展由 jiti 直接加载，不必先...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到 ~/.omp/agent/sessions/。你可以恢复、派生、创建分支并分享它们。设置、凭...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">44</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Goose-%E5%85%A5%E9%97%A8%EF%BC%9ABlock-%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8-AI-Agent"><span class="toc-number">1.</span> <span class="toc-text">Goose 入门：Block 开源的本机通用 AI Agent</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Goose-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">一、Goose 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%BD%A2%E6%80%81%EF%BC%9A%E4%B8%80%E5%A5%97%E5%BC%95%E6%93%8E%EF%BC%8C%E4%B8%89%E4%B8%AA%E5%85%A5%E5%8F%A3"><span class="toc-number">1.2.</span> <span class="toc-text">二、形态：一套引擎，三个入口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BA%94%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">1.3.</span> <span class="toc-text">三、五个核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Providers%EF%BC%9A%E8%B0%81%E6%9D%A5%E6%80%9D%E8%80%83"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 Providers：谁来思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Extensions%EF%BC%9A%E8%83%BD%E5%8A%9B%E4%BB%8E%E5%93%AA%E6%9D%A5"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 Extensions：能力从哪来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Recipes%EF%BC%9A%E6%8A%8A%E3%80%8C%E6%80%8E%E4%B9%88%E5%81%9A%E3%80%8D%E5%9B%BA%E5%8C%96%E6%88%90%E9%85%8D%E6%96%B9"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 Recipes：把「怎么做」固化成配方</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Sessions%EF%BC%9A%E5%AF%B9%E8%AF%9D%E7%8A%B6%E6%80%81"><span class="toc-number">1.3.4.</span> <span class="toc-text">3.4 Sessions：对话状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-Goosehints%EF%BC%9A%E9%A1%B9%E7%9B%AE%E7%BA%A7%E8%AF%B4%E6%98%8E%E4%B9%A6"><span class="toc-number">1.3.5.</span> <span class="toc-text">3.5 Goosehints：项目级说明书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%89%E8%A3%85%E4%B8%8E%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%B7%91%E9%80%9A"><span class="toc-number">1.4.</span> <span class="toc-text">四、安装与第一次跑通</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AE%89%E8%A3%85-CLI"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 安装 CLI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 配置模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%85%B8%E5%9E%8B%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AF%B9%E8%AF%9D"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 典型第一次对话</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E9%80%82%E5%90%88%E5%81%9A%E4%BB%80%E4%B9%88%E3%80%81%E4%B8%8D%E9%80%82%E5%90%88%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.</span> <span class="toc-text">五、适合做什么、不适合做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%BE%88%E9%80%82%E5%90%88"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 很适合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%9C%AA%E5%BF%85%E6%98%AF%E7%AC%AC%E4%B8%80%E9%80%89%E6%8B%A9"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 未必是第一选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%92%8C%E5%91%A8%E8%BE%B9%E7%94%9F%E6%80%81%E6%80%8E%E4%B9%88%E6%91%86"><span class="toc-number">1.6.</span> <span class="toc-text">六、和周边生态怎么摆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%B0%8F%E7%BB%93"><span class="toc-number">1.7.</span> <span class="toc-text">七、小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">1.8.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/" title="Goose 入门：Block 开源的本机通用 AI Agent">Goose 入门：Block 开源的本机通用 AI Agent</a><time datetime="2026-08-20T09:00:00.000Z" title="发表于 2026-08-20 17:00:00">2026-08-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/" title="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</a><time datetime="2026-08-20T08:40:00.000Z" title="发表于 2026-08-20 16:40:00">2026-08-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/17/2026%E6%B5%81%E8%A1%8CCoding-Agent%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94%EF%BC%9AOh-My-Pi-Claude-Code-Reasonix-Cursor-Zed-OpenCode-Kiro/" title="2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro">2026 流行 Coding Agent 能力对比：Oh My Pi、Claude Code、Reasonix、Cursor、Zed、OpenCode、Crush、Goose、Kiro</a><time datetime="2026-08-17T07:30:00.000Z" title="发表于 2026-08-17 15:30:00">2026-08-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/" title="从零写一个 Pi Extension：自定义工具、命令与权限门">从零写一个 Pi Extension：自定义工具、命令与权限门</a><time datetime="2026-08-13T04:00:00.000Z" title="发表于 2026-08-13 12:00:00">2026-08-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译">Pi 中文文档：官方文档长文翻译</a><time datetime="2026-08-13T03:50:00.000Z" title="发表于 2026-08-13 11:50:00">2026-08-13</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey: 'qsPlalDJdtYgh4AFO3oiFAox',
+      avatar: 'mm',
+      serverURLs: 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine@1.5.3/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
