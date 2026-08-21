@@ -1474,6 +1474,384 @@
       </tags>
   </entry>
   <entry>
+    <title>DeepSeek Harness 详解：一切皆插件的 Agent 架构与插件开发实战</title>
+    <url>/2026/08/21/DeepSeek-Harness%E8%AF%A6%E8%A7%A3%EF%BC%9A%E4%B8%80%E5%88%87%E7%9A%86%E6%8F%92%E4%BB%B6%E7%9A%84Agent%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h1 id="DeepSeek-Harness-详解：一切皆插件的-Agent-架构与插件开发实战"><a href="#DeepSeek-Harness-详解：一切皆插件的-Agent-架构与插件开发实战" class="headerlink" title="DeepSeek Harness 详解：一切皆插件的 Agent 架构与插件开发实战"></a>DeepSeek Harness 详解：一切皆插件的 Agent 架构与插件开发实战</h1><blockquote>
+<p>配套阅读：<a href="/2026/08/13/%E4%BB%8E%E9%9B%B6%E5%86%99%E4%B8%80%E4%B8%AAPi-Extension%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90%E9%97%A8/">从零写一个 Pi Extension</a>（另一套 Agent 扩展体系的对照）· 官方 <a href="https://github.com/deepseek-ai/deepseek-harness">README</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.zh.md">架构文档（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.zh.md">Cordis 入门</a></p>
+<p>目标：讲清楚 dsh 为什么把”模型之外的一切”都做成插件、插件有哪几种典型模式、怎么写一个自己的插件，以及从本地开发到打包安装的完整应用流程。</p>
+</blockquote>
+<h2 id="一、背景：什么是-DeepSeek-Harness"><a href="#一、背景：什么是-DeepSeek-Harness" class="headerlink" title="一、背景：什么是 DeepSeek Harness"></a>一、背景：什么是 DeepSeek Harness</h2><p>2026 年 8 月，DeepSeek AI 开源了 <strong>DeepSeek Harness</strong>（简称 <code>dsh</code>）——一个基于 <strong>Cordis</strong> 插件框架的 agent harness，采用 <strong>「一切皆插件」</strong> 架构，MIT 协议。它遵循的编程范式有配套论文：<a href="https://github.com/cordiverse/paper">A Programming Paradigm for Spatiotemporal Composability</a>。</p>
+<p>先厘清定位：<strong>Harness 不是模型</strong>。<code>Model + Harness = Agent</code>——模型负责推理，harness 负责模型之外的一切：工具、文件系统、沙箱、权限、会话、UI，甚至 agent loop 本身。</p>
+<p>dsh 的特殊之处在于：<strong>模型的适配器、工具注册表、会话日志、agent loop 全部都是插件</strong>，因此每一部分都可以从配置上替换，而不需要 fork 源码。它当前处于 <strong>开发者预览（Developer Preview）</strong> 阶段，迭代很快，官方明确提示”未来将出现破坏兼容性的变更”。</p>
+<p>下面从架构设计模式讲起。</p>
+<h2 id="二、架构设计模式"><a href="#二、架构设计模式" class="headerlink" title="二、架构设计模式"></a>二、架构设计模式</h2><h3 id="2-1-微内核：没有特权内核"><a href="#2-1-微内核：没有特权内核" class="headerlink" title="2.1 微内核：没有特权内核"></a>2.1 微内核：没有特权内核</h3><p>dsh 是典型的<strong>微内核 + 插件</strong>架构：</p>
+<ul>
+<li>内核只提供 Cordis 插件框架本身（上下文、事件、副作用管理）；</li>
+<li>产品的每一部分（模型适配器、工具、会话、UI……）都是挂载在框架上的插件；</li>
+<li><strong>不存在需要打补丁的特权内核</strong>。扩展 dsh 的方式就是把插件挂载到其他插件旁边；</li>
+<li>所有注册都是<strong>可逆副作用</strong>——插件卸载时，它注册的工具、监听器、服务自动撤销。</li>
+</ul>
+<p>向 Cordis 树贡献内容的核心包：</p>
+<table>
+<thead>
+<tr>
+<th>包</th>
+<th>职责</th>
+<th><code>ctx</code> 键</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>core/session</code></td>
+<td>仅追加的 <code>SessionEvent</code> 日志和内存存储</td>
+<td><code>ctx.sessions</code></td>
+</tr>
+<tr>
+<td><code>core/system-prompt</code></td>
+<td>提示词片段与工具 schema 的组装</td>
+<td><code>ctx.systemPrompt</code></td>
+</tr>
+<tr>
+<td><code>core/tools</code></td>
+<td>作用域化的工具注册表和带把关的执行流水线</td>
+<td><code>ctx.tools</code></td>
+</tr>
+<tr>
+<td><code>core/agent</code></td>
+<td><code>Agent</code> 接口、活跃 agent 注册表和 <code>agent/*</code> 事件</td>
+<td><code>ctx.agents</code></td>
+</tr>
+<tr>
+<td><code>core/agent-loop</code></td>
+<td>实现 <code>Agent</code> 接口的默认驱动器</td>
+<td><code>ctx.agentLoop</code></td>
+</tr>
+<tr>
+<td><code>core/scope</code></td>
+<td>按 agent 划分作用域的注册原语</td>
+<td>库，无 ctx 键</td>
+</tr>
+<tr>
+<td><code>llm/llm</code></td>
+<td>消息与流式词汇表，以及适配器 seam</td>
+<td><code>ctx.llm</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>agent-loop</code> 本身也是可替换的：它是”实现 <code>Agent</code> 接口的默认驱动器”。想改变 agent 的思考循环，不是改内核，而是换一个 loop 插件。</p>
+</blockquote>
+<h3 id="2-2-Cordis-的五个核心思想"><a href="#2-2-Cordis-的五个核心思想" class="headerlink" title="2.2 Cordis 的五个核心思想"></a>2.2 Cordis 的五个核心思想</h3><p>Cordis 是 dsh 底层的插件框架（vendored），写插件前必须理解这五件事：</p>
+<ol>
+<li><strong>插件是实现了 Service 的对象</strong>：可以是一个带可选 <code>inject</code> 和 <code>apply(ctx)</code> 的函数，也可以是一个 <code>Service</code> 子类。</li>
+<li><strong>上下文是服务的仓库</strong>：服务在 <code>ctx</code> 上占有稳定的键（<code>ctx.tools</code>、<code>ctx.llm</code>、<code>ctx.sessions</code>），其他插件按键查找服务，而不是 import 具体实现——这就是”面向接口”的解耦。</li>
+<li><strong>用 <code>inject</code> 声明依赖</strong>：声明了所需服务的插件会等到这些服务就绪后才执行 <code>apply</code>，加载顺序由依赖关系表达，而非手动排启动顺序。</li>
+<li><strong>类型化事件通信</strong>：服务通过 TypeScript declaration merging 声明事件名，再以 <code>emit</code> / <code>waterfall</code> / <code>parallel</code> / <code>serial</code> 四种方式派发。</li>
+<li><strong>注册是可逆的副作用</strong>：提示词片段、工具 schema、适配器、提供方、监听器都通过 <code>ctx.effect()</code> / <code>ctx.on()</code> 安装，重载与卸载时按序撤销。</li>
+</ol>
+<h3 id="2-3-事件：扩展点与四种分派模式"><a href="#2-3-事件：扩展点与四种分派模式" class="headerlink" title="2.3 事件：扩展点与四种分派模式"></a>2.3 事件：扩展点与四种分派模式</h3><p><strong>事件就是扩展点。</strong> 每种事件的分派模式是公开契约的一部分：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>是否 await</th>
+<th>派发顺序</th>
+<th>有返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>emit</code></td>
+<td>否</td>
+<td>按注册顺序观察</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>waterfall</code></td>
+<td>否</td>
+<td>按注册顺序观察</td>
+<td>有</td>
+</tr>
+<tr>
+<td><code>parallel</code></td>
+<td>是</td>
+<td>所有监听器并行观察</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>serial</code></td>
+<td>是</td>
+<td>按注册顺序观察</td>
+<td>有</td>
+</tr>
+</tbody></table>
+<p><code>waterfall</code> 是”环绕中间件”：监听器收到 <code>(...args, next)</code>，调用 <code>next()</code> 把（可能被包装的）结果委托给下一个服务；不调用 <code>next()</code> 直接返回即短路。策略类监听器”拥有决策”时直接短路，只做注解或观察的监听器必须委托。</p>
+<p>dsh 的事件分三个域，<strong>选对事件域是大多数改动的第一个决定</strong>：</p>
+<ul>
+<li><strong>会话事件</strong>：追加到日志并通过 <code>session/event</code> 广播的<strong>持久事实</strong>（<code>turn/*</code>、<code>step/*</code>、<code>user/message</code>、<code>assistant/*</code>、<code>tool/*</code>）。需要在重新加载后仍然存在的事实用它。</li>
+<li><strong>Agent 事件</strong>（<code>agent/*</code>）：携带活跃 <code>Agent</code> 的实时事件（inbox、步骤、状态、请求、验证、续跑）。要观察或拦截进行中的工作用它。</li>
+<li><strong>能力事件</strong>：无导入循环地为某个 seam（<code>fs/*</code>、<code>tools/*</code>、<code>telemetry/*</code>）附加策略和适配器。</li>
+</ul>
+<h3 id="2-4-轮次流程：事件怎么驱动-Agent-干活"><a href="#2-4-轮次流程：事件怎么驱动-Agent-干活" class="headerlink" title="2.4 轮次流程：事件怎么驱动 Agent 干活"></a>2.4 轮次流程：事件怎么驱动 Agent 干活</h3><p>一个<strong>步骤</strong>是一次模型请求加上它调用的工具；一个<strong>轮次</strong>包含零个或多个步骤，在领到首条输入时打开，在不再欠任何工作时关闭。驱动器（agent-loop）就是这张图的实现：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">turn/start</span><br><span class="line">  claim next-step input plus one queued message</span><br><span class="line">  assemble prompt sections + tool schemas</span><br><span class="line">  -&gt; agent/pre-step                   reject | enter(messages)</span><br><span class="line">     reject, or a first enter rewritten empty -&gt; close the turn with no step</span><br><span class="line">     step/start</span><br><span class="line">     append entered messages as user/message</span><br><span class="line">     derive model history from the log</span><br><span class="line">     agent/request -&gt; llm/stream -&gt; assistant/chunk* -&gt; assistant/message</span><br><span class="line">     tool/call* -&gt; tools/pre-execute -&gt; tools/execute -&gt; tools/post-execute -&gt; tool/result*</span><br><span class="line">     step/end</span><br><span class="line">     tools owe another request, or next-step input arrived -&gt; claim -&gt; next step</span><br><span class="line">  -&gt; agent/turn-stopping</span><br><span class="line">turn/end</span><br></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li><code>agent/pre-step</code> 决定<strong>模型看到什么</strong>：监听器可改写已领取的消息，也可直接拒绝；首次领取被拒绝或改写为空时，仍会关闭一个不含步骤的持久轮次。</li>
+<li><code>agent/pre-step</code>、<code>agent/request</code>、<code>llm/stream</code>、三个 <code>tools/*</code> 事件是 <strong>waterfall</strong>，监听器必须 <code>next()</code> 才能委托下去；<code>agent/turn-stopping</code> 是 serial 事件。</li>
+<li><strong>会话日志是模型所见上下文的来源</strong>。<code>deriveMessages()</code> 从日志投影出模型历史，原始 <code>assistant/chunk</code> 事件保证回放与 UI 保真；fork、恢复、transcript、遥测、持久化全部派生自该事件流。</li>
+<li>运行时不变量：**”模型可见即已记录”**——抵达模型请求的一切都必须能从日志重建。因此新增一项模型可见输入 = 新增一个会话事件。</li>
+</ul>
+<h3 id="2-5-Profile-与组合包：分层叠加的配置树"><a href="#2-5-Profile-与组合包：分层叠加的配置树" class="headerlink" title="2.5 Profile 与组合包：分层叠加的配置树"></a>2.5 Profile 与组合包：分层叠加的配置树</h3><p>运行中的 <code>dsh</code> 是一棵插件树，由启动时按序叠加的各层组合而成：</p>
+<ul>
+<li><strong>组合包（bundle）</strong>是 Cordis 配置项及其挂载代码的<strong>分发格式</strong>（npm 包 + 一份 patch 文件），回答”这个包贡献什么”。</li>
+<li><strong>Profile</strong> 是存放在 Harness home（<code>$DSH_HOME/profiles/&lt;name&gt;</code>）中的<strong>具名组装</strong>，回答”这套配置由哪些组合包按什么顺序组成”。<code>web</code> 和 <code>headless</code> 作为模板随发行版交付：<code>dsh-base</code> 是每套 profile 的第一层（模型适配器、工具、持久化、沙箱与审批、设置、凭据、遥测），<code>dsh-web-app</code> 增加浏览器应用，<code>dsh-headless</code> 增加一次性运行器且不带服务器。</li>
+</ul>
+<p>生效配置在空根之上按顺序逐层组合：</p>
+<ol>
+<li>profile 的 <code>dsh.profile.bundles</code> 所列组合包 patch，按列表顺序；</li>
+<li>profile 自己的 <code>cordis.patch.yml</code>；</li>
+<li>home 级 <code>$DSH_HOME/cordis.patch.yml</code>（机器本地偏好）；</li>
+<li>每个 <code>--patch &lt;path&gt;</code> overlay，按 argv 顺序。</li>
+</ol>
+<p>patch 按 <code>id</code> 定位条目并<strong>替换整条 config</strong>（不是深合并），后应用的层按行胜出。查看机器实际启动的配置树：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">dsh --profile web --dump-config</span><br></pre></td></tr></table></figure>
+
+<p>打印出的任何条目，都可以由你自己的 patch 替换。</p>
+<h3 id="2-6-能力-Seam：替换一个提供方，改变整个产品"><a href="#2-6-能力-Seam：替换一个提供方，改变整个产品" class="headerlink" title="2.6 能力 Seam：替换一个提供方，改变整个产品"></a>2.6 能力 Seam：替换一个提供方，改变整个产品</h3><p><strong>Seam</strong> 是一项可替换能力，包含三种角色：</p>
+<ul>
+<li><strong>Service Definition</strong>：声明接口；</li>
+<li><strong>Service Provider</strong>：实现它；</li>
+<li><strong>Consumer</strong>：使用它（通常是面向模型的工具）。</li>
+</ul>
+<p>一个包可合并承担多个角色，但单一角色本身不是 seam——<strong>添加一项能力意味着把三者一并设计</strong>。这就是”替换一个提供方就能改变整个产品”的原因：</p>
+<ul>
+<li>文件系统与进程提供方共享同一个执行世界，把 fs 提供方指向远程沙箱，<strong>Bash、PTY、LSP 一并搬了过去</strong>，无需提供方专用 fork；</li>
+<li>subagent 提供方在同一接口之后千差万别：新建一个子 agent、把一个轮次委派给另一个产品（<code>dsh-subagent-spawn-in-process</code> / <code>-fork</code> / <code>-acp</code> / <code>-codex</code> / <code>-claude-code</code>）。</li>
+</ul>
+<p>新行为应该归属到哪个扩展点，官方有一张明确的映射表（节选）：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>添加模型提供方</td>
+<td>在 <code>ctx.llm</code> 上注册其适配器</td>
+</tr>
+<tr>
+<td>添加面向模型的能力</td>
+<td>在 <code>ctx.tools</code> 上注册；schema 自动加入提示词组装</td>
+</tr>
+<tr>
+<td>添加 shell 执行</td>
+<td>注册 <code>ctx.shell</code> 后端</td>
+</tr>
+<tr>
+<td>添加用户命令</td>
+<td>在 <code>ctx.commands</code> 上注册；无需模型轮次即可分派</td>
+</tr>
+<tr>
+<td>拦截请求、工具或轮次</td>
+<td>使用相应 <code>agent/*</code> 或 <code>tools/*</code> 事件</td>
+</tr>
+<tr>
+<td>添加模型可见上下文</td>
+<td>调用 <code>agent.inject()</code>，落到下一次获准的请求</td>
+</tr>
+<tr>
+<td>添加持久会话状态</td>
+<td>扩展 <code>SessionEventMap</code>，从日志渲染与回放</td>
+</tr>
+<tr>
+<td>添加 UI 或编辑器集成</td>
+<td>驱动 <code>ctx.agents</code> 并从 <code>session/event</code> 渲染</td>
+</tr>
+</tbody></table>
+<h2 id="三、插件模式"><a href="#三、插件模式" class="headerlink" title="三、插件模式"></a>三、插件模式</h2><h3 id="3-1-插件的三种形态"><a href="#3-1-插件的三种形态" class="headerlink" title="3.1 插件的三种形态"></a>3.1 插件的三种形态</h3><p>插件是一个导出 <code>apply</code> 函数的模块，框架加载时调用它并传入 <code>ctx</code>。函数形式够用且最常见：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;my-plugin&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> inject = [<span class="string">&#x27;tools&#x27;</span>]        <span class="comment">// 依赖的服务就绪后才 apply</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  <span class="comment">// ctx.tools 在此处已就绪，注册能力</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对象形式（导出 default 对象）：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;my-plugin&#x27;</span>,</span><br><span class="line">  <span class="attr">inject</span>: [<span class="string">&#x27;tools&#x27;</span>],</span><br><span class="line">  <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123; <span class="comment">/* ... */</span> &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类形式（需要向其他插件提供服务时使用——插件即 Service）：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Service</span>, <span class="keyword">type</span> <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Service</span> &#123;</span><br><span class="line">  <span class="keyword">static</span> inject = [<span class="string">&#x27;tools&#x27;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">    <span class="variable language_">super</span>(ctx, <span class="string">&#x27;myService&#x27;</span>)            <span class="comment">// 在 ctx 上注册服务键</span></span><br><span class="line">    <span class="comment">// 同步初始化</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-工具插件：给模型加能力"><a href="#3-2-工具插件：给模型加能力" class="headerlink" title="3.2 工具插件：给模型加能力"></a>3.2 工具插件：给模型加能力</h3><p>工具注册在 <code>ctx.tools</code> 上，<code>defineTool</code> 是首方工具的强类型助手（MCP 来源的原始 JSON-Schema 工具也直接被 <code>register</code> 接受）。注册即副作用：卸载插件即注销工具，schema 自动流入提示词组装。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; readFile &#125; <span class="keyword">from</span> <span class="string">&#x27;node:fs/promises&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; defineTool &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/dsh-tools&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;my-tool&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> inject = [<span class="string">&#x27;tools&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  ctx.<span class="property">tools</span>.<span class="title function_">register</span>(<span class="title function_">defineTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;read_file&#x27;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;Read a file from disk.&#x27;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: &#123;</span><br><span class="line">      <span class="attr">path</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;string&#x27;</span>, <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">description</span>: <span class="string">&#x27;Absolute path&#x27;</span> &#125;,</span><br><span class="line">      <span class="attr">limit</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;number&#x27;</span> &#125;,                    <span class="comment">// 默认可选</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      <span class="attr">schema</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;string&#x27;</span> &#125;,</span><br><span class="line">      <span class="attr">render</span>: <span class="function">(<span class="params">_args, value</span>) =&gt;</span> [&#123; <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>, <span class="attr">text</span>: value &#125;],</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">args, exec</span>) &#123;</span><br><span class="line">      <span class="comment">// args 由 schema 推导并被校验过；exec.signal 用于取消</span></span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">readFile</span>(args.<span class="property">path</span>, &#123; <span class="attr">encoding</span>: <span class="string">&#x27;utf8&#x27;</span>, <span class="attr">signal</span>: exec.<span class="property">signal</span> &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>execute</code> 契约的几条硬规则：</p>
+<ul>
+<li><strong>参数替你校验</strong>：<code>defineTool</code> 在 <code>execute</code> 前用统一 schema 校验模型生成的参数（类型、必填、字面量约束、互斥联合、嵌套值），<code>args</code> 与推断类型一致；</li>
+<li><strong>执行身份受保护</strong>：参数被物化为无损 JSON 并冻结，<code>exec.token</code>、<code>callId</code>、<code>signal</code> 在派发期间不可变；</li>
+<li><strong>只返回一个规范值</strong>：<code>output.schema</code> 声明返回结构，<code>execute</code> 只返回推断值，注册表快照、校验、冻结后交给 <code>output.render</code> 转成模型可见内容；</li>
+<li>**抛错或返回非法值 = <code>isError</code>**；</li>
+<li>**尊重 <code>exec.signal</code>**：触发时取消进行中的工作；</li>
+<li>**长任务走 <code>ctx.jobs.start(&#123; kind, label, owner: exec.agent, run &#125;)</code>**，返回 <code>&#123; kind: &#39;background&#39;, jobId &#125;</code> 这样的规范句柄，配合 <code>run_in_background</code> 开关。</li>
+</ul>
+<h3 id="3-3-Hook-插件：在流水线上插一道闸（权限门）"><a href="#3-3-Hook-插件：在流水线上插一道闸（权限门）" class="headerlink" title="3.3 Hook 插件：在流水线上插一道闸（权限门）"></a>3.3 Hook 插件：在流水线上插一道闸（权限门）</h3><p>工具流水线上有多个可拦截点，权限、沙箱、plan-mode 都是”在 <code>tools/pre-execute</code> 返回一个类型化决策”：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">PreToolDecision</span>, <span class="title class_">ToolExecution</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/dsh-tools&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">function</span> <span class="title function_">isAllowed</span>(<span class="params"><span class="attr">exec</span>: <span class="title class_">ToolExecution</span></span>): <span class="title class_">Promise</span>&lt;<span class="built_in">boolean</span>&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;permission-gate&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  ctx.<span class="title function_">on</span>(<span class="string">&#x27;tools/pre-execute&#x27;</span>, <span class="title function_">async</span> (exec, next): <span class="title class_">Promise</span>&lt;<span class="title class_">PreToolDecision</span>&gt; =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (!(<span class="keyword">await</span> <span class="title function_">isAllowed</span>(exec))) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">kind</span>: <span class="string">&#x27;deny&#x27;</span>, <span class="attr">reason</span>: <span class="string">&#x27;Denied by policy.&#x27;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">next</span>()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拦截点的选型规则：</p>
+<ul>
+<li><code>tools/pre-execute</code>：可重排的策略层（allow/deny/ask）；</li>
+<li><code>ctx.tools.guard()</code>：最终单调拒绝，后续监听器无法撤销；</li>
+<li><code>tools/execute</code>：包住实际派发生命周期（超时、重试、指标；只有 <code>exec.signal</code> 可替换）；</li>
+<li><code>tools/post-execute</code>：替换展示内容或返回值、拦结果、附加模型可见上下文；</li>
+<li><code>tools/result</code>：只读地观察不可变的最终规范化结果。</li>
+</ul>
+<h3 id="3-4-UI-插件：从事件流渲染，用-API-驱动"><a href="#3-4-UI-插件：从事件流渲染，用-API-驱动" class="headerlink" title="3.4 UI 插件：从事件流渲染，用 API 驱动"></a>3.4 UI 插件：从事件流渲染，用 API 驱动</h3><p>UI 是会话事件流的消费者：从 <code>session/event</code> 渲染（assistant 增量、轮次/步骤边界、工具活动），用 <code>agent.followup()</code> / <code>agent.steer()</code> 把输入喂回去：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; createUserMessage &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/dsh-llm&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">SessionId</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/dsh-session&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;my-ui&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> inject = [<span class="string">&#x27;agents&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  ctx.<span class="title function_">on</span>(<span class="string">&#x27;session/event&#x27;</span>, <span class="function">(<span class="params">_session, event</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">type</span> === <span class="string">&#x27;assistant/chunk&#x27;</span> &amp;&amp; event.<span class="property">data</span>.<span class="property">chunk</span>.<span class="property">type</span> === <span class="string">&#x27;text-delta&#x27;</span>) &#123;</span><br><span class="line">      <span class="title function_">render</span>(event.<span class="property">data</span>.<span class="property">chunk</span>.<span class="property">text</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="title function_">onUserInput</span>(<span class="function"><span class="params">text</span> =&gt;</span> ctx.<span class="property">agents</span>.<span class="title function_">get</span>(<span class="title class_">SessionId</span>(<span class="string">&#x27;client-session&#x27;</span>))?.<span class="title function_">followup</span>(<span class="title function_">createUserMessage</span>(&#123;</span><br><span class="line">    <span class="attr">content</span>: [&#123; <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>, text &#125;],</span><br><span class="line">    <span class="attr">source</span>: &#123; <span class="attr">kind</span>: <span class="string">&#x27;user&#x27;</span> &#125;,</span><br><span class="line">  &#125;)))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要给内置 Web Client 的聊天界面加业务行，则注册 <code>ConversationNodeDefinition</code> + keyed Chat renderer（参考 Conversation Node 指南）。</p>
+<h3 id="3-5-协议驱动：把外部协议接到-ctx-agents"><a href="#3-5-协议驱动：把外部协议接到-ctx-agents" class="headerlink" title="3.5 协议驱动：把外部协议接到 ctx.agents"></a>3.5 协议驱动：把外部协议接到 <code>ctx.agents</code></h3><p>协议驱动把线上的对端适配到 <code>ctx.agents</code>——stdio 驱动持有 stdout，通过工厂创建/恢复 agent，把协议请求映射到 <code>followup()</code> / <code>cancel()</code>，用 <code>AgentHandle.dispose()</code> 拆卸（到达 quiescence）。官方参考实现是 <code>@deepseek-ai/dsh-acp</code>：通过 Agent Client Protocol JSON-RPC stdio 暴露全新文本会话，发出已提交的 assistant 文本，并为它拥有的 agent 注册一次性机器权限应答器。</p>
+<h3 id="3-6-特性-→-机制映射：每个产品功能都落在扩展点上"><a href="#3-6-特性-→-机制映射：每个产品功能都落在扩展点上" class="headerlink" title="3.6 特性 → 机制映射：每个产品功能都落在扩展点上"></a>3.6 特性 → 机制映射：每个产品功能都落在扩展点上</h3><p>官方用一张表证明”微内核”这个主张——<strong>没有任何一行改动循环本身</strong>（节选）：</p>
+<table>
+<thead>
+<tr>
+<th>产品特性</th>
+<th>插件机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hook 系统（用户 + 项目级）</td>
+<td><code>agent/session-start</code>、<code>agent/pre-step</code>、<code>agent/request</code>、<code>tools/pre-execute</code>、<code>tools/post-execute</code>、<code>agent/turn-stopping</code> 的监听器</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>每个 server 一个插件：发现工具 → <code>ctx.tools.register()</code></td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>section + 工具注册；调用时 <code>inject()</code> 技能内容</td>
+</tr>
+<tr>
+<td>内存 / Memory</td>
+<td>section provider + 工具</td>
+</tr>
+<tr>
+<td>定时任务（cron）</td>
+<td>插件注册模型可调度的工具；定时器触发 → 空闲时 <code>followup()</code> / 忙碌时 <code>inject()</code></td>
+</tr>
+<tr>
+<td>Context 压缩</td>
+<td><code>ctx.compaction</code> seam + <code>dsh-compaction-basic</code></td>
+</tr>
+<tr>
+<td>子 agent 委派</td>
+<td><code>ctx.subagents</code> 提供方注册表 + <code>dsh-tool-subagent</code></td>
+</tr>
+<tr>
+<td>插件热重载</td>
+<td>每次注册都是 <code>ctx.effect</code>，vendored HMR 直接可用</td>
+</tr>
+</tbody></table>
+<h2 id="四、插件开发实战：从零到可安装"><a href="#四、插件开发实战：从零到可安装" class="headerlink" title="四、插件开发实战：从零到可安装"></a>四、插件开发实战：从零到可安装</h2><h3 id="4-1-环境准备"><a href="#4-1-环境准备" class="headerlink" title="4.1 环境准备"></a>4.1 环境准备</h3><p>两条路任选：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 方式一：直接用 npm 启动（默认打开 Web UI）</span></span><br><span class="line">npx @deepseek-ai/dsh web        <span class="comment"># http://127.0.0.1:3080</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式二：从源码运行（开发插件推荐，教程均基于源码 checkout）</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/deepseek-ai/deepseek-harness.git</span><br><span class="line"><span class="built_in">cd</span> deepseek-harness</span><br><span class="line">pnpm install</span><br><span class="line">pnpm run build</span><br><span class="line">pnpm dsh web</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-第一个插件：hello-plugin"><a href="#4-2-第一个插件：hello-plugin" class="headerlink" title="4.2 第一个插件：hello-plugin"></a>4.2 第一个插件：hello-plugin</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p scratch-plugin/src</span><br></pre></td></tr></table></figure>
+
+<p>创建 <code>scratch-plugin/src/my-plugin.ts</code>：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;hello-plugin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;[hello-plugin] plugin loaded!&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建 <code>scratch-plugin/cordis.yml</code>（路径必须是<strong>绝对路径</strong>；patch 文件只贡献配置，不改变 loader 解析模块路径时使用的 profile 目录）：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">insert:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">hello</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">&#x27;/absolute/path/to/deepseek-harness/scratch-plugin/src/my-plugin.ts&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>带覆盖层启动，终端应打印 <code>[hello-plugin] plugin loaded!</code>：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">pnpm dsh web --patch ./scratch-plugin/cordis.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-开发一个工具：greet"><a href="#4-3-开发一个工具：greet" class="headerlink" title="4.3 开发一个工具：greet"></a>4.3 开发一个工具：greet</h3><p>把 <code>my-plugin.ts</code> 换成：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; defineTool &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/dsh-tools&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;greet-tool&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> inject = [<span class="string">&#x27;tools&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  ctx.<span class="property">tools</span>.<span class="title function_">register</span>(<span class="title function_">defineTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;greet&#x27;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;Greet someone by name.&#x27;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: &#123;</span><br><span class="line">      <span class="attr">name</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;string&#x27;</span>, <span class="attr">required</span>: <span class="literal">true</span>, <span class="attr">description</span>: <span class="string">&#x27;The name to greet&#x27;</span> &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      <span class="attr">schema</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;string&#x27;</span> &#125;,</span><br><span class="line">      <span class="attr">render</span>: <span class="function">(<span class="params">_args, value</span>) =&gt;</span> [&#123; <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>, <span class="attr">text</span>: value &#125;],</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">args</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;args.name&#125;</span>!`</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重启后打开 <code>http://127.0.0.1:3080</code>，输入 <code>Use the greet tool to greet Ada.</code>——模型会调用 <code>greet</code> 并收到 <code>Hello, Ada!</code> 的工具结果。</p>
+<h3 id="4-4-插件配置：接受用户参数"><a href="#4-4-插件配置：接受用户参数" class="headerlink" title="4.4 插件配置：接受用户参数"></a>4.4 插件配置：接受用户参数</h3><p>导出 <code>Config</code> 类型 + 同名 Schemastery schema，默认值直接写在 schema 里：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">Context</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/cordis&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Schema</span> <span class="keyword">from</span> <span class="string">&#x27;@deepseek-ai/schemastery&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;my-plugin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">Config</span> &#123;</span><br><span class="line">  <span class="attr">greeting</span>: <span class="built_in">string</span></span><br><span class="line">  <span class="attr">maxRetries</span>: <span class="built_in">number</span></span><br><span class="line">  <span class="attr">verbose</span>?: <span class="built_in">boolean</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="title class_">Config</span>: <span class="title class_">Schema</span>&lt;<span class="title class_">Config</span>&gt; = <span class="title class_">Schema</span>.<span class="title function_">object</span>(&#123;</span><br><span class="line">  <span class="attr">greeting</span>: <span class="title class_">Schema</span>.<span class="title function_">string</span>().<span class="title function_">default</span>(<span class="string">&#x27;Hello&#x27;</span>),</span><br><span class="line">  <span class="attr">maxRetries</span>: <span class="title class_">Schema</span>.<span class="title function_">number</span>().<span class="title function_">default</span>(<span class="number">3</span>),</span><br><span class="line">  <span class="attr">verbose</span>: <span class="title class_">Schema</span>.<span class="title function_">boolean</span>().<span class="title function_">default</span>(<span class="literal">false</span>),</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span>, <span class="attr">config</span>: <span class="title class_">Config</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(config.<span class="property">greeting</span>)   <span class="comment">// 用户值或 schema 默认值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>cordis.yml</code> 传入配置：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">insert:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">hello</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">&#x27;./src/my-plugin.ts&#x27;</span></span><br><span class="line">      <span class="attr">config:</span></span><br><span class="line">        <span class="attr">greeting:</span> <span class="string">&#x27;Hi there&#x27;</span></span><br><span class="line">        <span class="attr">maxRetries:</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>配置在加载时校验，非法配置会导致插件加载失败并给出明确错误。<strong>约定：凡是不同部署可能需要不同值的参数，都必须定义为配置字段</strong>——检验标准是”能否不改代码，只在 <code>cordis.yml</code> 里改变这个值”。修改 <code>config</code> 会触发插件热替换：旧实例卸载、新实例加载，注册自动清理。</p>
+<h3 id="4-5-资源清理与依赖注入"><a href="#4-5-资源清理与依赖注入" class="headerlink" title="4.5 资源清理与依赖注入"></a>4.5 资源清理与依赖注入</h3><p>通过 <code>ctx</code> 注册的一切在卸载时自动清理，无需手动 removeListener。有手动资源（如网络连接）时用 <code>ctx.effect()</code> 声明清理函数：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"><span class="attr">ctx</span>: <span class="title class_">Context</span></span>) &#123;</span><br><span class="line">  ctx.<span class="title function_">effect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> timer = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;heartbeat&#x27;</span>), <span class="number">5000</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="built_in">clearInterval</span>(timer)   <span class="comment">// 卸载时执行</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>依赖服务用 <code>inject</code> 声明，框架保证就绪后才 <code>apply</code>。</p>
+<h3 id="4-6-打包成组合包（bundle）"><a href="#4-6-打包成组合包（bundle）" class="headerlink" title="4.6 打包成组合包（bundle）"></a>4.6 打包成组合包（bundle）</h3><p>把插件打包成可安装的 npm 包：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello-plugin/</span><br><span class="line">├── package.json       # 声明 dsh.bundle</span><br><span class="line">├── cordis.patch.yml   # profile 列出该 bundle 时应用的层</span><br><span class="line">└── index.js           # patch 行引用的插件模块</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dsh-hello-plugin&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.1.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;module&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;main&quot;</span><span class="punctuation">:</span> <span class="string">&quot;index.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;files&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;index.js&quot;</span><span class="punctuation">,</span> <span class="string">&quot;cordis.patch.yml&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dsh&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;bundle&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;patch&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./cordis.patch.yml&quot;</span> <span class="punctuation">&#125;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&#x27;hello-plugin&#x27;</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">apply</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;[hello-plugin] plugin loaded!&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># cordis.patch.yml —— 与 --patch overlay 同样格式；插件行按包名引用</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">insert:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">hello</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">dsh-hello-plugin</span></span><br></pre></td></tr></table></figure>
+
+<p>没有 <code>dsh.bundle</code> 声明的包也能安装，但只作普通依赖、不激活任何层（适合给插件包 import 的库）。</p>
+<h3 id="4-7-安装进-profile"><a href="#4-7-安装进-profile" class="headerlink" title="4.7 安装进 profile"></a>4.7 安装进 profile</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">dsh plugin --profile demo add ./hello-plugin</span><br></pre></td></tr></table></figure>
+
+<p>首次使用会初始化 profile（<code>@deepseek-ai/dsh-base</code> 作为第一个组合包），pnpm 链接该 checkout，<code>dsh</code> 把包追加进 <code>dsh.profile.bundles</code>：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dsh-profile-demo&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;private&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;dsh-hello-plugin&quot;</span><span class="punctuation">:</span> <span class="string">&quot;link:/path/to/hello-plugin&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dsh&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;profile&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;bundles&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;@deepseek-ai/dsh-base&quot;</span><span class="punctuation">,</span> <span class="string">&quot;dsh-hello-plugin&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>先验证层、再启动：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">dsh --profile demo --dump-config   <span class="comment"># 应出现 &quot;# == dsh-hello-plugin&quot; 层</span></span><br><span class="line">dsh --profile demo</span><br></pre></td></tr></table></figure>
+
+<p>卸载：<code>dsh plugin --profile demo remove dsh-hello-plugin</code>（同时移除依赖和层）。</p>
+<h2 id="五、应用流程"><a href="#五、应用流程" class="headerlink" title="五、应用流程"></a>五、应用流程</h2><h3 id="5-1-启动与日常使用"><a href="#5-1-启动与日常使用" class="headerlink" title="5.1 启动与日常使用"></a>5.1 启动与日常使用</h3><ul>
+<li><strong>Web UI</strong>：<code>npx @deepseek-ai/dsh web</code> 或 <code>pnpm dsh web</code>，默认 <code>http://127.0.0.1:3080</code>，本机启动自动开浏览器；SSH 启动只打印宿主 URL；<code>--no-open</code> 只跑服务器。</li>
+<li><strong>Headless</strong>：<code>dsh --profile headless</code> 提供一次性运行器，不带服务器。</li>
+<li>模型提供方在 Web UI 的 providers 页面配置。</li>
+</ul>
+<h3 id="5-2-层顺序与覆盖规则（决定”谁的配置生效”）"><a href="#5-2-层顺序与覆盖规则（决定”谁的配置生效”）" class="headerlink" title="5.2 层顺序与覆盖规则（决定”谁的配置生效”）"></a>5.2 层顺序与覆盖规则（决定”谁的配置生效”）</h3><p>生效配置按序叠加：<strong>bundle 列表 → profile 的 <code>cordis.patch.yml</code> → home 级 <code>cordis.patch.yml</code> → 每个 <code>--patch</code> overlay</strong>。注意：</p>
+<ul>
+<li>patch 按 <code>id</code> 覆盖前层整行 <code>config</code>，<strong>必须重述该行需要的每一个键</strong>，不是只写改动的键；</li>
+<li>你的 bundle 可以被用户在 profile 的 patch 中覆盖，因此<strong>给出用户大概率会保留的默认值</strong>，把其他交给 schema；</li>
+<li>内置组合包名始终从 dsh 安装目录解析，你的 bundle 可以放心依赖 <code>@deepseek-ai/dsh-base</code>。</li>
+</ul>
+<h3 id="5-3-从-GitHub-直接安装（及风险）"><a href="#5-3-从-GitHub-直接安装（及风险）" class="headerlink" title="5.3 从 GitHub 直接安装（及风险）"></a>5.3 从 GitHub 直接安装（及风险）</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">dsh plugin --profile demo add github:you/hello-plugin</span><br></pre></td></tr></table></figure>
+
+<p>git 安装拉取的是<strong>源码不是构建产物</strong>，所以：</p>
+<ul>
+<li><p><strong>作者</strong>：提供 <code>prepare</code> 脚本（pnpm 在 git 安装后运行它）从源码构建发布入口，且必须自包含（不能假设 monorepo checkout 等开发环境上下文）；</p>
+</li>
+<li><p><strong>用户</strong>：为构建授权。pnpm ≥10 默认拒绝运行 git 依赖的 <code>prepare</code> 脚本，首次 <code>add</code> 会失败；把 pnpm 打印的包键写进该 profile 的 <code>pnpm-workspace.yaml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">allowBuilds:</span></span><br><span class="line">  <span class="attr">dsh-hello-plugin:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>请如实看待这项授权</strong>：它允许该包代码在安装时于你的机器上执行，且不在 agent 沙箱内。只对源码可信的包授权，并锁定 commit（<code>github:you/hello-plugin#&lt;sha&gt;</code>），防止后续推送悄悄改变实际运行的内容。</p>
+</li>
+</ul>
+<p>不想让用户做授权，就分发构建产物：</p>
+<ul>
+<li><strong>发布 npm</strong>：<code>pnpm publish</code> 时构建好 <code>lib/</code>，<code>dsh plugin add your-package</code> 装的就是预构建代码；</li>
+<li><strong>交付 tarball</strong>：<code>pnpm pack</code> 打包，用户 <code>dsh plugin add ./hello-plugin-0.1.0.tgz</code>。</li>
+</ul>
+<h3 id="5-4-插件生态与发现"><a href="#5-4-插件生态与发现" class="headerlink" title="5.4 插件生态与发现"></a>5.4 插件生态与发现</h3><ul>
+<li>官方欢迎通过 <a href="https://github.com/deepseek-ai/deepseek-harness/discussions">GitHub Discussions</a> 反馈；</li>
+<li>为插件仓库添加 <strong><code>dsh-plugin</code></strong> <a href="https://github.com/topics/dsh-plugin">topic</a> 便于被发现；</li>
+<li>参考实现的活例子：<code>packages/shell/tool-bash</code>（生产级工具三件套）、<code>packages/acp/acp</code>（协议驱动）、<a href="https://github.com/deepseek-harness/turtle-ui">turtle-ui</a>（git 安装 + prepare 构建的可用范例）。</li>
+</ul>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><ul>
+<li><strong>架构上</strong>，dsh 用 Cordis 微内核把”模型之外的一切”做成插件：核心包只贡献服务（<code>ctx.tools</code>/<code>ctx.llm</code>/<code>ctx.sessions</code>…），agent loop 本身可替换，注册即副作用、卸载即撤销，事件是唯一的扩展点。</li>
+<li><strong>模式上</strong>，工具、Hook 权限门、UI、协议驱动、服务提供方五类插件各有固定落点：能力加在 <code>ctx.tools</code>，策略挂在 <code>tools/*</code> 事件，UI 消费 <code>session/event</code>，外部协议接 <code>ctx.agents</code>。</li>
+<li><strong>开发上</strong>，一个函数 + <code>apply(ctx)</code> 就是插件，<code>defineTool</code> 加 schema 就有工具，<code>effect</code> 保证可逆，配置走 Schemastery schema 校验。</li>
+<li><strong>应用上</strong>，组合包（bundle）是分发单元，profile 是有序组装，<code>dsh plugin add</code> 即装即用，四层 patch 决定了谁覆盖谁。</li>
+</ul>
+<p>横向对比其他 Coding Agent：Claude Code / Codex 把扩展做成”钩子 + 外部协议”的封闭面，dsh 则把整个产品做成了开放面——<strong>产品差异面就是插件面</strong>。如果你是”想深度定制 agent 行为”的团队，dsh 是目前少见的、每一层都能从配置替换的选择。</p>
+<p>最后提醒一句：它仍处于 <strong>Developer Preview</strong>，官方明确会有破坏性变更；用插件（而不是 fork）去跟随迭代，正是这套架构给的生存策略。</p>
+<blockquote>
+<p>参考资料：<a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness 仓库</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.zh.md">架构文档（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.zh.md">Cordis Primer（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.zh.md">第一个插件（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/tool.zh.md">开发一个工具（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/config.zh.md">插件配置（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.zh.md">打包与安装插件（中文）</a> · <a href="https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md">扩展 Cookbook</a> · <a href="https://github.com/cordiverse/paper">Cordis 论文</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>coding-agent</tag>
+        <tag>agent</tag>
+        <tag>deepseek-harness</tag>
+        <tag>deepseek</tag>
+        <tag>plugin</tag>
+        <tag>architecture</tag>
+        <tag>typescript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Goose 入门：Block 开源的本机通用 AI Agent</title>
     <url>/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/</url>
     <content><![CDATA[<h1 id="Goose-入门：Block-开源的本机通用-AI-Agent"><a href="#Goose-入门：Block-开源的本机通用-AI-Agent" class="headerlink" title="Goose 入门：Block 开源的本机通用 AI Agent"></a>Goose 入门：Block 开源的本机通用 AI Agent</h1><p>2026 年的 Coding Agent 已经很多了。若你只是想「聊天改代码」，Claude Code、Cursor、OpenCode 都能上手。</p>
@@ -10681,10 +11059,10 @@
       </categories>
       <tags>
         <tag>coding-agent</tag>
+        <tag>typescript</tag>
         <tag>cli</tag>
         <tag>pi</tag>
         <tag>extension</tag>
-        <tag>typescript</tag>
       </tags>
   </entry>
   <entry>
