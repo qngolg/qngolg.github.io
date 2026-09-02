@@ -1,0 +1,454 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Paperclip 入门：用组织架构管理 AI Agent 团队 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="介绍开源项目 Paperclip：把 Claude、Codex、OpenClaw 等 Agent 编成一家「公司」——组织图、目标对齐、预算、审批与审计，而不是又一个聊天助手。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Paperclip 入门：用组织架构管理 AI Agent 团队">
+<meta property="og:url" content="https://qngolg.github.io/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="介绍开源项目 Paperclip：把 Claude、Codex、OpenClaw 等 Agent 编成一家「公司」——组织图、目标对齐、预算、审批与审计，而不是又一个聊天助手。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-09-02T09:40:00.000Z">
+<meta property="article:modified_time" content="2026-09-02T09:40:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="paperclip">
+<meta property="article:tag" content="ai-agent">
+<meta property="article:tag" content="orchestration">
+<meta property="article:tag" content="open-source">
+<meta property="article:tag" content="multi-agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qngolg.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Paperclip 入门：用组织架构管理 AI Agent 团队",
+  "url": "https://qngolg.github.io/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/",
+  "image": "https://qngolg.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-09-02T09:40:00.000Z",
+  "dateModified": "2026-09-02T09:40:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "菜鸟程序员",
+      "url": "https://qngolg.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qngolg.github.io/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Paperclip 入门：用组织架构管理 AI Agent 团队',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Paperclip 入门：用组织架构管理 AI Agent 团队</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Paperclip 入门：用组织架构管理 AI Agent 团队</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-09-02T09:40:00.000Z" title="发表于 2026-09-02 17:40:00">2026-09-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-09-02T09:40:00.000Z" title="更新于 2026-09-02 17:40:00">2026-09-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Paperclip-入门：用组织架构管理-AI-Agent-团队"><a href="#Paperclip-入门：用组织架构管理-AI-Agent-团队" class="headerlink" title="Paperclip 入门：用组织架构管理 AI Agent 团队"></a>Paperclip 入门：用组织架构管理 AI Agent 团队</h1><p>2026 年的 Agent 已经很多了：写代码的、写文案的、做研究的，各自都很能干。但当你同时跑五六个 Agent，问题往往不是「够不够聪明」，而是——</p>
+<p><strong>谁向谁汇报？任务怎么对齐目标？预算谁卡住？重要决策谁点头？</strong></p>
+<p><a target="_blank" rel="noopener" href="https://paperclip.ing/">Paperclip</a> 想解决的正是这件事。官网有一句很贴切的定位：</p>
+<blockquote>
+<p>If OpenClaw is an <em>employee</em>, Paperclip is the <em>company</em>.</p>
+</blockquote>
+<p>某个 Agent 是员工；Paperclip 是公司。</p>
+<p>本文按官方文档 <a target="_blank" rel="noopener" href="https://docs.paperclip.ing/">docs.paperclip.ing</a> 梳理：它是什么、不是什么、核心机制、怎么上手、以及什么时候该用。</p>
+<hr>
+<h2 id="一、Paperclip-是什么？"><a href="#一、Paperclip-是什么？" class="headerlink" title="一、Paperclip 是什么？"></a>一、Paperclip 是什么？</h2><p>按 <a target="_blank" rel="noopener" href="https://docs.paperclip.ing/guides/welcome/what-is-paperclip/">What is Paperclip?</a> 的说法：</p>
+<blockquote>
+<p>Paperclip is the operating system for your AI company.</p>
+</blockquote>
+<p>你定目标，雇佣 AI Agent 当员工，看着它们规划与执行——同时你仍掌握每一个重要决策。</p>
+<p>可以把它想成一家真实创业公司的镜像：</p>
+<ol>
+<li>创建 <strong>Company</strong></li>
+<li>设定 <strong>Goal</strong>（可有可无，但有目标时对齐更清晰）</li>
+<li>先雇一位 <strong>CEO Agent</strong></li>
+<li>CEO 提出战略 → <strong>你审批</strong></li>
+<li>通过后，CEO 拆项目、招人、派活</li>
+<li>其他 Agent 领任务、干活、在任务线程更新进度</li>
+<li>你在 Dashboard 看全局，关键节点再下场</li>
+</ol>
+<p>真正干活的「大脑」仍是 Claude、OpenAI、Codex、Gemini、OpenClaw 等。<strong>Paperclip 本身不是 AI</strong>，而是坐在它们之上的一层：</p>
+<table>
+<thead>
+<tr>
+<th>能力层</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>组织图</td>
+<td>角色、汇报线、职责范围</td>
+</tr>
+<tr>
+<td>任务看板</td>
+<td>Ticket、状态、线程沟通</td>
+</tr>
+<tr>
+<td>预算控制</td>
+<td>按 Agent / 公司设月度上限</td>
+</tr>
+<tr>
+<td>审计轨迹</td>
+<td>工具调用、决策、花费可追溯</td>
+</tr>
+<tr>
+<td>治理审批</td>
+<td>招人、大战略等关键动作需过你</td>
+</tr>
+</tbody></table>
+<p>一句话：<strong>它不是又一个聊天助手，而是 Agent 团队的操作系统 / 编排层。</strong></p>
+<hr>
+<h2 id="二、它不是什么"><a href="#二、它不是什么" class="headerlink" title="二、它不是什么"></a>二、它不是什么</h2><p>文档特意划清边界，避免装错预期：</p>
+<ul>
+<li><strong>不是</strong> 你天天对着聊的 AI 助手</li>
+<li><strong>不是</strong> Prompt 工具或单纯的 Coding Copilot</li>
+<li><strong>不是</strong> 某个模型厂商的专属 Agent</li>
+</ul>
+<p>模型与执行力在你配置的 Agent 里；Paperclip 负责把它们编成一家公司：对齐目标、管花费、把重要决策留给人。</p>
+<p>心智模型的切换很关键：</p>
+<blockquote>
+<p>以前：我在跟一个 AI 对话。<br>现在：我在管理一支 AI 团队。</p>
+</blockquote>
+<hr>
+<h2 id="三、五个核心机制"><a href="#三、五个核心机制" class="headerlink" title="三、五个核心机制"></a>三、五个核心机制</h2><p>把 Paperclip 用顺，通常摸清这五个词就够。</p>
+<h3 id="3-1-Org-Chart：组织就是协作协议"><a href="#3-1-Org-Chart：组织就是协作协议" class="headerlink" title="3.1 Org Chart：组织就是协作协议"></a>3.1 Org Chart：组织就是协作协议</h3><p>Agent 不是平铺在列表里的「机器人集合」，而是有老板、有职级、有汇报线。CEO 可以向下委派；跨团队请求会按组织关系找到合适的人。</p>
+<p>官网常见的例子：CEO、CMO、CTO、COO，以及 Frontend / Backend Engineer——各自接不同 runtime（Hermes、OpenClaw、Codex、Claude、Cursor 等），但都挂在同一张组织图、指向同一个使命。</p>
+<h3 id="3-2-Goal-Alignment：每张票都能追到使命"><a href="#3-2-Goal-Alignment：每张票都能追到使命" class="headerlink" title="3.2 Goal Alignment：每张票都能追到使命"></a>3.2 Goal Alignment：每张票都能追到使命</h3><p>工作被层层拆解，并保留「为什么要干」的上下文：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">公司使命（Mission）</span><br><span class="line">  └─ 项目目标（Project Goal）</span><br><span class="line">       └─ Agent 目标（Agent Goal）</span><br><span class="line">            └─ 任务（Task / Ticket）</span><br></pre></td></tr></table></figure>
+
+<p>例如：使命是「做到 100 万美元 ARR 的 AI 笔记产品」→ 项目是「上线协作功能」→ Agent 目标是「实现实时同步」→ 任务是「写文档更新的 WebSocket handler」。</p>
+<p>Paperclip 还通过 <code>SKILL.md</code> 等机制，让 Agent 知道如何发现自己需要的上下文，而不是每次靠人把背景复读一遍。</p>
+<h3 id="3-3-Heartbeat：按节奏醒来，而不是默认狂烧"><a href="#3-3-Heartbeat：按节奏醒来，而不是默认狂烧" class="headerlink" title="3.3 Heartbeat：按节奏醒来，而不是默认狂烧"></a>3.3 Heartbeat：按节奏醒来，而不是默认狂烧</h3><p>Agent 默认不是 24 小时空转，而是：</p>
+<ul>
+<li>按 <strong>Heartbeat</strong> 计划醒来，检查自己的活</li>
+<li>被分到 Ticket、被 @ 时被唤醒</li>
+<li>委派沿组织图上下流动</li>
+</ul>
+<p>你可以给不同角色设不同频率（例如文案每 4 小时、SEO 每 8 小时、社媒每 12 小时）。节奏可控，成本才可控。</p>
+<h3 id="3-4-Budget：花到上限就停"><a href="#3-4-Budget：花到上限就停" class="headerlink" title="3.4 Budget：花到上限就停"></a>3.4 Budget：花到上限就停</h3><p>每个 Agent 有月度预算，公司也可有总预算：</p>
+<ul>
+<li>接近上限（如 80%）会提醒</li>
+<li>到 100% <strong>自动暂停</strong>，新任务堵住</li>
+<li>花费可按 Agent / 任务 / 项目 / 目标查看</li>
+</ul>
+<p>文档提醒得很实在：活跃 Agent 团队一个月可能花掉几十到上百美元（取决于人数与唤醒频率）。预算不是装饰，是刚需。</p>
+<h3 id="3-5-Governance：你是董事会"><a href="#3-5-Governance：你是董事会" class="headerlink" title="3.5 Governance：你是董事会"></a>3.5 Governance：你是董事会</h3><p>默认治理方向是：</p>
+<ul>
+<li>招人要审批</li>
+<li>大战略要审批</li>
+<li>可随时暂停、恢复、改派、改预算、终止 Agent</li>
+<li><strong>Autonomy 是你授予的特权，不是默认值</strong></li>
+</ul>
+<p>沟通走 Ticket：指令、回复、工具调用、决策点都有追踪；审计日志强调追加写入、可问责。日常工作可以自治，关键决策必须过你。</p>
+<hr>
+<h2 id="四、和「单个-Agent」差在哪？"><a href="#四、和「单个-Agent」差在哪？" class="headerlink" title="四、和「单个 Agent」差在哪？"></a>四、和「单个 Agent」差在哪？</h2><p>官方 FAQ 里最高频的对比：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>答案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>和 OpenClaw / Claude Code 有何不同？</td>
+<td>Paperclip <strong>使用</strong> 它们，把它们编成有组织、预算、目标与治理的团队</td>
+</tr>
+<tr>
+<td>为何不直接把 Agent 接到 Asana / Trello？</td>
+<td>多智能体有 checkout、会话、成本、治理等脏活；Paperclip 把这些产品化了</td>
+</tr>
+<tr>
+<td>能否用已有 Agent？</td>
+<td>可以。只要能接收 Heartbeat，就可通过 Adapter 接入</td>
+</tr>
+<tr>
+<td>是否开源？</td>
+<td>是，MIT，可自托管，不强制注册 Paperclip 账号</td>
+</tr>
+</tbody></table>
+<p>它是 <strong>Model-agnostic / Runtime-agnostic</strong>：Claude、Codex、Gemini、Cursor、OpenClaw，甚至自定义 HTTP 服务，都可以进同一张组织图。</p>
+<p>一个部署还可以跑多家 <strong>Company</strong>，数据隔离——适合并行试策略，或把不同业务拆成不同「公司」。</p>
+<hr>
+<h2 id="五、怎么上手"><a href="#五、怎么上手" class="headerlink" title="五、怎么上手"></a>五、怎么上手</h2><h3 id="5-1-前置条件"><a href="#5-1-前置条件" class="headerlink" title="5.1 前置条件"></a>5.1 前置条件</h3><ul>
+<li>Node.js（文档写 20+；安装脚本侧常要求较新版本）</li>
+<li>Anthropic / OpenAI 等 API Key（费用发生在模型提供商一侧）</li>
+<li>macOS / Linux / Windows 均可</li>
+</ul>
+<h3 id="5-2-最快路径"><a href="#5-2-最快路径" class="headerlink" title="5.2 最快路径"></a>5.2 最快路径</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx paperclipai onboard --<span class="built_in">yes</span></span><br></pre></td></tr></table></figure>
+
+<p>这条路径会：写入本地配置、起嵌入式 Postgres、配置本地存储、启动服务。<code>--yes</code> 接受默认项；去掉则可交互自定义。</p>
+<p>本地开发也可从源码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/paperclipai/paperclip.git</span><br><span class="line"><span class="built_in">cd</span> paperclip</span><br><span class="line">pnpm install</span><br><span class="line">pnpm dev</span><br></pre></td></tr></table></figure>
+
+<p>API 默认多在 <code>http://localhost:3100</code> 一类地址（以当前文档为准）。</p>
+<h3 id="5-3-第一次「开公司」大致流程"><a href="#5-3-第一次「开公司」大致流程" class="headerlink" title="5.3 第一次「开公司」大致流程"></a>5.3 第一次「开公司」大致流程</h3><ol>
+<li><strong>Create Company</strong>，写名称与目标  </li>
+<li><strong>Hire Agent</strong>，先雇 CEO，选 Adapter（如 OpenClaw / Claude Code / Process）  </li>
+<li><strong>Approve</strong> CEO 提出的初始战略  </li>
+<li>在 Dashboard 看任务、花费与活动日志  </li>
+<li>按需批准 CEO 的后续招聘请求，扩充组织</li>
+</ol>
+<p>装完之后，日常主要在 Web 界面：非开发者也能当「老板」；开发者则可继续用 CLI、API、Plugins、自托管与 Tailscale 等部署方式扩展。</p>
+<p>完整安装与 day-to-day 操作见 <a target="_blank" rel="noopener" href="https://docs.paperclip.ing/">Paperclip Docs</a> 的 Quickstart、Working Day-to-day、Adapters、Deployment 等章节。</p>
+<hr>
+<h2 id="六、谁适合用？谁不适合？"><a href="#六、谁适合用？谁不适合？" class="headerlink" title="六、谁适合用？谁不适合？"></a>六、谁适合用？谁不适合？</h2><p><strong>适合：</strong></p>
+<ul>
+<li>想同时编排研发、内容、营销、研究、QA 等多职能 Agent</li>
+<li>需要组织、目标、预算、审批，而不是一堆散落的自动化脚本</li>
+<li>希望自托管、可审计、可扩展（插件 / Adapter）</li>
+</ul>
+<p><strong>不太适合：</strong></p>
+<ul>
+<li>只想「问一句答一句」——用 Chat 产品即可</li>
+<li>期望「零成本跑一队 Agent」——模型调用仍会花钱，只是预算被系统卡住</li>
+<li>把 Paperclip 当成模型本身——它编排 Agent，不替代模型能力</li>
+</ul>
+<p>社区反馈里常被提到的价值点也正是：跨业务职能编排、像 Linear 一样的产品完成度、以及「从 Prompt 工具切换到管理团队」的心智模型。</p>
+<hr>
+<h2 id="七、小结"><a href="#七、小结" class="headerlink" title="七、小结"></a>七、小结</h2><p>Paperclip 的主张可以压成一句：</p>
+<p><strong>AI 不该只是工具栏里的图标，而可以是一支有组织、有预算、有审批流的劳动力。</strong></p>
+<p>你设目标，雇 CEO，批战略，盯 Dashboard；Agent 按 Heartbeat 醒来、领票、协作，并留下完整痕迹。你不是在疯狂 Prompt，而是在当董事会。</p>
+<p>相关链接：</p>
+<ul>
+<li>产品：<a target="_blank" rel="noopener" href="https://paperclip.ing/">https://paperclip.ing/</a></li>
+<li>文档：<a target="_blank" rel="noopener" href="https://docs.paperclip.ing/">https://docs.paperclip.ing/</a></li>
+<li>仓库：<a target="_blank" rel="noopener" href="https://github.com/paperclipai/paperclip">https://github.com/paperclipai/paperclip</a></li>
+</ul>
+<p>若继续深挖，值得单独写的专题包括：Adapter 选型、审批与执行策略、预算怎么卡才不「开业第一天刷爆卡」，以及 <code>SKILL.md</code> 如何帮 Agent 自己发现上下文。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/">https://qngolg.github.io/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/paperclip/">paperclip</a><a class="post-meta__tags" href="/tags/ai-agent/">ai-agent</a><a class="post-meta__tags" href="/tags/orchestration/">orchestration</a><a class="post-meta__tags" href="/tags/open-source/">open-source</a><a class="post-meta__tags" href="/tags/multi-agent/">multi-agent</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/09/02/LangGraph%E9%87%8C%E5%81%9A%E4%B8%80%E7%89%88%E5%8F%AF%E5%9B%9E%E6%9F%A5%E7%9A%84Compaction/" title="LangGraph 里做一版「可回查的 Compaction」"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">LangGraph 里做一版「可回查的 Compaction」</div></div><div class="info-2"><div class="info-item-1">LangGraph 里做一版「可回查的 Compaction」 目标：长 agent 轨迹里，送给模型的是压缩后的工作记忆；完整历史落在可检索档案里。摘要丢了细节时，agent 能自己查回来——接近 Cursor / Claude Code 的做法，而不是 LangChain 早期那种「摘要了就永远没了」。   1. 先分清两层记忆   层 是什么 LangGraph 落点 给模型看吗    Working memory 当前决策需要的高信号 token state.messages + state.summary 每轮都看   Archive 完整 transcript（含工具原文） 独立 store / 文件 / 表，不要指望靠 checkpointer 当唯一真相 默认不看；需要时工具读   Checkpointer（MemorySaver / SqliteSaver / PostgresSaver）负责的是：图状态快照 + 断点续跑。它适合存「现在工作记忆长什么样」，不适合当「永远可全文检索的聊天库」。 可回查 compaction 的关键约定： 12压缩时：messag...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/" title="Goose 入门：Block 开源的本机通用 AI Agent"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-20</div><div class="info-item-2">Goose 入门：Block 开源的本机通用 AI Agent</div></div><div class="info-2"><div class="info-item-1">Goose 入门：Block 开源的本机通用 AI Agent2026 年的 Coding Agent 已经很多了。若你只是想「聊天改代码」，Claude Code、Cursor、OpenCode 都能上手。 Goose 想解决的问题略有不同：它不只是一个 coding CLI，而是一台跑在你电脑上的 通用 Agent 运行时——写代码是默认场景，研究、自动化、数据分析、可复用工作流同样在能力圈内。模型你自己选，扩展走 MCP，流程可以固化成 Recipes，还带桌面端和可嵌入的 API。 本文按「它是什么 → 核心概念 → 怎么装 → 什么时候该用」来介绍。和同场选手的横向对比，可对照前文 2026 流行 Coding Agent 能力对比。  一、Goose 是什么？Goose 最初由 Block（Square / Cash App）开源，现由 Linux Foundation 旗下的 Agentic AI Foundation（AAIF） 治理，协议为 Apache 2.0。官方仓库常写的一句话是：  your native open source AI agent — d...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Paperclip-%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86-AI-Agent-%E5%9B%A2%E9%98%9F"><span class="toc-number">1.</span> <span class="toc-text">Paperclip 入门：用组织架构管理 AI Agent 团队</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Paperclip-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">一、Paperclip 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%83%E4%B8%8D%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.2.</span> <span class="toc-text">二、它不是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BA%94%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="toc-number">1.3.</span> <span class="toc-text">三、五个核心机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Org-Chart%EF%BC%9A%E7%BB%84%E7%BB%87%E5%B0%B1%E6%98%AF%E5%8D%8F%E4%BD%9C%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 Org Chart：组织就是协作协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Goal-Alignment%EF%BC%9A%E6%AF%8F%E5%BC%A0%E7%A5%A8%E9%83%BD%E8%83%BD%E8%BF%BD%E5%88%B0%E4%BD%BF%E5%91%BD"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 Goal Alignment：每张票都能追到使命</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Heartbeat%EF%BC%9A%E6%8C%89%E8%8A%82%E5%A5%8F%E9%86%92%E6%9D%A5%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E9%BB%98%E8%AE%A4%E7%8B%82%E7%83%A7"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 Heartbeat：按节奏醒来，而不是默认狂烧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Budget%EF%BC%9A%E8%8A%B1%E5%88%B0%E4%B8%8A%E9%99%90%E5%B0%B1%E5%81%9C"><span class="toc-number">1.3.4.</span> <span class="toc-text">3.4 Budget：花到上限就停</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-Governance%EF%BC%9A%E4%BD%A0%E6%98%AF%E8%91%A3%E4%BA%8B%E4%BC%9A"><span class="toc-number">1.3.5.</span> <span class="toc-text">3.5 Governance：你是董事会</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%92%8C%E3%80%8C%E5%8D%95%E4%B8%AA-Agent%E3%80%8D%E5%B7%AE%E5%9C%A8%E5%93%AA%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">四、和「单个 Agent」差在哪？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%8E%E4%B9%88%E4%B8%8A%E6%89%8B"><span class="toc-number">1.5.</span> <span class="toc-text">五、怎么上手</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 前置条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%9C%80%E5%BF%AB%E8%B7%AF%E5%BE%84"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 最快路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E7%AC%AC%E4%B8%80%E6%AC%A1%E3%80%8C%E5%BC%80%E5%85%AC%E5%8F%B8%E3%80%8D%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 第一次「开公司」大致流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%B0%81%E9%80%82%E5%90%88%E7%94%A8%EF%BC%9F%E8%B0%81%E4%B8%8D%E9%80%82%E5%90%88%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">六、谁适合用？谁不适合？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%B0%8F%E7%BB%93"><span class="toc-number">1.7.</span> <span class="toc-text">七、小结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/" title="Paperclip 入门：用组织架构管理 AI Agent 团队">Paperclip 入门：用组织架构管理 AI Agent 团队</a><time datetime="2026-09-02T09:40:00.000Z" title="发表于 2026-09-02 17:40:00">2026-09-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/02/LangGraph%E9%87%8C%E5%81%9A%E4%B8%80%E7%89%88%E5%8F%AF%E5%9B%9E%E6%9F%A5%E7%9A%84Compaction/" title="LangGraph 里做一版「可回查的 Compaction」">LangGraph 里做一版「可回查的 Compaction」</a><time datetime="2026-09-02T09:30:00.000Z" title="发表于 2026-09-02 17:30:00">2026-09-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/21/DeepSeek-Harness%E8%AF%A6%E8%A7%A3%EF%BC%9A%E4%B8%80%E5%88%87%E7%9A%86%E6%8F%92%E4%BB%B6%E7%9A%84Agent%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E6%88%98/" title="DeepSeek Harness 详解：一切皆插件的 Agent 架构与插件开发实战">DeepSeek Harness 详解：一切皆插件的 Agent 架构与插件开发实战</a><time datetime="2026-08-21T04:00:00.000Z" title="发表于 2026-08-21 12:00:00">2026-08-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/20/Goose%E5%85%A5%E9%97%A8%EF%BC%9ABlock%E5%BC%80%E6%BA%90%E7%9A%84%E6%9C%AC%E6%9C%BA%E9%80%9A%E7%94%A8AI-Agent/" title="Goose 入门：Block 开源的本机通用 AI Agent">Goose 入门：Block 开源的本机通用 AI Agent</a><time datetime="2026-08-20T09:00:00.000Z" title="发表于 2026-08-20 17:00:00">2026-08-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/20/LightRAG%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%8F%8C%E5%B1%82%E6%A3%80%E7%B4%A2%E6%9E%B6%E6%9E%84%E4%B8%8EGraphRAG%E3%80%81%E4%BC%A0%E7%BB%9FRAG%E5%AF%B9%E6%AF%94/" title="LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比">LightRAG 深度解析：双层检索架构与 GraphRAG、传统 RAG 对比</a><time datetime="2026-08-20T08:40:00.000Z" title="发表于 2026-08-20 16:40:00">2026-08-20</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey: 'qsPlalDJdtYgh4AFO3oiFAox',
+      avatar: 'mm',
+      serverURLs: 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine@1.5.3/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
