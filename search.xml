@@ -2045,6 +2045,602 @@
       </tags>
   </entry>
   <entry>
+    <title>LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP</title>
+    <url>/2026/09/14/LangChain-1.x%E7%89%B9%E6%80%A7%E5%85%A8%E8%A7%A3%EF%BC%9A%E4%BB%8Ecreate_agent%E5%88%B01.4%E5%86%85%E7%BD%AEMCP/</url>
+    <content><![CDATA[<h1 id="LangChain-1-x-特性全解：从-create-agent-到-1-4-内置-MCP"><a href="#LangChain-1-x-特性全解：从-create-agent-到-1-4-内置-MCP" class="headerlink" title="LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP"></a>LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP</h1><p>2025 年 10 月，LangChain 发布了 <strong>1.0</strong>：第一次承诺到 2.0 之前不做破坏性变更。此后大约一年，框架沿着一条很清楚的线演进——<strong>把「造 Agent」做成一等公民</strong>，用中间件打开 harness，把模型能力、流式协议、MCP 工具生态逐个补齐。</p>
+<p>截至 2026 年 9 月，Python 包最新稳定版是 <strong>langchain 1.4.0</strong>（2026-09-03），运行时依赖 <strong>langgraph &gt;= 1.2.11,&lt; 1.3.0</strong>。如果你还停在 0.x 的 <code>LLMChain</code> / <code>AgentExecutor</code>，这篇文章会把 1.x 该怎么用、每个小版本加了什么，一次讲清楚。</p>
+<p>文中示例默认：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip install -U <span class="string">&quot;langchain[openai,anthropic,mcp]&quot;</span> langgraph</span><br></pre></td></tr></table></figure>
+
+<p>模型字符串按官方文档写成 <code>openai:gpt-5.5</code>、<code>anthropic:claude-sonnet-4-6</code> 这类 <code>provider:model</code> 形式，换成你环境里能调的模型即可。</p>
+<hr>
+<h2 id="一、先把三层分清"><a href="#一、先把三层分清" class="headerlink" title="一、先把三层分清"></a>一、先把三层分清</h2><p>LangChain 1.x 不再是「什么都能装一点」的工具箱，而是一套分层 Agent 栈：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│ Deep Agents（意见化 harness）                             │</span><br><span class="line">│   文件系统 / 子代理 / 上下文压缩 / Skills，开箱即用         │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│ LangChain create_agent（可配置 harness）                  │</span><br><span class="line">│   模型 + 工具 + system prompt + middleware                │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│ LangGraph（图运行时）                                      │</span><br><span class="line">│   State / Node / Edge / Checkpointer / Interrupt / Stream │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>入口</th>
+<th>什么时候用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LangGraph</strong></td>
+<td><code>StateGraph</code></td>
+<td>Agent 循环本身不够用：要自定义图、Saga 补偿、复杂分支</td>
+</tr>
+<tr>
+<td><strong>LangChain</strong></td>
+<td><code>create_agent</code></td>
+<td>标准「模型调工具直到结束」循环，用中间件定制</td>
+</tr>
+<tr>
+<td><strong>Deep Agents</strong></td>
+<td><code>create_deep_agent</code></td>
+<td>要规划、虚拟文件系统、子代理委派，不想自己拼 harness</td>
+</tr>
+</tbody></table>
+<p>本文只写 <strong>LangChain 1.x</strong>。LangGraph 组件见仓库里的 <a href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/">LangGraph 入门</a>；数据分析场景见 <a href="/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/">Data Agent 入门</a>。</p>
+<p>官方公式是：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Agent  = Model + Harness</span><br><span class="line">Harness = Prompt + Tools + Middleware</span><br></pre></td></tr></table></figure>
+
+<p>Harness 的工作只有一件：<strong>在正确的时间，把正确的上下文交给模型</strong>。</p>
+<hr>
+<h2 id="二、版本时间线"><a href="#二、版本时间线" class="headerlink" title="二、版本时间线"></a>二、版本时间线</h2><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>时间</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1.0.0</strong></td>
+<td>2025-10</td>
+<td><code>create_agent</code>、中间件、结构化输出进主循环、标准内容块、命名空间瘦身</td>
+</tr>
+<tr>
+<td><strong>1.1.0</strong></td>
+<td>之后</td>
+<td>Model profiles、按窗口摘要、推断 ProviderStrategy、<code>ModelRetryMiddleware</code>、审核中间件</td>
+</tr>
+<tr>
+<td><strong>1.2.0</strong></td>
+<td>之后</td>
+<td>工具 <code>extras</code>（厂商专属参数 / 客户端内置工具）、<code>ProviderStrategy(strict=True)</code></td>
+</tr>
+<tr>
+<td><strong>1.3.0</strong></td>
+<td>之后</td>
+<td>Agent 支持 <code>stream_events(version=&quot;v3&quot;)</code></td>
+</tr>
+<tr>
+<td><strong>1.3.2 / 1.3.3</strong></td>
+<td>补丁</td>
+<td>PII 同步打码流式输出；HITL 按参数条件打断</td>
+</tr>
+<tr>
+<td><strong>1.4.0</strong></td>
+<td>2026-09-03</td>
+<td>内置 <code>langchain.mcp.MCPAdapter</code>，替代独立 <code>langchain-mcp-adapters</code></td>
+</tr>
+</tbody></table>
+<p>下面先把 1.0 的底座讲透，再按版本写升级点。每个特性最后都有可复制的案例代码。</p>
+<hr>
+<h2 id="三、LangChain-1-0：新的底座"><a href="#三、LangChain-1-0：新的底座" class="headerlink" title="三、LangChain 1.0：新的底座"></a>三、LangChain 1.0：新的底座</h2><h3 id="3-1-create-agent：标准-Agent-循环"><a href="#3-1-create-agent：标准-Agent-循环" class="headerlink" title="3.1 create_agent：标准 Agent 循环"></a>3.1 <code>create_agent</code>：标准 Agent 循环</h3><p>1.0 用 <code>create_agent</code> 取代 <code>langgraph.prebuilt.create_react_agent</code>（后者已废弃）。它底层就是一张 LangGraph：调模型 → 模型选工具 → 执行工具 → 再调模型，直到模型不再要工具。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">invoke / stream</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">┌─────────────┐     有 tool_calls      ┌──────────┐</span><br><span class="line">│  model 节点  │ ─────────────────────► │ tools 节点│</span><br><span class="line">│  (LLM)      │ ◄───────────────────── │          │</span><br><span class="line">└─────────────┘     ToolMessage        └──────────┘</span><br><span class="line">      │</span><br><span class="line">      │ 没有 tool_calls</span><br><span class="line">      ▼</span><br><span class="line">     END</span><br></pre></td></tr></table></figure>
+
+<p>和旧 <code>AgentExecutor</code> 的差别：</p>
+<ul>
+<li>返回值是编译后的 <code>CompiledStateGraph</code>，自带 <code>invoke</code> / <code>ainvoke</code> / <code>stream</code> / <code>stream_events</code>、checkpoint、interrupt</li>
+<li>定制点不再是继承一个巨大的 Agent 类，而是往循环上挂 <strong>middleware</strong></li>
+<li>结构化输出在主循环里完成，不再额外再打一次 LLM</li>
+</ul>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;按关键词检索内部知识。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;检索结果：<span class="subst">&#123;query&#125;</span> 相关文档 3 篇。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_weather</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询城市天气。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;city&#125;</span> 今天晴，25°C。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[search, get_weather],</span><br><span class="line">    system_prompt=<span class="string">&quot;你是简洁准确的助手。需要事实时先调工具，不要编造。&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;北京今天天气怎么样？&quot;</span>&#125;]&#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p><code>create_agent</code> 接受的模型可以是 <code>&quot;provider:model&quot;</code> 字符串，也可以是已经初始化好的 <code>BaseChatModel</code>。工具可以是 <code>@tool</code> 函数、<code>BaseTool</code> 实例，或厂商内置工具的 dict。</p>
+<hr>
+<h3 id="3-2-统一初始化模型：init-chat-model"><a href="#3-2-统一初始化模型：init-chat-model" class="headerlink" title="3.2 统一初始化模型：init_chat_model"></a>3.2 统一初始化模型：<code>init_chat_model</code></h3><p>1.x 把「换模型」收成一条字符串。同一套 Agent 代码可以在 OpenAI、Anthropic、Gemini、Ollama 之间切换，不必改 import。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"><span class="keyword">from</span> langchain.messages <span class="keyword">import</span> HumanMessage, SystemMessage</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按 provider:model 初始化；也可只写模型名，由环境变量推断厂商</span></span><br><span class="line">model = init_chat_model(</span><br><span class="line">    <span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">    temperature=<span class="number">0</span>,</span><br><span class="line">    timeout=<span class="number">60</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp = model.invoke(</span><br><span class="line">    [</span><br><span class="line">        SystemMessage(<span class="string">&quot;用一句话回答。&quot;</span>),</span><br><span class="line">        HumanMessage(<span class="string">&quot;LangChain 1.0 的核心入口是什么？&quot;</span>),</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(resp.content)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 丢给 create_agent 时，字符串和实例都可以</span></span><br><span class="line"><span class="comment"># create_agent(model=model, tools=[...])</span></span><br><span class="line"><span class="comment"># create_agent(model=&quot;openai:gpt-5.5&quot;, tools=[...])</span></span><br></pre></td></tr></table></figure>
+
+<p>生产里建议显式写 <code>provider:</code> 前缀，避免环境变量配错时静默绑到别的厂商。</p>
+<hr>
+<h3 id="3-3-工具：-tool、上下文注入、动态选择"><a href="#3-3-工具：-tool、上下文注入、动态选择" class="headerlink" title="3.3 工具：@tool、上下文注入、动态选择"></a>3.3 工具：<code>@tool</code>、上下文注入、动态选择</h3><p>工具是 harness 的手脚。1.x 里最常见写法是给普通 Python 函数加 <code>@tool</code>：docstring 会变成模型看到的描述，类型注解会变成 JSON Schema。</p>
+<p>进阶能力：</p>
+<ul>
+<li>从 <code>runtime.context</code> 读请求级数据（用户 ID、租户），不必塞进 prompt</li>
+<li>在 middleware 的 <code>wrap_model_call</code> 里按用户等级换工具集</li>
+<li>1.2 起用 <code>extras=</code> 传厂商专属字段（见后文）</li>
+</ul>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool, ToolRuntime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">UserContext</span>:</span><br><span class="line">    user_id: <span class="built_in">str</span></span><br><span class="line">    tenant: <span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lookup_order</span>(<span class="params">order_id: <span class="built_in">str</span>, runtime: ToolRuntime[UserContext]</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;按订单号查询当前租户下的订单。&quot;&quot;&quot;</span></span><br><span class="line">    ctx = runtime.context</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;[<span class="subst">&#123;ctx.tenant&#125;</span>] 用户 <span class="subst">&#123;ctx.user_id&#125;</span> 的订单 <span class="subst">&#123;order_id&#125;</span>：已发货。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[lookup_order],</span><br><span class="line">    context_schema=UserContext,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;查一下订单 A1001&quot;</span>&#125;]&#125;,</span><br><span class="line">    context=UserContext(user_id=<span class="string">&quot;u-42&quot;</span>, tenant=<span class="string">&quot;acme&quot;</span>),</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p><code>ToolRuntime</code> 出现在参数列表里时，不会暴露给模型，只在执行期注入。这是把「身份、权限」和「模型可见参数」拆开的正确做法。</p>
+<hr>
+<h3 id="3-4-Middleware：1-0-真正的分水岭"><a href="#3-4-Middleware：1-0-真正的分水岭" class="headerlink" title="3.4 Middleware：1.0 真正的分水岭"></a>3.4 Middleware：1.0 真正的分水岭</h3><p>多数 Agent 框架只让你改 prompt 和工具。<code>create_agent</code> 的差异化是 <strong>middleware</strong>：在循环的固定钩子上插入逻辑，而不改循环本身。</p>
+<p>两类钩子：</p>
+<table>
+<thead>
+<tr>
+<th>风格</th>
+<th>钩子</th>
+<th>时机</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Node</td>
+<td><code>before_agent</code></td>
+<td>每次 invoke 开始一次</td>
+<td>加载记忆、校验输入</td>
+</tr>
+<tr>
+<td>Node</td>
+<td><code>before_model</code></td>
+<td>每次调模型前</td>
+<td>裁历史、动态 prompt、跳到 END</td>
+</tr>
+<tr>
+<td>Node</td>
+<td><code>after_model</code></td>
+<td>模型返回后、工具执行前</td>
+<td>HITL 审批、输出护栏</td>
+</tr>
+<tr>
+<td>Node</td>
+<td><code>after_agent</code></td>
+<td>整次 invoke 结束</td>
+<td>落库、通知、清理</td>
+</tr>
+<tr>
+<td>Wrap</td>
+<td><code>wrap_model_call</code></td>
+<td>包住整次模型调用</td>
+<td>重试、缓存、换模型/换工具</td>
+</tr>
+<tr>
+<td>Wrap</td>
+<td><code>wrap_tool_call</code></td>
+<td>包住整次工具调用</td>
+<td>超时、权限门、改写结果</td>
+</tr>
+</tbody></table>
+<p>Node 钩子返回 <code>dict</code> 合并进 State；Wrap 钩子决定 <code>handler</code> 调用 0 次（短路）、1 次或多次（重试）。</p>
+<p>执行顺序可以记成：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">before_agent</span><br><span class="line">  loop:</span><br><span class="line">    before_model</span><br><span class="line">    wrap_model_call → LLM</span><br><span class="line">    after_model          ← HITL 通常在这里打断</span><br><span class="line">    wrap_tool_call → tools（若有 tool_calls）</span><br><span class="line">  after_agent</span><br></pre></td></tr></table></figure>
+
+<h4 id="内置中间件（1-0-就带的三件套）"><a href="#内置中间件（1-0-就带的三件套）" class="headerlink" title="内置中间件（1.0 就带的三件套）"></a>内置中间件（1.0 就带的三件套）</h4><table>
+<thead>
+<tr>
+<th>中间件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HumanInTheLoopMiddleware</code></td>
+<td>敏感工具执行前暂停，等人审批 / 改参 / 拒绝</td>
+</tr>
+<tr>
+<td><code>SummarizationMiddleware</code></td>
+<td>上下文接近上限时压缩旧消息</td>
+</tr>
+<tr>
+<td><code>PIIMiddleware</code></td>
+<td>进模型前打码或拦截邮箱、卡号等</td>
+</tr>
+</tbody></table>
+<p>HITL <strong>必须</strong>配 checkpointer，因为打断后状态要能恢复。</p>
+<p><strong>案例代码：把三件套叠在一个邮件 Agent 上</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> (</span><br><span class="line">    HumanInTheLoopMiddleware,</span><br><span class="line">    PIIMiddleware,</span><br><span class="line">    SummarizationMiddleware,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_email</span>(<span class="params">email_id: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;读取一封邮件。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;邮件 <span class="subst">&#123;email_id&#125;</span>：请把合同打到账 6222-****-8888。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_email</span>(<span class="params">to: <span class="built_in">str</span>, subject: <span class="built_in">str</span>, body: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;发送邮件。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;已发送给 <span class="subst">&#123;to&#125;</span>，主题：<span class="subst">&#123;subject&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">    tools=[read_email, send_email],</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">    middleware=[</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;email&quot;</span>, strategy=<span class="string">&quot;redact&quot;</span>, apply_to_input=<span class="literal">True</span>),</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;credit_card&quot;</span>, strategy=<span class="string">&quot;mask&quot;</span>, apply_to_input=<span class="literal">True</span>),</span><br><span class="line">        SummarizationMiddleware(</span><br><span class="line">            model=<span class="string">&quot;openai:gpt-5.4-mini&quot;</span>,</span><br><span class="line">            trigger=(<span class="string">&quot;tokens&quot;</span>, <span class="number">4000</span>),</span><br><span class="line">            keep=(<span class="string">&quot;messages&quot;</span>, <span class="number">20</span>),</span><br><span class="line">        ),</span><br><span class="line">        HumanInTheLoopMiddleware(</span><br><span class="line">            interrupt_on=&#123;</span><br><span class="line">                <span class="string">&quot;send_email&quot;</span>: &#123;<span class="string">&quot;allowed_decisions&quot;</span>: [<span class="string">&quot;approve&quot;</span>, <span class="string">&quot;edit&quot;</span>, <span class="string">&quot;reject&quot;</span>]&#125;,</span><br><span class="line">                <span class="string">&quot;read_email&quot;</span>: <span class="literal">False</span>,  <span class="comment"># 只读，不审批</span></span><br><span class="line">            &#125;</span><br><span class="line">        ),</span><br><span class="line">    ],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="string">&quot;mail-1&quot;</span>&#125;&#125;</span><br><span class="line">paused = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;给 legal@acme.com 发一封合同确认邮件&quot;</span>&#125;]&#125;,</span><br><span class="line">    config=config,</span><br><span class="line">    version=<span class="string">&quot;v2&quot;</span>,</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(paused.interrupts)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 人审通过后，用同一个 thread_id resume</span></span><br><span class="line">done = agent.invoke(</span><br><span class="line">    Command(resume=&#123;<span class="string">&quot;decisions&quot;</span>: [&#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;approve&quot;</span>&#125;]&#125;),</span><br><span class="line">    config=config,</span><br><span class="line">    version=<span class="string">&quot;v2&quot;</span>,</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(done.value[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p>四种人审决定：</p>
+<table>
+<thead>
+<tr>
+<th>决定</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>approve</code></td>
+<td>按模型原参数执行</td>
+</tr>
+<tr>
+<td><code>edit</code></td>
+<td>改工具名 / 参数后再执行</td>
+</tr>
+<tr>
+<td><code>reject</code></td>
+<td>不执行，把拒绝原因当反馈还给模型</td>
+</tr>
+<tr>
+<td><code>respond</code></td>
+<td>人直接充当工具结果（适合 <code>ask_user</code>），不要用它来「否决」有副作用的工具</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-5-自定义中间件"><a href="#3-5-自定义中间件" class="headerlink" title="3.5 自定义中间件"></a>3.5 自定义中间件</h3><p>内置不够时，装饰器适合单钩子；类适合多钩子 + 配置。<code>wrap_model_call</code> 里可以 <code>request.override(model=..., tools=...)</code>，按运行时上下文换模型和工具，而不重建 Agent。</p>
+<p><strong>案例代码：按用户等级换模型，并限制对话轮次</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass</span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Any</span>, <span class="type">Callable</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> (</span><br><span class="line">    AgentMiddleware,</span><br><span class="line">    AgentState,</span><br><span class="line">    ModelRequest,</span><br><span class="line">    ModelResponse,</span><br><span class="line">    before_model,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"><span class="keyword">from</span> langchain.messages <span class="keyword">import</span> AIMessage</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langgraph.runtime <span class="keyword">import</span> Runtime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AppContext</span>:</span><br><span class="line">    expertise: <span class="built_in">str</span> = <span class="string">&quot;beginner&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">simple_search</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;基础检索。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;基础命中：<span class="subst">&#123;query&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">advanced_search</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;带过滤和聚合的高级检索。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;高级命中：<span class="subst">&#123;query&#125;</span>（已按相关度重排）&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@before_model(<span class="params">can_jump_to=[<span class="string">&quot;end&quot;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">limit_turns</span>(<span class="params">state: AgentState, runtime: Runtime</span>) -&gt; <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>] | <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(state[<span class="string">&quot;messages&quot;</span>]) &gt;= <span class="number">40</span>:</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;messages&quot;</span>: [AIMessage(<span class="string">&quot;对话轮次已达上限，请新开一个会话。&quot;</span>)],</span><br><span class="line">            <span class="string">&quot;jump_to&quot;</span>: <span class="string">&quot;end&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ExpertiseRouter</span>(<span class="title class_ inherited__">AgentMiddleware</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrap_model_call</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        request: ModelRequest,</span></span><br><span class="line"><span class="params">        handler: <span class="type">Callable</span>[[ModelRequest], ModelResponse],</span></span><br><span class="line"><span class="params">    </span>) -&gt; ModelResponse:</span><br><span class="line">        level = request.runtime.context.expertise</span><br><span class="line">        <span class="keyword">if</span> level == <span class="string">&quot;expert&quot;</span>:</span><br><span class="line">            model = init_chat_model(<span class="string">&quot;openai:gpt-5.5&quot;</span>)</span><br><span class="line">            tools = [advanced_search]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            model = init_chat_model(<span class="string">&quot;openai:gpt-5-nano&quot;</span>)</span><br><span class="line">            tools = [simple_search]</span><br><span class="line">        <span class="keyword">return</span> handler(request.override(model=model, tools=tools))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[simple_search, advanced_search],</span><br><span class="line">    middleware=[limit_turns, ExpertiseRouter()],</span><br><span class="line">    context_schema=AppContext,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;检索最近的 RAG 论文&quot;</span>&#125;]&#125;,</span><br><span class="line">    context=AppContext(expertise=<span class="string">&quot;expert&quot;</span>),</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p>这就是 1.0 想推的模式：<strong>循环稳定，策略可插拔</strong>。团队可以各自维护 HITL、PII、路由中间件，再组合成不同 Agent。</p>
+<hr>
+<h3 id="3-6-结构化输出：进主循环，少打一次模型"><a href="#3-6-结构化输出：进主循环，少打一次模型" class="headerlink" title="3.6 结构化输出：进主循环，少打一次模型"></a>3.6 结构化输出：进主循环，少打一次模型</h3><p>0.x 常见做法是 Agent 跑完再 <code>with_structured_output</code> 补一枪。1.0 把 schema 放进 <code>response_format</code>，在主循环里生成，省延迟和费用。</p>
+<p>两种策略：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>机制</th>
+<th>适用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ProviderStrategy</code></td>
+<td>厂商原生 structured output</td>
+<td>OpenAI / Anthropic / xAI 等支持时</td>
+</tr>
+<tr>
+<td><code>ToolStrategy</code></td>
+<td>用「提交结果」工具逼模型填 schema</td>
+<td>所有支持 tool calling 的模型</td>
+</tr>
+</tbody></table>
+<p>直接传 Pydantic / dataclass / TypedDict 时，框架会按模型能力自动选策略（1.1 起读 model profile）。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field</span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.structured_output <span class="keyword">import</span> ToolStrategy</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">WeatherReport</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    city: <span class="built_in">str</span></span><br><span class="line">    temperature_c: <span class="built_in">float</span></span><br><span class="line">    condition: <span class="built_in">str</span> = Field(description=<span class="string">&quot;晴 / 阴 / 雨 等&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">weather_tool</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询城市天气原文。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;city&#125;</span> 晴，25 度&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[weather_tool],</span><br><span class="line">    response_format=ToolStrategy(WeatherReport),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;旧金山天气如何？&quot;</span>&#125;]&#125;</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;structured_response&quot;</span>])</span><br><span class="line"><span class="comment"># WeatherReport(city=&#x27;旧金山&#x27;, temperature_c=25.0, condition=&#x27;晴&#x27;)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>ToolStrategy(handle_errors=True)</code> 是默认值：schema 对不上或一次交了多个 structured tool 时，错误会回灌给模型让它改，而不是直接炸。要快速失败就设 <code>handle_errors=False</code>。</p>
+<hr>
+<h3 id="3-7-标准内容块：跨厂商读推理、引用、工具调用"><a href="#3-7-标准内容块：跨厂商读推理、引用、工具调用" class="headerlink" title="3.7 标准内容块：跨厂商读推理、引用、工具调用"></a>3.7 标准内容块：跨厂商读推理、引用、工具调用</h3><p>不同厂商的「思考过程 / 引用 / 服务端工具」字段完全不一样。1.0 在消息上加了 <code>content_blocks</code>：同一套 <code>type</code> 去读。</p>
+<p>常见 block：</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>text</code></td>
+<td>普通文本</td>
+</tr>
+<tr>
+<td><code>reasoning</code></td>
+<td>推理 / thinking</td>
+</tr>
+<tr>
+<td><code>tool_call</code></td>
+<td>客户端工具调用</td>
+</tr>
+<tr>
+<td><code>citation</code></td>
+<td>引用</td>
+</tr>
+<tr>
+<td><code>image</code> / <code>file</code></td>
+<td>多模态</td>
+</tr>
+</tbody></table>
+<p>目前在 <code>langchain-anthropic</code>、<code>langchain-openai</code>、<code>langchain-google-genai</code>、<code>langchain-aws</code>、<code>langchain-ollama</code> 上可用。旧的 <code>.content</code> 仍在，属于向后兼容。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain_anthropic <span class="keyword">import</span> ChatAnthropic</span><br><span class="line"></span><br><span class="line">model = ChatAnthropic(model=<span class="string">&quot;claude-sonnet-4-6&quot;</span>)</span><br><span class="line">response = model.invoke(<span class="string">&quot;法国的首都是哪？简要说明你怎么判断的。&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> block <span class="keyword">in</span> response.content_blocks:</span><br><span class="line">    <span class="keyword">if</span> block[<span class="string">&quot;type&quot;</span>] == <span class="string">&quot;reasoning&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[thinking]&quot;</span>, block.get(<span class="string">&quot;reasoning&quot;</span>, <span class="string">&quot;&quot;</span>)[:<span class="number">200</span>])</span><br><span class="line">    <span class="keyword">elif</span> block[<span class="string">&quot;type&quot;</span>] == <span class="string">&quot;text&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[text]&quot;</span>, block[<span class="string">&quot;text&quot;</span>])</span><br><span class="line">    <span class="keyword">elif</span> block[<span class="string">&quot;type&quot;</span>] == <span class="string">&quot;tool_call&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[tool]&quot;</span>, block[<span class="string">&quot;name&quot;</span>], block[<span class="string">&quot;args&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>前端做「思考中…」动画时，不要再解析各家私有字段，直接滤 <code>type == &quot;reasoning&quot;</code>。</p>
+<hr>
+<h3 id="3-8-短记忆：Checkpointer-thread-id"><a href="#3-8-短记忆：Checkpointer-thread-id" class="headerlink" title="3.8 短记忆：Checkpointer + thread_id"></a>3.8 短记忆：Checkpointer + <code>thread_id</code></h3><p><code>create_agent</code> 建在 LangGraph 上，所以 <strong>持久化、断点续跑、时光旅行</strong> 不用另写。加上 checkpointer，同一 <code>thread_id</code> 的多轮对话会自动带上历史。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langchain_core.utils.uuid <span class="keyword">import</span> uuid7</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_weather</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询天气。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;city&#125;</span> 一直是晴天。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[get_weather],</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="built_in">str</span>(uuid7())&#125;&#125;</span><br><span class="line"></span><br><span class="line">agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;旧金山天气怎么样？&quot;</span>&#125;]&#125;,</span><br><span class="line">    config=config,</span><br><span class="line">)</span><br><span class="line">followup = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;那明天呢？&quot;</span>&#125;]&#125;,</span><br><span class="line">    config=config,</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(followup[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p>生产把 <code>InMemorySaver</code> 换成 <code>PostgresSaver</code> / <code>SqliteSaver</code>。HITL、MCP elicitation 同样依赖这条持久化链路——没有 checkpointer，打断后无处可回。</p>
+<p>自定义字段可以扩 <code>AgentState</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> AgentState, create_agent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TicketState</span>(<span class="title class_ inherited__">AgentState</span>):</span><br><span class="line">    user_id: <span class="built_in">str</span></span><br><span class="line">    call_count: <span class="built_in">int</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[],</span><br><span class="line">    state_schema=TicketState,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-9-精简命名空间与-langchain-classic"><a href="#3-9-精简命名空间与-langchain-classic" class="headerlink" title="3.9 精简命名空间与 langchain-classic"></a>3.9 精简命名空间与 <code>langchain-classic</code></h3><p>1.0 把核心包收成造 Agent 真正用得到的模块：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>langchain.agents</code></td>
+<td><code>create_agent</code>、<code>AgentState</code></td>
+</tr>
+<tr>
+<td><code>langchain.messages</code></td>
+<td>消息类型、内容块、<code>trim_messages</code></td>
+</tr>
+<tr>
+<td><code>langchain.tools</code></td>
+<td><code>@tool</code>、<code>BaseTool</code></td>
+</tr>
+<tr>
+<td><code>langchain.chat_models</code></td>
+<td><code>init_chat_model</code></td>
+</tr>
+<tr>
+<td><code>langchain.embeddings</code></td>
+<td><code>init_embeddings</code></td>
+</tr>
+</tbody></table>
+<p>旧 Chains、Retrievers、<code>hub</code>、indexing API 搬到 **<code>langchain-classic</code>**：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 0.x</span></span><br><span class="line"><span class="keyword">from</span> langchain.chains <span class="keyword">import</span> LLMChain</span><br><span class="line"><span class="keyword">from</span> langchain <span class="keyword">import</span> hub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.x</span></span><br><span class="line"><span class="keyword">from</span> langchain_classic.chains <span class="keyword">import</span> LLMChain</span><br><span class="line"><span class="keyword">from</span> langchain_classic <span class="keyword">import</span> hub</span><br></pre></td></tr></table></figure>
+
+<p>升级 1.0 时：新 Agent 走 <code>create_agent</code>；暂时动不了的 RAG / Chain 代码装 <code>langchain-classic</code>，分批迁。</p>
+<hr>
+<h2 id="四、1-1：让框架「认识」模型能力"><a href="#四、1-1：让框架「认识」模型能力" class="headerlink" title="四、1.1：让框架「认识」模型能力"></a>四、1.1：让框架「认识」模型能力</h2><p>1.1 的主题是 <strong>model profiles</strong>：每套 Chat Model 带一份能力清单（数据主要来自 <a href="https://models.dev/">models.dev</a>），中间件和结构化输出按能力自适应，而不是写死 token 上限。</p>
+<h3 id="4-1-Model-profiles"><a href="#4-1-Model-profiles" class="headerlink" title="4.1 Model profiles"></a>4.1 Model profiles</h3><p><code>model.profile</code> 是普通 dict，常见字段包括 <code>max_input_tokens</code>、<code>tool_calling</code>、<code>image_inputs</code>、<code>reasoning_output</code>、<code>structured_output</code> 等。官方标明这是 <strong>beta</strong>，字段可能还会变。</p>
+<p>用途：</p>
+<ol>
+<li><code>SummarizationMiddleware</code> 按窗口比例触发（例如 85%）</li>
+<li><code>response_format=SomeSchema</code> 自动选 <code>ProviderStrategy</code> 还是 <code>ToolStrategy</code></li>
+<li>按是否支持多模态 / 最大输入 token 拦请求</li>
+<li>Deep Agents 的模型选择器只展示支持 tool calling 的模型</li>
+</ol>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"></span><br><span class="line">model = init_chat_model(<span class="string">&quot;openai:gpt-5.5&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(model.profile)</span><br><span class="line"><span class="comment"># &#123;&#x27;max_input_tokens&#x27;: 400000, &#x27;tool_calling&#x27;: True, &#x27;reasoning_output&#x27;: True, ...&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据缺失或错误时，启动时覆盖</span></span><br><span class="line">custom = &#123;</span><br><span class="line">    <span class="string">&quot;max_input_tokens&quot;</span>: <span class="number">100_000</span>,</span><br><span class="line">    <span class="string">&quot;tool_calling&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">    <span class="string">&quot;structured_output&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">&#125;</span><br><span class="line">model = init_chat_model(<span class="string">&quot;openai:gpt-5.5&quot;</span>, profile=custom)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不要原地改共享实例</span></span><br><span class="line">patched = model.model_copy(update=&#123;<span class="string">&quot;profile&quot;</span>: model.profile | &#123;<span class="string">&quot;image_inputs&quot;</span>: <span class="literal">False</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-2-按窗口比例做摘要"><a href="#4-2-按窗口比例做摘要" class="headerlink" title="4.2 按窗口比例做摘要"></a>4.2 按窗口比例做摘要</h3><p>1.0 的摘要多半写死 <code>trigger=&#123;&quot;tokens&quot;: 500&#125;</code>。1.1 可以写 <code>(&quot;fraction&quot;, 0.85)</code>：框架用 <code>profile[&quot;max_input_tokens&quot;]</code> 换算。换模型不用改阈值。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> SummarizationMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> init_chat_model</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">echo</span>(<span class="params">text: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;原样返回。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> text</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = init_chat_model(<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>)</span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=model,</span><br><span class="line">    tools=[echo],</span><br><span class="line">    middleware=[</span><br><span class="line">        SummarizationMiddleware(</span><br><span class="line">            model=<span class="string">&quot;openai:gpt-5.4-mini&quot;</span>,</span><br><span class="line">            trigger=(<span class="string">&quot;fraction&quot;</span>, <span class="number">0.85</span>),   <span class="comment"># 用满窗口 85% 时压缩</span></span><br><span class="line">            keep=(<span class="string">&quot;fraction&quot;</span>, <span class="number">0.2</span>),       <span class="comment"># 压缩后保留约 20% 最近上下文</span></span><br><span class="line">            summary_prompt=(</span><br><span class="line">                <span class="string">&quot;总结到目前为止的对话，保留文件路径、ID 和已做决定原文。&quot;</span></span><br><span class="line">                <span class="string">&quot;\n\n&#123;messages&#125;&quot;</span></span><br><span class="line">            ),</span><br><span class="line">        )</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>没有 profile 时不要用 <code>fraction</code>，改回 <code>(&quot;tokens&quot;, 8000)</code> 或启动时传入 <code>custom_profile</code>。</p>
+<hr>
+<h3 id="4-3-system-prompt-可传-SystemMessage"><a href="#4-3-system-prompt-可传-SystemMessage" class="headerlink" title="4.3 system_prompt 可传 SystemMessage"></a>4.3 <code>system_prompt</code> 可传 <code>SystemMessage</code></h3><p>1.1 起 <code>system_prompt</code> 除了 <code>str</code> 还可以是 <code>SystemMessage</code>，方便挂 Anthropic cache control、多段 content blocks。动态 prompt 仍然走 middleware。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.messages <span class="keyword">import</span> SystemMessage</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">ping</span>() -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;健康检查。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;pong&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">    tools=[ping],</span><br><span class="line">    system_prompt=SystemMessage(</span><br><span class="line">        content=[</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">                <span class="string">&quot;text&quot;</span>: <span class="string">&quot;你是内部 SRE 助手。回答尽量短。&quot;</span>,</span><br><span class="line">                <span class="string">&quot;cache_control&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;ephemeral&quot;</span>&#125;,</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-4-ModelRetryMiddleware：模型调用指数退避"><a href="#4-4-ModelRetryMiddleware：模型调用指数退避" class="headerlink" title="4.4 ModelRetryMiddleware：模型调用指数退避"></a>4.4 <code>ModelRetryMiddleware</code>：模型调用指数退避</h3><p>1.1 把「模型调用失败就重试」收成正式中间件，不必自己写 <code>wrap_model_call</code>。默认耗尽后 <code>on_failure=&quot;continue&quot;</code>：塞一条带错误信息的 <code>AIMessage</code>，让 Agent 有机会换策略，而不是整图崩掉。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> ModelRetryMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;检索。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;命中：<span class="subst">&#123;query&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[search],</span><br><span class="line">    middleware=[</span><br><span class="line">        ModelRetryMiddleware(</span><br><span class="line">            max_retries=<span class="number">3</span>,</span><br><span class="line">            backoff_factor=<span class="number">2.0</span>,</span><br><span class="line">            initial_delay=<span class="number">1.0</span>,</span><br><span class="line">            max_delay=<span class="number">20.0</span>,</span><br><span class="line">            jitter=<span class="literal">True</span>,</span><br><span class="line">            on_failure=<span class="string">&quot;continue&quot;</span>,  <span class="comment"># 或 &quot;error&quot; 直接抛出</span></span><br><span class="line">        )</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>只重试超时 / 限流时，传入 <code>retry_on=(TimeoutError, ConnectionError)</code>，或一个 <code>lambda exc: ...</code>。</p>
+<hr>
+<h3 id="4-5-OpenAI-内容审核中间件"><a href="#4-5-OpenAI-内容审核中间件" class="headerlink" title="4.5 OpenAI 内容审核中间件"></a>4.5 OpenAI 内容审核中间件</h3><p>1.1 增加面向 OpenAI 的 moderation middleware，可检查用户输入、模型输出、工具结果。它是 <strong>provider-specific</strong>，和 PII 打码互补：PII 管隐私泄漏，moderation 管违规内容。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> PIIMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain_openai.middleware <span class="keyword">import</span> OpenAIModerationMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">wiki</span>(<span class="params">topic: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查百科。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;topic&#125;</span>：词条摘要。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[wiki],</span><br><span class="line">    middleware=[</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;email&quot;</span>, strategy=<span class="string">&quot;redact&quot;</span>, apply_to_input=<span class="literal">True</span>),</span><br><span class="line">        OpenAIModerationMiddleware(</span><br><span class="line">            model=<span class="string">&quot;omni-moderation-latest&quot;</span>,</span><br><span class="line">            check_input=<span class="literal">True</span>,</span><br><span class="line">            check_output=<span class="literal">True</span>,</span><br><span class="line">            check_tool_results=<span class="literal">True</span>,</span><br><span class="line">            exit_behavior=<span class="string">&quot;end&quot;</span>,  <span class="comment"># end | error | replace</span></span><br><span class="line">        ),</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><code>exit_behavior</code>：<code>end</code> 立刻结束并返回违规说明；<code>error</code> 抛 <code>OpenAIModerationError</code>；<code>replace</code> 用违规文案替换原文后继续。PII 管隐私泄漏，moderation 管违规内容，两者经常一起用。</p>
+<hr>
+<h2 id="五、1-2：工具层对齐各家「高级玩法」"><a href="#五、1-2：工具层对齐各家「高级玩法」" class="headerlink" title="五、1.2：工具层对齐各家「高级玩法」"></a>五、1.2：工具层对齐各家「高级玩法」</h2><p>1.2 只有一个大头：**工具上的 <code>extras</code>**。各家开始提供「工具搜索、延迟加载、服务端 bash、细粒度流式参数」等能力，这些字段不该污染通用 <code>BaseTool</code> API，于是挂到 <code>extras</code> 再原样传给厂商。</p>
+<p>同时 <code>ProviderStrategy</code> 增加 <code>strict=True</code>（需厂商支持，如 OpenAI / xAI），强制输出严格贴合 schema。</p>
+<h3 id="5-1-extras：延迟加载与工具搜索"><a href="#5-1-extras：延迟加载与工具搜索" class="headerlink" title="5.1 extras：延迟加载与工具搜索"></a>5.1 <code>extras</code>：延迟加载与工具搜索</h3><p>工具特别多时，Anthropic 等支持 <strong>tool search</strong>：先不把全部 schema 塞进上下文，模型搜索后再加载。在工具上标 <code>defer_loading</code>，再挂 <code>ProviderToolSearchMiddleware</code>。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> ProviderToolSearchMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search_docs</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;常驻：搜索文档。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;文档命中：<span class="subst">&#123;query&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool(<span class="params">extras=&#123;<span class="string">&quot;defer_loading&quot;</span>: <span class="literal">True</span>&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_email</span>(<span class="params">to: <span class="built_in">str</span>, body: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;发送邮件。默认不出现在上下文里，模型搜到再加载。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;已发送给 <span class="subst">&#123;to&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool(<span class="params">extras=&#123;<span class="string">&quot;defer_loading&quot;</span>: <span class="literal">True</span>&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">refund_order</span>(<span class="params">order_id: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;退款。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;已退款 <span class="subst">&#123;order_id&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;anthropic:claude-opus-4-8&quot;</span>,</span><br><span class="line">    tools=[search_docs, send_email, refund_order],</span><br><span class="line">    middleware=[ProviderToolSearchMiddleware()],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>没标 <code>defer_loading</code> 的工具仍然每轮都在上下文里；标了的由厂商侧搜索按需加载，省 token。</p>
+<hr>
+<h3 id="5-2-extras：厂商内置工具定义"><a href="#5-2-extras：厂商内置工具定义" class="headerlink" title="5.2 extras：厂商内置工具定义"></a>5.2 <code>extras</code>：厂商内置工具定义</h3><p>要把 Anthropic 的官方 <code>bash</code> 等 <strong>provider-side tool</strong> 接到 LangChain 循环里，用 <code>provider_tool_definition</code> 传入厂商 SDK 的 tool spec，函数体仍在你这边执行（或转给沙箱）。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> anthropic.types.beta <span class="keyword">import</span> BetaToolBash20250124Param</span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line">tool_spec = BetaToolBash20250124Param(</span><br><span class="line">    name=<span class="string">&quot;bash&quot;</span>,</span><br><span class="line">    <span class="built_in">type</span>=<span class="string">&quot;bash_20250124&quot;</span>,</span><br><span class="line">    strict=<span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool(<span class="params">extras=&#123;<span class="string">&quot;provider_tool_definition&quot;</span>: tool_spec&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bash</span>(<span class="params">*, command: <span class="built_in">str</span>, restart: <span class="built_in">bool</span> = <span class="literal">False</span>, **kw</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;在受限环境执行 bash。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> restart:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Bash session restarted&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        r = subprocess.run(</span><br><span class="line">            command, shell=<span class="literal">True</span>, capture_output=<span class="literal">True</span>, text=<span class="literal">True</span>, timeout=<span class="number">30</span></span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> r.stdout + r.stderr</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&quot;Error: <span class="subst">&#123;e&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">    tools=[bash],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>同类 <code>extras</code> 还有：</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>eager_input_streaming</code></td>
+<td>工具参数增量流式出来</td>
+</tr>
+<tr>
+<td><code>cache_control</code></td>
+<td>工具定义参与 prompt cache</td>
+</tr>
+<tr>
+<td><code>input_examples</code></td>
+<td>给 Claude 看调用样例</td>
+</tr>
+<tr>
+<td><code>allowed_callers</code></td>
+<td>允许被服务端 code execution 以编程方式调用</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="5-3-ProviderStrategy-strict-True"><a href="#5-3-ProviderStrategy-strict-True" class="headerlink" title="5.3 ProviderStrategy(strict=True)"></a>5.3 <code>ProviderStrategy(strict=True)</code></h3><p>1.2 给原生结构化输出加上严格模式：字段不能多、类型必须对。对要入库、要对齐 OpenAPI 的接口很有用。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field</span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.structured_output <span class="keyword">import</span> ProviderStrategy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ContactInfo</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    name: <span class="built_in">str</span></span><br><span class="line">    email: <span class="built_in">str</span></span><br><span class="line">    phone: <span class="built_in">str</span> = Field(description=<span class="string">&quot;E.164 或本地号码&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[],</span><br><span class="line">    response_format=ProviderStrategy(ContactInfo, strict=<span class="literal">True</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = agent.invoke(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;张三，邮箱 zhang@acme.com，电话 +1-415-555-0100&quot;</span>&#125;]&#125;</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;structured_response&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>模型 profile 声明支持 native structured output 时，<code>response_format=ContactInfo</code> 等价于 <code>ProviderStrategy(ContactInfo)</code>。要强制严格校验，显式写 <code>ProviderStrategy(..., strict=True)</code>。</p>
+<hr>
+<h2 id="六、1-3：v3-流式，以及更细的护栏"><a href="#六、1-3：v3-流式，以及更细的护栏" class="headerlink" title="六、1.3：v3 流式，以及更细的护栏"></a>六、1.3：v3 流式，以及更细的护栏</h2><h3 id="6-1-stream-events-version-quot-v3-quot"><a href="#6-1-stream-events-version-quot-v3-quot" class="headerlink" title="6.1 stream_events(version=&quot;v3&quot;)"></a>6.1 <code>stream_events(version=&quot;v3&quot;)</code></h3><p>1.3 让 <code>create_agent</code> 支持 <strong>v3 事件流</strong>（beta）：不再手搓 <code>on_chat_model_stream</code> 字典，而是按 channel 投影。</p>
+<p>常用投影：</p>
+<table>
+<thead>
+<tr>
+<th>投影</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stream.messages</code></td>
+<td>每次 LLM 调用一条 <code>ChatModelStream</code>，可再拆 <code>text</code> / <code>reasoning</code> / 工具调用 / usage</td>
+</tr>
+<tr>
+<td><code>stream.tool_calls</code></td>
+<td>工具名、参数、输出增量</td>
+</tr>
+<tr>
+<td><code>stream.values</code></td>
+<td>状态快照</td>
+</tr>
+<tr>
+<td><code>stream.output</code></td>
+<td>最终状态</td>
+</tr>
+<tr>
+<td><code>stream.interrupted</code> / <code>stream.interrupts</code></td>
+<td>HITL 是否打断</td>
+</tr>
+</tbody></table>
+<p><code>v1</code> / <code>v2</code> 行为不变，v3 是 opt-in。</p>
+<p><strong>案例代码：边打字边显示工具调用</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langchain_core.utils.uuid <span class="keyword">import</span> uuid7</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_weather</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;查询天气。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;city&#125;</span> 一直是晴天！&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">    tools=[get_weather],</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">)</span><br><span class="line">config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="built_in">str</span>(uuid7())&#125;&#125;</span><br><span class="line"></span><br><span class="line">stream = agent.stream_events(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;旧金山天气怎么样？&quot;</span>&#125;]&#125;,</span><br><span class="line">    config=config,</span><br><span class="line">    version=<span class="string">&quot;v3&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> kind, item <span class="keyword">in</span> stream.interleave(<span class="string">&quot;messages&quot;</span>, <span class="string">&quot;tool_calls&quot;</span>):</span><br><span class="line">    <span class="keyword">if</span> kind == <span class="string">&quot;messages&quot;</span>:</span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> item.reasoning:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;[thinking] <span class="subst">&#123;token&#125;</span>&quot;</span>, end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> item.text:</span><br><span class="line">            <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">elif</span> kind == <span class="string">&quot;tool_calls&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\n→ <span class="subst">&#123;item.tool_name&#125;</span>(<span class="subst">&#123;item.<span class="built_in">input</span>&#125;</span>)&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;← <span class="subst">&#123;item.output&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n\n最终：&quot;</span>, stream.output[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p>HITL 也可以边流边停：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line">stream = agent.stream_events(payload, config=config, version=<span class="string">&quot;v3&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> message <span class="keyword">in</span> stream.messages:</span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> message.text:</span><br><span class="line">        <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> stream.interrupted:</span><br><span class="line">    stream = agent.stream_events(</span><br><span class="line">        Command(resume=&#123;<span class="string">&quot;decisions&quot;</span>: [&#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;approve&quot;</span>&#125;]&#125;),</span><br><span class="line">        config=config,</span><br><span class="line">        version=<span class="string">&quot;v3&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">for</span> message <span class="keyword">in</span> stream.messages:</span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> message.text:</span><br><span class="line">            <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-2-PII-同步打码流式输出（1-3-2）"><a href="#6-2-PII-同步打码流式输出（1-3-2）" class="headerlink" title="6.2 PII 同步打码流式输出（1.3.2）"></a>6.2 PII 同步打码流式输出（1.3.2）</h3><p>1.0 的 <code>PIIMiddleware</code> 主要打进模型前的输入。1.3.2 起 <code>apply_to_output=True</code> 会注册 stream transformer，把 <strong>正在往外推的</strong> text delta、工具参数、工具输出、状态快照一并打码。做面向用户的 SSE 时很关键：不能等整段生成完再脱敏。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> PIIMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">crm_lookup</span>(<span class="params">email: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;按邮箱查客户。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;email&#125;</span> 的客户经理是李四，电话 +1-202-555-0147&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[crm_lookup],</span><br><span class="line">    middleware=[</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;email&quot;</span>, strategy=<span class="string">&quot;redact&quot;</span>, apply_to_input=<span class="literal">True</span>, apply_to_output=<span class="literal">True</span>),</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;credit_card&quot;</span>, strategy=<span class="string">&quot;mask&quot;</span>, apply_to_output=<span class="literal">True</span>),</span><br><span class="line">    ],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">stream = agent.stream_events(</span><br><span class="line">    &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;查 alice@acme.com&quot;</span>&#125;]&#125;,</span><br><span class="line">    version=<span class="string">&quot;v3&quot;</span>,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">for</span> message <span class="keyword">in</span> stream.messages:</span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> message.text:</span><br><span class="line">        <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)  <span class="comment"># 邮箱在流里已被 [REDACTED_EMAIL]</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-3-HITL-按参数条件打断（1-3-3）"><a href="#6-3-HITL-按参数条件打断（1-3-3）" class="headerlink" title="6.3 HITL 按参数条件打断（1.3.3）"></a>6.3 HITL 按参数条件打断（1.3.3）</h3><p>以前 <code>interrupt_on=&#123;&quot;execute_sql&quot;: True&#125;</code> 会拦住每一次调用。1.3.3 增加 <code>when</code> 谓词：只读 SELECT 放行，写操作才审批。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> HumanInTheLoopMiddleware, ToolCallRequest</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">write_file</span>(<span class="params">path: <span class="built_in">str</span>, content: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;写文件。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;wrote <span class="subst">&#123;path&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">execute_sql</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;执行 SQL。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;ok: <span class="subst">&#123;query[:<span class="number">40</span>]&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">writes_outside_workspace</span>(<span class="params">request: ToolCallRequest</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    path = request.tool_call[<span class="string">&quot;args&quot;</span>].get(<span class="string">&quot;path&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">not</span> path.startswith(<span class="string">&quot;/workspace/&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_write_query</span>(<span class="params">request: ToolCallRequest</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    query = request.tool_call[<span class="string">&quot;args&quot;</span>].get(<span class="string">&quot;query&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">not</span> query.lstrip().upper().startswith(<span class="string">&quot;SELECT&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[write_file, execute_sql],</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">    middleware=[</span><br><span class="line">        HumanInTheLoopMiddleware(</span><br><span class="line">            interrupt_on=&#123;</span><br><span class="line">                <span class="string">&quot;write_file&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;allowed_decisions&quot;</span>: [<span class="string">&quot;approve&quot;</span>, <span class="string">&quot;edit&quot;</span>, <span class="string">&quot;reject&quot;</span>],</span><br><span class="line">                    <span class="string">&quot;when&quot;</span>: writes_outside_workspace,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;execute_sql&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;allowed_decisions&quot;</span>: [<span class="string">&quot;approve&quot;</span>, <span class="string">&quot;reject&quot;</span>],</span><br><span class="line">                    <span class="string">&quot;when&quot;</span>: is_write_query,</span><br><span class="line">                &#125;,</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line">    ],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><code>when</code> 返回 <code>False</code> 的调用不会进入审批批次，审核员只看到真正危险的那几下。</p>
+<hr>
+<h2 id="七、1-4：MCP-收进核心包"><a href="#七、1-4：MCP-收进核心包" class="headerlink" title="七、1.4：MCP 收进核心包"></a>七、1.4：MCP 收进核心包</h2><p>1.4.0 是 2026 年 9 月 3 日刚发的版本。MCP 不再走独立包 <code>langchain-mcp-adapters</code>，而是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip install <span class="string">&quot;langchain[mcp]&quot;</span>   <span class="comment"># 带上 FastMCP</span></span><br></pre></td></tr></table></figure>
+
+<p><code>langchain.mcp</code> <strong>仍是 beta</strong>：导入会打一次 <code>LangChainBetaWarning</code>，API 可能变。生产请 pin <code>langchain==1.4.0</code>。</p>
+<p>旧代码里的 <code>MultiServerMCPClient</code> 换成 <code>MCPAdapter</code>，迁移细节看官方 migration guide。</p>
+<h3 id="7-1-MCPAdapter：一种适配器，多种传输"><a href="#7-1-MCPAdapter：一种适配器，多种传输" class="headerlink" title="7.1 MCPAdapter：一种适配器，多种传输"></a>7.1 <code>MCPAdapter</code>：一种适配器，多种传输</h3><p><code>MCPAdapter</code> 根据 target 推断传输，把 MCP 工具变成普通 LangChain tools，再交给 <code>create_agent</code>。</p>
+<table>
+<thead>
+<tr>
+<th>target</th>
+<th>传输</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>https://...</code> 字符串</td>
+<td>Streamable HTTP</td>
+</tr>
+<tr>
+<td><code>Path(&quot;server.py&quot;)</code></td>
+<td>stdio 子进程</td>
+</tr>
+<tr>
+<td>进程内 <code>FastMCP</code> 实例</td>
+<td>内存，适合测试</td>
+</tr>
+<tr>
+<td><code>&#123;&quot;mcpServers&quot;: &#123;...&#125;&#125;</code></td>
+<td>多 server</td>
+</tr>
+<tr>
+<td>现成 <code>fastmcp.Client</code></td>
+<td>自己管认证 / 协议</td>
+</tr>
+</tbody></table>
+<p>字符串必须是 <code>http(s)</code> URL。FastMCP 会先当文件路径解析，所以 <code>MCPAdapter</code> 拒绝「看起来像脚本路径」的字符串，避免配置里的一段路径被拉起来当子进程。</p>
+<p><strong>案例代码：连官方文档 MCP，让 Agent 自己查文档</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.mcp <span class="keyword">import</span> MCPAdapter</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> MCPAdapter(<span class="string">&quot;https://docs.langchain.com/mcp&quot;</span>) <span class="keyword">as</span> adapter:</span><br><span class="line">        tools = <span class="keyword">await</span> adapter.list_tools()</span><br><span class="line">        agent = create_agent(<span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>, tools)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> agent.ainvoke(</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">&quot;messages&quot;</span>: [</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;content&quot;</span>: <span class="string">&quot;LangChain agent 怎么加短记忆？&quot;</span>,</span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    result = asyncio.run(main())</span><br><span class="line">    <span class="built_in">print</span>(result[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br></pre></td></tr></table></figure>
+
+<p>工具对象持有 client，<strong>context 退出后 Agent 仍可用</strong>（连接生命周期按 FastMCP 的约定）。文档 MCP 是公开端点，不用 API key。</p>
+<p><strong>案例代码：本地 stdio / 多 server</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">from</span> langchain.mcp <span class="keyword">import</span> MCPAdapter</span><br><span class="line"></span><br><span class="line">stdio = MCPAdapter(Path(<span class="string">&quot;weather_server.py&quot;</span>))</span><br><span class="line">http = MCPAdapter(<span class="string">&quot;https://example.com/mcp&quot;</span>)</span><br><span class="line"></span><br><span class="line">multi = MCPAdapter(</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;mcpServers&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;docs&quot;</span>: &#123;<span class="string">&quot;url&quot;</span>: <span class="string">&quot;https://docs.langchain.com/mcp&quot;</span>&#125;,</span><br><span class="line">            <span class="string">&quot;weather&quot;</span>: &#123;<span class="string">&quot;command&quot;</span>: <span class="string">&quot;python&quot;</span>, <span class="string">&quot;args&quot;</span>: [<span class="string">&quot;weather_server.py&quot;</span>]&#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="7-2-工具-metadata-与破坏性工具审批"><a href="#7-2-工具-metadata-与破坏性工具审批" class="headerlink" title="7.2 工具 metadata 与破坏性工具审批"></a>7.2 工具 metadata 与破坏性工具审批</h3><p>适配后的工具在 <code>metadata[&quot;mcp&quot;]</code> 下带 provenance，包括 <code>destructive_hint</code>、<code>read_only_hint</code>、server 名。不必写死工具名，就能给「服务器声明危险」的工具统一上 HITL。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> HumanInTheLoopMiddleware</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware.human_in_the_loop <span class="keyword">import</span> InterruptOnConfig</span><br><span class="line"><span class="keyword">from</span> langchain.mcp <span class="keyword">import</span> MCPAdapter</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> BaseTool</span><br><span class="line"><span class="keyword">from</span> langchain.tools.tool_node <span class="keyword">import</span> ToolCallRequest</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_destructive</span>(<span class="params">tool: BaseTool</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    annotations = (</span><br><span class="line">        (tool.metadata <span class="keyword">or</span> &#123;&#125;).get(<span class="string">&quot;mcp&quot;</span>, &#123;&#125;).get(<span class="string">&quot;tool&quot;</span>, &#123;&#125;).get(<span class="string">&quot;annotations&quot;</span>, &#123;&#125;)</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bool</span>(annotations.get(<span class="string">&quot;destructive_hint&quot;</span>, <span class="literal">False</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">build_gated_agent</span>(<span class="params">server_url: <span class="built_in">str</span></span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> MCPAdapter(server_url) <span class="keyword">as</span> adapter:</span><br><span class="line">        tools = <span class="keyword">await</span> adapter.list_tools()</span><br><span class="line">        destructive = &#123;t.name <span class="keyword">for</span> t <span class="keyword">in</span> tools <span class="keyword">if</span> is_destructive(t)&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">needs_approval</span>(<span class="params">request: ToolCallRequest</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">            <span class="keyword">return</span> request.tool_call[<span class="string">&quot;name&quot;</span>] <span class="keyword">in</span> destructive</span><br><span class="line"></span><br><span class="line">        gate = InterruptOnConfig(</span><br><span class="line">            allowed_decisions=[<span class="string">&quot;approve&quot;</span>, <span class="string">&quot;reject&quot;</span>],</span><br><span class="line">            when=needs_approval,</span><br><span class="line">        )</span><br><span class="line">        agent = create_agent(</span><br><span class="line">            <span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">            tools,</span><br><span class="line">            middleware=[</span><br><span class="line">                HumanInTheLoopMiddleware(</span><br><span class="line">                    interrupt_on=&#123;t.name: gate <span class="keyword">for</span> t <span class="keyword">in</span> tools&#125;</span><br><span class="line">                )</span><br><span class="line">            ],</span><br><span class="line">            checkpointer=InMemorySaver(),</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> agent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 审批通过</span></span><br><span class="line"><span class="comment"># await agent.ainvoke(Command(resume=&#123;&quot;decisions&quot;: [&#123;&quot;type&quot;: &quot;approve&quot;&#125;]&#125;), config)</span></span><br></pre></td></tr></table></figure>
+
+<p>MCP 的图 / 文件结果会转成标准 <code>image</code> / <code>file</code> content blocks；结构化结果放在 <code>ToolMessage.artifact[&quot;structured_content&quot;]</code>。服务端 <code>isError=True</code> 变成 <code>status=&quot;error&quot;</code> 的 ToolMessage，模型能自己改；传输层失败仍然抛异常。</p>
+<hr>
+<h3 id="7-3-Elicitation：工具跑到一半向人要参数"><a href="#7-3-Elicitation：工具跑到一半向人要参数" class="headerlink" title="7.3 Elicitation：工具跑到一半向人要参数"></a>7.3 Elicitation：工具跑到一半向人要参数</h3><p>MCP 允许 server 在一次 tool call <strong>中途</strong>要输入（订桌要日期、支付要确认码）。1.4 的适配器默认把它变成 LangGraph <code>interrupt()</code>，和 HITL 走同一套暂停 / resume。</p>
+<p>答案按 server 的 request key 回传：<code>accept</code> + schema 内容、<code>decline</code>（拒绝但调用继续）、<code>cancel</code>（整次调用作废）。需要 checkpointer。</p>
+<p><strong>案例代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Any</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.mcp <span class="keyword">import</span> MCPAdapter</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">book_with_elicitation</span>(<span class="params">server</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> MCPAdapter(server) <span class="keyword">as</span> adapter:</span><br><span class="line">        tools = <span class="keyword">await</span> adapter.list_tools()</span><br><span class="line">        agent = create_agent(</span><br><span class="line">            <span class="string">&quot;anthropic:claude-sonnet-4-6&quot;</span>,</span><br><span class="line">            tools,</span><br><span class="line">            checkpointer=InMemorySaver(),</span><br><span class="line">        )</span><br><span class="line">        config: <span class="type">Any</span> = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="string">&quot;booking-1&quot;</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line">        paused = <span class="keyword">await</span> agent.ainvoke(</span><br><span class="line">            &#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;订今晚 4 人桌。&quot;</span>&#125;]&#125;,</span><br><span class="line">            config,</span><br><span class="line">        )</span><br><span class="line">        interrupt = paused[<span class="string">&quot;__interrupt__&quot;</span>][<span class="number">0</span>]</span><br><span class="line">        question = interrupt.value[<span class="string">&quot;requests&quot;</span>][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        answer = &#123;<span class="string">&quot;action&quot;</span>: <span class="string">&quot;accept&quot;</span>, <span class="string">&quot;content&quot;</span>: &#123;<span class="string">&quot;date&quot;</span>: <span class="string">&quot;2026-09-14&quot;</span>&#125;&#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> agent.ainvoke(</span><br><span class="line">            Command(resume=&#123;<span class="string">&quot;responses&quot;</span>: &#123;question[<span class="string">&quot;key&quot;</span>]: answer&#125;&#125;),</span><br><span class="line">            config,</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+<p>注意：1.4 用 interrupt 自动回答的只有 <strong>elicitation</strong>。server 若要 sampling（让客户端跑一次 LLM）或 roots（本地路径），会 <code>NotImplementedError</code>——现代无会话协议没有这条回通道。</p>
+<p>认证走 FastMCP：bearer、OAuth 2.1 动态注册、任意 <code>httpx.Auth</code>，部署里可以做到按用户鉴权。细节见官方 Authentication 文档。</p>
+<hr>
+<h3 id="7-4-1-4-里其余小改动"><a href="#7-4-1-4-里其余小改动" class="headerlink" title="7.4 1.4 里其余小改动"></a>7.4 1.4 里其余小改动</h3><p>相对 1.3.18：</p>
+<ul>
+<li>可运行的 <code>langchain.mcp</code> 文档示例</li>
+<li>Anthropic / LangChain 中间件 tracing 不再附带大段 input（长历史时 trace 延迟明显下降）</li>
+<li>Agent 工具路由带上 model destination</li>
+</ul>
+<p>不接 MCP 的项目升 1.4 风险不大；接 MCP 的项目这就是该用的版本。</p>
+<hr>
+<h2 id="八、把特性串成一个可运行的-Agent"><a href="#八、把特性串成一个可运行的-Agent" class="headerlink" title="八、把特性串成一个可运行的 Agent"></a>八、把特性串成一个可运行的 Agent</h2><p>下面这个例子把 1.x 里最常用的几块叠在一起：profile 感知的摘要、PII、模型重试、条件 HITL、结构化最终答案、v3 流式。MCP 按需再挂。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel</span><br><span class="line"><span class="keyword">from</span> langchain.agents <span class="keyword">import</span> create_agent</span><br><span class="line"><span class="keyword">from</span> langchain.agents.middleware <span class="keyword">import</span> (</span><br><span class="line">    HumanInTheLoopMiddleware,</span><br><span class="line">    ModelRetryMiddleware,</span><br><span class="line">    PIIMiddleware,</span><br><span class="line">    SummarizationMiddleware,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> langchain.agents.structured_output <span class="keyword">import</span> ProviderStrategy</span><br><span class="line"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool</span><br><span class="line"><span class="keyword">from</span> langchain.tools.tool_node <span class="keyword">import</span> ToolCallRequest</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SupportTicket</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    summary: <span class="built_in">str</span></span><br><span class="line">    severity: <span class="built_in">str</span></span><br><span class="line">    next_action: <span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search_kb</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;检索内部知识库。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;KB：<span class="subst">&#123;query&#125;</span> → 重启连接池通常可恢复。&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@tool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">execute_sql</span>(<span class="params">query: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;在只读副本或主库执行 SQL。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;SQL 完成：<span class="subst">&#123;query[:<span class="number">60</span>]&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_write_query</span>(<span class="params">request: ToolCallRequest</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">    q = request.tool_call[<span class="string">&quot;args&quot;</span>].get(<span class="string">&quot;query&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">not</span> q.lstrip().upper().startswith(<span class="string">&quot;SELECT&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">agent = create_agent(</span><br><span class="line">    model=<span class="string">&quot;openai:gpt-5.5&quot;</span>,</span><br><span class="line">    tools=[search_kb, execute_sql],</span><br><span class="line">    system_prompt=<span class="string">&quot;你是值班 SRE。先查 KB，写库操作必须等人口头确认。&quot;</span>,</span><br><span class="line">    response_format=ProviderStrategy(SupportTicket, strict=<span class="literal">True</span>),</span><br><span class="line">    checkpointer=InMemorySaver(),</span><br><span class="line">    middleware=[</span><br><span class="line">        PIIMiddleware(<span class="string">&quot;email&quot;</span>, strategy=<span class="string">&quot;redact&quot;</span>, apply_to_input=<span class="literal">True</span>, apply_to_output=<span class="literal">True</span>),</span><br><span class="line">        SummarizationMiddleware(</span><br><span class="line">            model=<span class="string">&quot;openai:gpt-5.4-mini&quot;</span>,</span><br><span class="line">            trigger=(<span class="string">&quot;fraction&quot;</span>, <span class="number">0.85</span>),</span><br><span class="line">            keep=(<span class="string">&quot;messages&quot;</span>, <span class="number">16</span>),</span><br><span class="line">        ),</span><br><span class="line">        ModelRetryMiddleware(max_retries=<span class="number">3</span>, backoff_factor=<span class="number">2.0</span>),</span><br><span class="line">        HumanInTheLoopMiddleware(</span><br><span class="line">            interrupt_on=&#123;</span><br><span class="line">                <span class="string">&quot;execute_sql&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;allowed_decisions&quot;</span>: [<span class="string">&quot;approve&quot;</span>, <span class="string">&quot;reject&quot;</span>],</span><br><span class="line">                    <span class="string">&quot;when&quot;</span>: is_write_query,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;search_kb&quot;</span>: <span class="literal">False</span>,</span><br><span class="line">            &#125;</span><br><span class="line">        ),</span><br><span class="line">    ],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: <span class="string">&quot;inc-8848&quot;</span>&#125;&#125;</span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: <span class="string">&quot;alice@acme.com 说支付库连接耗尽，先查再修。&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">stream = agent.stream_events(payload, config=config, version=<span class="string">&quot;v3&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> message <span class="keyword">in</span> stream.messages:</span><br><span class="line">    <span class="keyword">for</span> token <span class="keyword">in</span> message.text:</span><br><span class="line">        <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> stream.interrupted:</span><br><span class="line">    stream = agent.stream_events(</span><br><span class="line">        Command(resume=&#123;<span class="string">&quot;decisions&quot;</span>: [&#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;approve&quot;</span>&#125;]&#125;),</span><br><span class="line">        config=config,</span><br><span class="line">        version=<span class="string">&quot;v3&quot;</span>,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">for</span> message <span class="keyword">in</span> stream.messages:</span><br><span class="line">        <span class="keyword">for</span> token <span class="keyword">in</span> message.text:</span><br><span class="line">            <span class="built_in">print</span>(token, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">final = stream.output</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n工单：&quot;</span>, final.get(<span class="string">&quot;structured_response&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p>这就是 1.x 推荐的组装方式：<strong>一个循环 + 一叠中间件 + 可选 MCP 工具</strong>，而不是再造一套 Agent 框架。</p>
+<hr>
+<h2 id="九、怎么升级"><a href="#九、怎么升级" class="headerlink" title="九、怎么升级"></a>九、怎么升级</h2><table>
+<thead>
+<tr>
+<th>你现在的位置</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.x <code>AgentExecutor</code> / <code>LLMChain</code></td>
+<td>新代码用 <code>create_agent</code>；旧 Chain/Retriever 改 import 到 <code>langchain-classic</code>，分批迁</td>
+</tr>
+<tr>
+<td>1.0 / 1.1</td>
+<td>升到 1.4 成本低；用到摘要阈值的，改成 <code>fraction</code> + profile</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>补 v3 流式和 HITL <code>when</code>；前端若自己拼 SSE，值得迁 <code>stream_events(version=&quot;v3&quot;)</code></td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>接 MCP 就升 1.4，并删掉 <code>langchain-mcp-adapters</code></td>
+</tr>
+<tr>
+<td>已用 Deep Agents 0.6</td>
+<td>LangChain 升 1.4 的同时看 Deep Agents 0.7：todos 默认关闭、backend API 有 breaking change</td>
+</tr>
+</tbody></table>
+<p>依赖对齐（1.4.0 时）：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">langchain==1.4.0</span><br><span class="line">langchain-core&gt;=1.6.0,&lt;2.0.0</span><br><span class="line">langgraph&gt;=1.2.11,&lt;1.3.0</span><br><span class="line">Python &gt;= 3.10</span><br></pre></td></tr></table></figure>
+
+<p>仍是 beta、需要 pin 再测的：</p>
+<ul>
+<li><code>langchain.mcp</code>（1.4）</li>
+<li>model profiles（1.1）</li>
+<li><code>stream_events(version=&quot;v3&quot;)</code>（1.3）</li>
+<li>LangGraph <code>DeltaChannel</code>（和 LangChain 无关，但长线程 Agent 常用）</li>
+</ul>
+<hr>
+<h2 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h2><p>LangChain 1.x 可以看成四次加厚：</p>
+<ol>
+<li><strong>1.0</strong> 把产品收成 <code>create_agent + middleware</code>，结构化输出进主循环，内容块跨厂商，旧 API 进 <code>langchain-classic</code>。</li>
+<li><strong>1.1</strong> 用 model profiles 让摘要、策略选择跟着模型走，并补上重试和审核。</li>
+<li><strong>1.2</strong> 用 <code>extras</code> 对准各家高级工具协议，结构化输出可 <code>strict</code>。</li>
+<li><strong>1.3–1.4</strong> 把流式做成 typed projection，把 MCP 收进核心包，HITL 可以按参数、按 MCP annotation 开门。</li>
+</ol>
+<p>如果只记三句话：</p>
+<ul>
+<li>Agent 循环不要自己写，用 <code>create_agent</code>。</li>
+<li>业务差异不要叉循环，写成 middleware。</li>
+<li>外部工具优先 MCP（1.4）或 <code>@tool</code>；需要厂商黑科技时走 <code>extras</code>。</li>
+</ul>
+<p>官方入口：<a href="https://docs.langchain.com/oss/python/releases/langchain-v1">What’s new in v1</a>、<a href="https://docs.langchain.com/oss/python/releases/changelog">Changelog</a>、<a href="https://docs.langchain.com/oss/python/langchain/mcp">MCPAdapter</a>。</p>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>mcp</tag>
+        <tag>ai</tag>
+        <tag>agent</tag>
+        <tag>langgraph</tag>
+        <tag>langchain</tag>
+        <tag>middleware</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LangChain Data Agent 入门：数据分析智能体与核心组件详解</title>
     <url>/2026/06/23/LangChain-Data-Agent%E5%85%A5%E9%97%A8%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%99%BA%E8%83%BD%E4%BD%93%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h1 id="LangChain-Data-Agent-入门：数据分析智能体与核心组件详解"><a href="#LangChain-Data-Agent-入门：数据分析智能体与核心组件详解" class="headerlink" title="LangChain Data Agent 入门：数据分析智能体与核心组件详解"></a>LangChain Data Agent 入门：数据分析智能体与核心组件详解</h1><p>在数据工程和分析场景中，一个高频需求是：<strong>用自然语言提问，让 AI 自动查库、跑分析、出图表</strong>。</p>
@@ -2456,9 +3052,9 @@
       <tags>
         <tag>ai</tag>
         <tag>langchain</tag>
+        <tag>python</tag>
         <tag>data-agent</tag>
         <tag>sql</tag>
-        <tag>python</tag>
       </tags>
   </entry>
   <entry>
