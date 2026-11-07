@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Oh My Pi (omp) 全量快捷键指南 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="基于 omp 官方文档整理的 Oh My Pi 全量快捷键指南：模型切换、思考块、工具输出、编辑器、剪贴板、语音、Agent Hub、Tree 选择器、进程控制，以及 keybindings.yml 自定义方法。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Oh My Pi (omp) 全量快捷键指南 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="基于 omp 17.2.15 的键位注册表与内置文档整理的 Oh My Pi 全量快捷键指南：模型与计划模式、编辑器、剪贴板、语音、Agent Hub 子代理名册、Tree 会话树（打开方式、筛选、搜索、标签）、会话切换器与仪表板、keybindings.yml 自定义，并列出默认未绑定的动作 ID。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Oh My Pi (omp) 全量快捷键指南">
 <meta property="og:url" content="https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/index.html">
 <meta property="og:site_name" content="个人博客">
-<meta property="og:description" content="基于 omp 官方文档整理的 Oh My Pi 全量快捷键指南：模型切换、思考块、工具输出、编辑器、剪贴板、语音、Agent Hub、Tree 选择器、进程控制，以及 keybindings.yml 自定义方法。">
+<meta property="og:description" content="基于 omp 17.2.15 的键位注册表与内置文档整理的 Oh My Pi 全量快捷键指南：模型与计划模式、编辑器、剪贴板、语音、Agent Hub 子代理名册、Tree 会话树（打开方式、筛选、搜索、标签）、会话切换器与仪表板、keybindings.yml 自定义，并列出默认未绑定的动作 ID。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
 <meta property="article:published_time" content="2026-08-13T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-13T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-07T02:00:00.000Z">
 <meta property="article:author" content="菜鸟程序员">
 <meta property="article:tag" content="ai">
 <meta property="article:tag" content="agent">
@@ -24,7 +24,7 @@
   "url": "https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/",
   "image": "https://qngolg.github.io/img/butterfly-icon.png",
   "datePublished": "2026-08-13T02:00:00.000Z",
-  "dateModified": "2026-08-13T02:00:00.000Z",
+  "dateModified": "2026-11-07T02:00:00.000Z",
   "author": [
     {
       "@type": "Person",
@@ -230,22 +230,25 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">58</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Oh My Pi (omp) 全量快捷键指南</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Oh My Pi (omp) 全量快捷键指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-13T02:00:00.000Z" title="发表于 2026-08-13 10:00:00">2026-08-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-13T02:00:00.000Z" title="更新于 2026-08-13 10:00:00">2026-08-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Oh-My-Pi-omp-全量快捷键指南"><a href="#Oh-My-Pi-omp-全量快捷键指南" class="headerlink" title="Oh My Pi (omp) 全量快捷键指南"></a>Oh My Pi (omp) 全量快捷键指南</h1><blockquote>
-<p>本文基于 omp 内置文档（<code>keybindings.md</code>、<code>agent-hub.md</code>、<code>tree.md</code>、TUI 运行时文档）归纳整理。快捷键可能随版本调整，<strong>在任意 omp 会话内运行 <code>/hotkeys</code> 即可查看当前构建实际生效的全部按键</strong>（包含磁盘上的重映射与扩展注册的绑定）。</p>
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Oh My Pi (omp) 全量快捷键指南</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Oh My Pi (omp) 全量快捷键指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-13T02:00:00.000Z" title="发表于 2026-08-13 10:00:00">2026-08-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-07T02:00:00.000Z" title="更新于 2026-11-07 10:00:00">2026-11-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Oh-My-Pi-omp-全量快捷键指南"><a href="#Oh-My-Pi-omp-全量快捷键指南" class="headerlink" title="Oh My Pi (omp) 全量快捷键指南"></a>Oh My Pi (omp) 全量快捷键指南</h1><blockquote>
+<p>本文对齐 <strong>omp 17.2.15</strong>：键位取自构建内的 action 注册表（<code>app.*</code> / <code>tui.*</code>），界面行为取自 <code>keybindings.md</code>、<code>agent-hub.md</code>、<code>tree.md</code>、<code>session-switching-and-recent-listing.md</code> 与选择器/名册组件实现。</p>
+<p>快捷键会随版本调整，<strong>在任意 omp 会话内运行 <code>/hotkeys</code> 可列出当前构建实际生效的全部组合</strong>（含磁盘重映射与扩展注册的绑定）。若与本文有出入，以 <code>/hotkeys</code> 为准。</p>
 </blockquote>
 <h2 id="目录导航"><a href="#目录导航" class="headerlink" title="目录导航"></a>目录导航</h2><ul>
-<li><a href="#%E4%B8%80%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">一、快速上手</a></li>
-<li><a href="#%E4%BA%8C%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AE%A1%E5%88%92%E6%A8%A1%E5%BC%8F">二、模型与计划模式</a></li>
-<li><a href="#%E4%B8%89%E6%80%9D%E8%80%83%E5%9D%97%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%98%BE%E7%A4%BA">三、思考块与工具显示</a></li>
-<li><a href="#%E5%9B%9B%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8E%E6%B6%88%E6%81%AF">四、编辑器与消息</a></li>
-<li><a href="#%E4%BA%94%E5%89%AA%E8%B4%B4%E6%9D%BF%E4%B8%8E%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA">五、剪贴板与终端显示</a></li>
-<li><a href="#%E5%85%AD%E8%AF%AD%E9%9F%B3">六、语音</a></li>
-<li><a href="#%E4%B8%83agent-hub">七、Agent Hub</a></li>
-<li><a href="#%E5%85%AB%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E4%B8%AD%E6%96%AD%E9%80%80%E5%87%BA%E4%B8%8E%E6%8C%82%E8%B5%B7">八、进程控制：中断、退出与挂起</a></li>
-<li><a href="#%E4%B9%9Dtree-%E4%BC%9A%E8%AF%9D%E6%A0%91%E9%80%89%E6%8B%A9%E5%99%A8">九、Tree 会话树选择器</a></li>
-<li><a href="#%E5%8D%81%E4%BC%9A%E8%AF%9D%E5%88%87%E6%8D%A2%E5%99%A8">十、会话切换器</a></li>
-<li><a href="#%E5%8D%81%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E6%8D%B7%E9%94%AE">十一、自定义快捷键</a></li>
-<li><a href="#%E5%8D%81%E4%BA%8C%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84%E4%BF%9D%E7%95%99%E5%BF%AB%E6%8D%B7%E9%94%AE">十二、扩展开发者的保留快捷键</a></li>
+<li><a href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">一、快速上手</a></li>
+<li><a href="#%E4%BA%8C%E3%80%81%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AE%A1%E5%88%92%E6%A8%A1%E5%BC%8F">二、模型与计划模式</a></li>
+<li><a href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83%E5%9D%97%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%98%BE%E7%A4%BA">三、思考块与工具显示</a></li>
+<li><a href="#%E5%9B%9B%E3%80%81%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8E%E6%B6%88%E6%81%AF">四、编辑器与消息</a></li>
+<li><a href="#%E4%BA%94%E3%80%81%E5%89%AA%E8%B4%B4%E6%9D%BF%E4%B8%8E%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA">五、剪贴板与终端显示</a></li>
+<li><a href="#%E5%85%AD%E3%80%81%E8%AF%AD%E9%9F%B3">六、语音</a></li>
+<li><a href="#%E4%B8%83%E3%80%81Agent-Hub%EF%BC%9A%E5%AD%90%E4%BB%A3%E7%90%86%E5%90%8D%E5%86%8C%E4%B8%8E%E6%8E%A7%E5%88%B6%E5%8F%B0">七、Agent Hub：子代理名册与控制台</a></li>
+<li><a href="#%E5%85%AB%E3%80%81%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%EF%BC%9A%E4%B8%AD%E6%96%AD%E3%80%81%E9%80%80%E5%87%BA%E4%B8%8E%E6%8C%82%E8%B5%B7">八、进程控制：中断、退出与挂起</a></li>
+<li><a href="#%E4%B9%9D%E3%80%81Tree-%E4%BC%9A%E8%AF%9D%E6%A0%91%E9%80%89%E6%8B%A9%E5%99%A8">九、Tree 会话树选择器</a></li>
+<li><a href="#%E5%8D%81%E3%80%81%E4%BC%9A%E8%AF%9D%E5%88%87%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BB%AA%E8%A1%A8%E6%9D%BF">十、会话切换器与仪表板</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E6%8D%B7%E9%94%AE">十一、自定义快捷键</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84%E4%BF%9D%E7%95%99%E5%BF%AB%E6%8D%B7%E9%94%AE">十二、扩展开发者的保留快捷键</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89%E3%80%81%E9%BB%98%E8%AE%A4%E6%9C%AA%E7%BB%91%E5%AE%9A%E7%9A%84%E5%8A%A8%E4%BD%9C-ID">十三、默认未绑定的动作 ID</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
 </ul>
 <hr>
 <h2 id="一、快速上手"><a href="#一、快速上手" class="headerlink" title="一、快速上手"></a>一、快速上手</h2><ul>
@@ -254,7 +257,30 @@
 <li>扩展注册的额外绑定。</li>
 </ul>
 </li>
+<li>**<code>/settings</code>**：交互式设置面板，支持输入文字模糊过滤（例如输入 <code>double escape</code> 定位到双击 Esc 行为）。</li>
+<li>**<code>omp config list</code>**：从 shell 打印全部设置项与当前生效值，适合脚本化核对。</li>
 </ul>
+<p>三个高频「不知道按什么」的答案先给出：</p>
+<table>
+<thead>
+<tr>
+<th>想做的事</th>
+<th>按键 / 命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>看子代理在干什么、直接指挥它</td>
+<td><code>Alt+A</code> 打开 Agent Hub</td>
+</tr>
+<tr>
+<td>回到某个历史分支继续 / 重跑某条 prompt</td>
+<td>空编辑器**双击 <code>Esc</code>**，或 <code>/tree</code></td>
+</tr>
+<tr>
+<td>换模型 / 给角色重新分配模型</td>
+<td><code>Ctrl+P</code> 循环；<code>Alt+M</code> 打开角色选择器</td>
+</tr>
+</tbody></table>
 <h2 id="二、模型与计划模式"><a href="#二、模型与计划模式" class="headerlink" title="二、模型与计划模式"></a>二、模型与计划模式</h2><table>
 <thead>
 <tr>
@@ -266,22 +292,22 @@
 <tbody><tr>
 <td><code>Ctrl+P</code></td>
 <td><code>app.model.cycleForward</code></td>
-<td>向前循环切换角色模型</td>
+<td>按 <code>cycleOrder</code> 向前循环角色模型（默认 <code>smol → default → slow</code>）</td>
 </tr>
 <tr>
 <td><code>Shift+Ctrl+P</code></td>
 <td><code>app.model.cycleBackward</code></td>
-<td>向后循环切换角色模型</td>
+<td>向后循环角色模型</td>
 </tr>
 <tr>
 <td><code>Alt+P</code></td>
 <td><code>app.model.selectTemporary</code></td>
-<td>为本次会话临时选择一个模型</td>
+<td>为本次会话临时选择一个模型（等价 <code>/switch</code>，不写回角色配置）</td>
 </tr>
 <tr>
 <td><code>Alt+M</code></td>
 <td><code>app.model.select</code></td>
-<td>打开模型选择器并设置各角色模型</td>
+<td>打开模型选择器并设置角色（等价 <code>/model</code>）</td>
 </tr>
 <tr>
 <td><code>Alt+Shift+P</code></td>
@@ -289,6 +315,12 @@
 <td>切换 Plan 计划模式</td>
 </tr>
 </tbody></table>
+<p>补充：</p>
+<ul>
+<li><code>Alt+P</code> 的临时选择<strong>不修改</strong> <code>modelRoles</code>；状态栏会提示「Session-only model」，并提示用 <code>Alt+M</code> 或 <code>/model</code> 改角色。</li>
+<li>临时选择器里输入以 <code>@</code> 开头的查询，会切到「快速角色」列表：<code>↑/↓</code> 选角色，<code>Enter</code> 应用该角色的模型与思考级别（仅本次会话）。</li>
+<li>循环顺序可在 <code>/model</code> → <code>Roles</code> 列表里用 <code>[</code> / <code>]</code> 调整，或用 <code>c</code> 增删某个角色是否参与循环（写入 <code>cycleOrder</code>）。</li>
+</ul>
 <h2 id="三、思考块与工具显示"><a href="#三、思考块与工具显示" class="headerlink" title="三、思考块与工具显示"></a>三、思考块与工具显示</h2><table>
 <thead>
 <tr>
@@ -324,7 +356,7 @@
 </tr>
 </tbody></table>
 <blockquote>
-<p><code>Ctrl+O</code> 在多个场景通用：展开工具输出、展开压缩（compaction）摘要、以及 Tree 选择器内切换筛选。它是 omp 里最常用的「查看细节」键。</p>
+<p><code>Ctrl+O</code> 在多个场景通用：展开工具输出、展开压缩（compaction）摘要、Tree 选择器内<strong>向前</strong>循环筛选、Agent Hub 的子代理转录里展开细节。它是 omp 里最常用的「查看细节」键。</p>
 </blockquote>
 <h2 id="四、编辑器与消息"><a href="#四、编辑器与消息" class="headerlink" title="四、编辑器与消息"></a>四、编辑器与消息</h2><table>
 <thead>
@@ -358,7 +390,7 @@
 <p>补充说明：</p>
 <ul>
 <li>流式输出时，**<code>Enter</code>** 把输入投递到 steer 队列（与空闲时普通提交一致），**<code>Ctrl+Enter</code>**（<code>app.message.followUp</code>）则投递到跟进队列——技能（Skill）的调用方式同样遵循这个「提交键位即投递方式」的规则。</li>
-<li>Windows Terminal 会吞掉 <code>Ctrl+Enter</code>，所以 <code>app.message.followUp</code> 额外绑定了 <code>Ctrl+Q</code>（与 GitHub Copilot CLI 相同，该组合也用于 Agent Dashboard 新建 agent 描述与 hook 编辑器的提交）。</li>
+<li>Windows Terminal 会吞掉 <code>Ctrl+Enter</code>，所以 <code>app.message.followUp</code> 额外绑定了 <code>Ctrl+Q</code>（与 GitHub Copilot CLI 相同，该组合也用于 Agent 仪表板的新建 agent 描述与 hook 编辑器的提交）。</li>
 </ul>
 <h2 id="五、剪贴板与终端显示"><a href="#五、剪贴板与终端显示" class="headerlink" title="五、剪贴板与终端显示"></a>五、剪贴板与终端显示</h2><table>
 <thead>
@@ -397,7 +429,8 @@
 <p>平台注意事项：</p>
 <ul>
 <li>Windows Terminal 可能先于 omp 处理 <code>Ctrl+V</code>（终端粘贴命令），此时图片粘贴请用 <code>Alt+V</code> 兜底；</li>
-<li>支持 OSC 5522 增强粘贴的终端可以直接把剪贴板 MIME 数据发给 omp，图片会以 <code>[Image #N]</code> 附件形式粘贴。</li>
+<li>支持 OSC 5522 增强粘贴的终端可以直接把剪贴板 MIME 数据发给 omp，图片会以 <code>[Image #N]</code> 附件形式粘贴；</li>
+<li>剪贴板里没有图片时，<code>app.clipboard.pasteImage</code> 会粘贴其中的文本——所以只转发这一个组合的宿主（VS Code 集成终端、Windows 剪贴板历史 <code>Win+V</code>）两种 payload 都能用。</li>
 </ul>
 <h2 id="六、语音"><a href="#六、语音" class="headerlink" title="六、语音"></a>六、语音</h2><table>
 <thead>
@@ -419,36 +452,130 @@
 </tr>
 </tbody></table>
 <blockquote>
-<p>STT 默认<strong>没有</strong>键位绑定——默认行为是按住空格录音。如果你希望「按一下切换开关」，可以在 <code>keybindings.yml</code> 里给 <code>app.stt.toggle</code> 绑一个组合键。</p>
+<p><code>app.stt.toggle</code> 在 17.2.15 的注册表里 <code>defaultKeys: []</code>——默认行为就是按住空格录音。想改成「按一下切换开关」，在 <code>keybindings.yml</code> 里给它绑一个组合键即可。</p>
+<p>旧版文档表格里写的 <code>Alt+H</code> 已不是当前默认值；以 <code>/hotkeys</code> 输出为准。</p>
 </blockquote>
-<h2 id="七、Agent-Hub"><a href="#七、Agent-Hub" class="headerlink" title="七、Agent Hub"></a>七、Agent Hub</h2><p>Agent Hub 是子 agent 的实时名册与控制面板（查看状态、读取转录、直接指挥、复活 parked 的 agent）。</p>
-<table>
+<h2 id="七、Agent-Hub：子代理名册与控制台"><a href="#七、Agent-Hub：子代理名册与控制台" class="headerlink" title="七、Agent Hub：子代理名册与控制台"></a>七、Agent Hub：子代理名册与控制台</h2><p>Agent Hub 是<strong>子 agent</strong> 的实时名册与控制面板：看状态、读转录、直接发消息指挥、复活 parked 的 agent、杀掉跑偏的 agent。主 agent 不在列表里（它的对话就是当前会话视图）。</p>
+<p>恢复一个历史会话时，Hub 还会扫描该会话的产物树，把历史子 agent 的 JSONL 转成 <strong>parked</strong> 行；Advisor 转录（<code>__advisor*.jsonl</code>）以只读的 <code>advisor</code> 行出现。</p>
+<h3 id="打开方式"><a href="#打开方式" class="headerlink" title="打开方式"></a>打开方式</h3><table>
 <thead>
 <tr>
-<th>快捷键</th>
-<th>动作 ID</th>
-<th>含义</th>
+<th>输入</th>
+<th>行为</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><code>Alt+A</code></td>
-<td><code>app.agents.hub</code></td>
-<td>打开 / 关闭 Agent Hub</td>
+<td>经 <code>app.agents.hub</code> 打开 / 关闭 Agent Hub（名册为空也会打开）</td>
 </tr>
 <tr>
 <td><code>Ctrl+S</code></td>
-<td><code>app.session.observe</code></td>
-<td>打开 / 关闭 Agent Hub（旧版动作）</td>
+<td>经旧动作 <code>app.session.observe</code> 打开 / 关闭同一个 Hub</td>
 </tr>
 <tr>
 <td>双击 <code>←</code></td>
-<td>—（非按键动作）</td>
-<td>主会话编辑器为空且当前会话有 agent 时，从编辑器打开 Hub</td>
+<td>主会话<strong>编辑器为空</strong>且当前会话有 agent 时，从编辑器打开 Hub</td>
 </tr>
 </tbody></table>
 <blockquote>
-<p>双击 <code>←</code> 不是可重映射的按键动作。焦点在子 agent 上时，双击 <code>←</code> 返回主会话，而不是打开 Hub。</p>
+<p>双击 <code>←</code> 不是可重映射的按键动作。焦点在子 agent 上时，双击 <code>←</code> 是<strong>返回主会话</strong>，而不是打开 Hub。</p>
 </blockquote>
+<h3 id="名册（roster）键位"><a href="#名册（roster）键位" class="headerlink" title="名册（roster）键位"></a>名册（roster）键位</h3><table>
+<thead>
+<tr>
+<th>按键</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>j</code> / <code>k</code>、<code>↑</code> / <code>↓</code>、滚轮</td>
+<td>选择 agent</td>
+</tr>
+<tr>
+<td><code>Enter</code> 或鼠标点击</td>
+<td>打开选中的 agent</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>在「稳定扁平名册」与「父子树」之间切换</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>窄终端下，用 inspector（详情栏）替换名册</td>
+</tr>
+<tr>
+<td><code>PageUp</code> / <code>PageDown</code></td>
+<td>滚动已打开的 inspector</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>复活选中的 <strong>parked</strong> agent</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>必要时先 abort 正在跑的轮次，然后 kill 并释放该 agent</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>窄终端下先关 inspector，再关 Hub</td>
+</tr>
+<tr>
+<td>双击 <code>←</code></td>
+<td>关闭 Hub</td>
+</tr>
+</tbody></table>
+<p>每行显示什么：状态（<code>running</code> / <code>idle</code> / <code>parked</code> / <code>aborted</code>）、agent id、父 agent、未读 IRC 数、模型角色与解析后的模型、距上次活动的时长、当前任务、花费、活跃时长、请求数、工具调用数、token。头部会聚合所有被测 agent 的状态与用量；缺失数据渲染成 <code>usage —</code> 而不是估算。</p>
+<p>宽终端里 inspector 直接显示在名册右侧，额外给出：当前工具与参数、最后的意图、重试状态、上下文占用、父子谱系、输出与补丁路径，以及隔离 worktree 的分支信息。</p>
+<h3 id="读与指挥一个子代理"><a href="#读与指挥一个子代理" class="headerlink" title="读与指挥一个子代理"></a>读与指挥一个子代理</h3><ol>
+<li><code>Enter</code> 或点击聚焦到该 agent 的会话，Hub 自动关闭。</li>
+<li>转录、状态栏、编辑器都变成该子代理的：读转录、看工具活动。</li>
+<li>输入消息按 <code>Enter</code>：运行中即 <strong>steer</strong>（插话），空闲即提示它继续。</li>
+<li>空编辑器按 <code>Esc</code>，或双击 <code>←</code>，返回主会话。</li>
+</ol>
+<p>要点：</p>
+<ul>
+<li>steer 走的是普通 prompt 路径，消息与回复都会写进该子代理持久化的会话历史。</li>
+<li><strong>子代理获得焦点时，<code>Esc</code> 只是返回主会话，不会中断它</strong>；要中断得回到它所在的会话里操作。</li>
+<li>聚焦一个 parked agent 等价于先复活它。</li>
+<li>没有本地可聚焦会话的场景（协作模式的 guest、advisor 行）改用 Hub 的全屏转录视图：转录增量 tail 文件，只有该 agent 可被发消息时才给输入行。</li>
+</ul>
+<h3 id="边界"><a href="#边界" class="headerlink" title="边界"></a>边界</h3><ul>
+<li><code>r</code> 只对 <code>parked</code> 生效；对 <code>running</code> / <code>idle</code> 会提示只有 parked 能复活。</li>
+<li><code>x</code> 是立即生效的破坏操作，会先 abort 再释放，只在你确实想丢弃该 agent 实例时用。</li>
+<li><code>advisor</code> 行是观测记录不是同级 peer：能读转录，<strong>不能发消息、不能复活、不能 kill</strong>。协作 guest 控制宿主 Hub 时同样受限。</li>
+</ul>
+<h3 id="相邻表面（别混淆）"><a href="#相邻表面（别混淆）" class="headerlink" title="相邻表面（别混淆）"></a>相邻表面（别混淆）</h3><table>
+<thead>
+<tr>
+<th>表面</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Alt+A</code> / <code>Ctrl+S</code></td>
+<td>人的实时视图：名册 + 控制</td>
+</tr>
+<tr>
+<td><code>/agents</code></td>
+<td>Agent 仪表板（启停、覆盖模型、新建 agent），全屏 overlay，键位与 Hub 完全不同</td>
+</tr>
+<tr>
+<td><code>/jobs</code></td>
+<td>打印运行中与刚结束的异步工具任务快照，不代替逐 agent 转录</td>
+</tr>
+<tr>
+<td><code>history://&lt;id&gt;</code></td>
+<td>给模型读的实时/停放子代理精简转录</td>
+</tr>
+<tr>
+<td><code>agent://&lt;id&gt;</code></td>
+<td>子代理保存下来的<strong>最终产物</strong>，不是实时转录</td>
+</tr>
+<tr>
+<td><code>hub</code> 工具（list / send）</td>
+<td>让 agent 之间程序化对等通信；给 parked 发消息会复活它</td>
+</tr>
+</tbody></table>
 <h2 id="八、进程控制：中断、退出与挂起"><a href="#八、进程控制：中断、退出与挂起" class="headerlink" title="八、进程控制：中断、退出与挂起"></a>八、进程控制：中断、退出与挂起</h2><p>这些是 TUI 运行时层的全局行为：</p>
 <table>
 <thead>
@@ -462,8 +589,12 @@
 <td>取消 / 退出当前模式（压缩中、handoff 生成中、自动重试中按 Esc 会中断对应流程）</td>
 </tr>
 <tr>
+<td>空编辑器双击 <code>Esc</code></td>
+<td>触发 <code>doubleEscapeAction</code>：默认 <code>tree</code> 打开会话树，设为 <code>branch</code> 则打开用户消息选择器，设为 <code>none</code> 则无动作</td>
+</tr>
+<tr>
 <td><code>Ctrl+C</code>（单击）</td>
-<td>清空编辑器内容</td>
+<td>清空编辑器内容（<code>app.clear</code>）</td>
 </tr>
 <tr>
 <td><code>Ctrl+C</code>（500ms 内双击）</td>
@@ -471,7 +602,7 @@
 </tr>
 <tr>
 <td><code>Ctrl+D</code>（空编辑器时）</td>
-<td>退出 omp</td>
+<td>退出 omp（<code>app.exit</code>）</td>
 </tr>
 <tr>
 <td><code>Ctrl+Z</code></td>
@@ -482,8 +613,24 @@
 <td>全局调试快捷键（TUI 在组件分发前优先处理）</td>
 </tr>
 </tbody></table>
-<h2 id="九、Tree-会话树选择器"><a href="#九、Tree-会话树选择器" class="headerlink" title="九、Tree 会话树选择器"></a>九、Tree 会话树选择器</h2><p>Tree（<code>/tree</code>，或在空编辑器<strong>双击 <code>Esc</code></strong> 默认触发 <code>doubleEscapeAction = &quot;tree&quot;</code>）用于在会话分支之间浏览、搜索与切换：</p>
-<table>
+<h2 id="九、Tree-会话树选择器"><a href="#九、Tree-会话树选择器" class="headerlink" title="九、Tree 会话树选择器"></a>九、Tree 会话树选择器</h2><p>Tree 是<strong>同一个会话文件内的原位导航器</strong>：把 leaf 指针移到任意历史条目，从那里继续。它不新建文件、不 fork。</p>
+<h3 id="怎么打开"><a href="#怎么打开" class="headerlink" title="怎么打开"></a>怎么打开</h3><p>以下任一方式打开同一个选择器：</p>
+<ol>
+<li><code>/tree</code>；</li>
+<li>空编辑器**双击 <code>Esc</code>**（<code>doubleEscapeAction = &quot;tree&quot;</code> 是默认值）；</li>
+<li>给 <code>app.session.tree</code> 绑一个组合键——<strong>该动作默认未绑定</strong>，需要自己在 <code>keybindings.yml</code> 里加，例如：</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">app.session.tree:</span> <span class="string">Ctrl+Y</span></span><br></pre></td></tr></table></figure>
+
+<p>额外规则：当 <code>doubleEscapeAction = &quot;tree&quot;</code> 时，<code>/branch</code> 打开的是<strong>同一个 tree 选择器</strong>，因此选中项执行的是同文件内的 <code>navigateTree()</code>，而不是「新建分支文件」。想要经典行为，把 <code>doubleEscapeAction</code> 设为 <code>branch</code>。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">omp config <span class="built_in">set</span> doubleEscapeAction tree     <span class="comment"># 默认值；也可 branch / none</span></span><br><span class="line">omp config <span class="built_in">set</span> treeFilterMode default      <span class="comment"># 打开时的初始筛选</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="布局与渲染"><a href="#布局与渲染" class="headerlink" title="布局与渲染"></a>布局与渲染</h3><ul>
+<li>活动分支（root → leaf 路径）用 <code>•</code> 标记，标签渲染为节点文本前的 <code>[label]</code>。</li>
+<li>子节点按时间升序；含活动 leaf 的分支排在最前，其余历史仍可达。</li>
+<li>视口围绕当前选中项居中，最多显示 <code>max(5, 终端行数 / 2)</code> 行。</li>
+</ul>
+<h3 id="键位"><a href="#键位" class="headerlink" title="键位"></a>键位</h3><table>
 <thead>
 <tr>
 <th>按键</th>
@@ -496,7 +643,7 @@
 </tr>
 <tr>
 <td><code>Alt+Up</code> / <code>Alt+Down</code></td>
-<td>跳到上 / 下一条用户或助手回合</td>
+<td>跳到上 / 下一条<strong>用户或助手</strong>回合（跳过工具结果等噪声）</td>
 </tr>
 <tr>
 <td><code>PageUp</code> / <code>PageDown</code>，或 <code>Left</code> / <code>Right</code></td>
@@ -512,7 +659,7 @@
 </tr>
 <tr>
 <td><code>Shift+Enter</code></td>
-<td>直接总结并切换（跳过总结选择提示）</td>
+<td>选择并<strong>直接总结后切换</strong>（跳过总结选择提示）</td>
 </tr>
 <tr>
 <td><code>Esc</code></td>
@@ -536,27 +683,281 @@
 </tr>
 <tr>
 <td><code>Ctrl+O</code></td>
-<td>向前循环筛选条件</td>
+<td>筛选条件<strong>向前</strong>循环</td>
 </tr>
 <tr>
 <td><code>Shift+Ctrl+O</code></td>
-<td>向后循环筛选条件</td>
+<td>筛选条件<strong>向后</strong>循环</td>
 </tr>
 <tr>
 <td><code>Alt+D</code> / <code>Alt+T</code> / <code>Alt+U</code> / <code>Alt+L</code> / <code>Alt+A</code></td>
-<td>直接跳到对应筛选（如 labeled-only 只看带标签分支）</td>
+<td>直接跳到对应筛选：default / no-tools / user-only / labeled-only / all</td>
 </tr>
 </tbody></table>
-<h2 id="十、会话切换器"><a href="#十、会话切换器" class="headerlink" title="十、会话切换器"></a>十、会话切换器</h2><p>会话选择 / 最近会话列表（全屏选择器）中的操作：</p>
-<ul>
-<li><code>Tab</code> — 切换「当前文件夹 / 全部项目」范围；</li>
-<li><code>Esc</code> — 取消；<code>Ctrl+C</code> — 退出；</li>
-<li><code>Delete</code>，或搜索为空时的 <code>Backspace</code> — 删除会话（需确认）；</li>
-<li>鼠标滚轮 / 左键点击 — 在全屏选择器中移动 / 选中；</li>
-<li>搜索支持跨 id / title / cwd / 首条消息 / 前缀文本 / 路径的多 token 匹配。</li>
+<h3 id="筛选模式"><a href="#筛选模式" class="headerlink" title="筛选模式"></a>筛选模式</h3><p>循环顺序：<code>default → no-tools → user-only → labeled-only → all</code>。</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>显示内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>default</code></td>
+<td>会话节点，隐藏记账类条目：<code>label</code>、<code>custom</code>、<code>model_change</code>、<code>thinking_level_change</code>（以及 service tier、title、credential pin、reset、mode 等无专用渲染的类型可能显示为空行）</td>
+</tr>
+<tr>
+<td><code>no-tools</code></td>
+<td>同 <code>default</code>，再加隐藏 <code>toolResult</code> 消息</td>
+</tr>
+<tr>
+<td><code>user-only</code></td>
+<td>只显示 role 为 <code>user</code> 的 message 条目</td>
+</tr>
+<tr>
+<td><code>labeled-only</code></td>
+<td>只显示当前解析出标签的条目</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td>全部条目，含记账 / custom 条目</td>
+</tr>
+</tbody></table>
+<p>注意：<strong>只含工具调用、没有正文的助手消息在所有筛选（含 <code>all</code>）下都被隐藏</strong>，除非它是错误/中止的轮次（<code>stopReason</code> 既不是 <code>stop</code> 也不是 <code>toolUse</code>），或者它就是当前 leaf。</p>
+<h3 id="搜索语义"><a href="#搜索语义" class="headerlink" title="搜索语义"></a>搜索语义</h3><ul>
+<li>查询按空格分词，<strong>所有词都必须命中</strong>（AND）；</li>
+<li>匹配是大小写不敏感的<strong>模糊子序列</strong>匹配；</li>
+<li>可搜索文本包括标签、role、以及按类型取的正文：消息文本、分支摘要、custom 类型、工具命令片段等。</li>
 </ul>
+<h3 id="选中之后会发生什么"><a href="#选中之后会发生什么" class="headerlink" title="选中之后会发生什么"></a>选中之后会发生什么</h3><table>
+<thead>
+<tr>
+<th>选中条目</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>user</code> 消息</td>
+<td>leaf 移到它的 <strong>parent</strong>，文本与图片附件重建为可编辑草稿；<strong>仅当编辑器为空时才回填</strong></td>
+</tr>
+<tr>
+<td>普通 <code>custom_message</code></td>
+<td>同上（只回填文本）；<code>skill-prompt</code> 类型的 custom 消息不进入编辑器，按普通节点处理</td>
+</tr>
+<tr>
+<td>历史 <code>ask</code> 工具结果</td>
+<td>重新打开原始提问 UI（不复用旧答案）；取消则树不动；新答案作为<strong>兄弟 toolResult</strong> 追加，旧答案分支保留</td>
+</tr>
+<tr>
+<td>其他节点</td>
+<td>leaf 移到该节点 id，不回填编辑器</td>
+</tr>
+<tr>
+<td>当前 leaf</td>
+<td>提示 <code>Already at this point</code> 并关闭（<code>ask</code> 结果例外，仍可重答）</td>
+</tr>
+</tbody></table>
+<h3 id="切换时总结"><a href="#切换时总结" class="headerlink" title="切换时总结"></a>切换时总结</h3><p>由 <code>branchSummary.enabled</code> 控制（<strong>默认 false</strong>）。<code>Shift+Enter</code> 无论如何都会请求总结（需要可用模型与凭据）。开启提示后，普通 <code>Enter</code> 会给出三个选项：</p>
+<ul>
+<li><code>No summary</code></li>
+<li><code>Summarize</code></li>
+<li><code>Summarize with custom prompt</code></li>
+</ul>
+<p>细节：总结提示里按 <code>Esc</code> 回到树选择器；自定义提示取消则退回选择项；总结进行中 UI 显示 loader，<code>Esc</code> 绑定到 <code>abortBranchSummary()</code>，中断后树选择器重新打开且不移动。被放弃分支的摘要以 <code>branch_summary</code> 条目写在<strong>新的导航位置</strong>，不是旧分支尾部。</p>
+<h3 id="与相邻操作的区别"><a href="#与相邻操作的区别" class="headerlink" title="与相邻操作的区别"></a>与相邻操作的区别</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>作用域</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/tree</code></td>
+<td>当前会话文件</td>
+<td>移动 leaf（同一个文件）</td>
+</tr>
+<tr>
+<td><code>/branch</code></td>
+<td>通常当前文件 → 新文件</td>
+<td>默认从选中的 <strong>user 消息</strong> 分出新会话文件；<code>doubleEscapeAction=tree</code> 时改为打开 tree 选择器</td>
+</tr>
+<tr>
+<td><code>/fork</code></td>
+<td>整个当前会话</td>
+<td>克隆成新的持久化会话文件</td>
+</tr>
+<tr>
+<td><code>/resume</code></td>
+<td>会话列表</td>
+<td>切到另一个会话文件</td>
+</tr>
+</tbody></table>
+<h3 id="三个常用操作序列"><a href="#三个常用操作序列" class="headerlink" title="三个常用操作序列"></a>三个常用操作序列</h3><p><strong>回到更早的 prompt 重跑，不丢当前分支</strong></p>
+<ol>
+<li><code>/tree</code>（或双击 <code>Esc</code>）</li>
+<li>搜索 / 选中更早的 user 消息</li>
+<li>选 <code>No summary</code>（或按需总结）</li>
+<li>在编辑器里改回填的文本</li>
+<li>提交</li>
+</ol>
+<p><strong>给关键点打书签，之后秒跳</strong></p>
+<ol>
+<li><code>/tree</code> 移动到目标条目</li>
+<li><code>Shift+L</code> 设标签（如 <code>pre-refactor</code>）</li>
+<li>之后 <code>/tree</code> 后 <code>Alt+L</code> 只看带标签的分支</li>
+</ol>
+<p><strong>翻出被隐藏的记账条目</strong></p>
+<ol>
+<li><code>/tree</code></li>
+<li><code>Alt+A</code> 切到 all</li>
+<li>搜 <code>model</code>、<code>thinking</code>、<code>custom</code> 或标签名</li>
+</ol>
+<h2 id="十、会话切换器与仪表板"><a href="#十、会话切换器与仪表板" class="headerlink" title="十、会话切换器与仪表板"></a>十、会话切换器与仪表板</h2><h3 id="会话选择-最近会话（-resume、omp-r）"><a href="#会话选择-最近会话（-resume、omp-r）" class="headerlink" title="会话选择 / 最近会话（/resume、omp -r）"></a>会话选择 / 最近会话（<code>/resume</code>、<code>omp -r</code>）</h3><ul>
+<li><code>Tab</code> — 切换「当前文件夹 / 全部项目」范围；</li>
+<li><code>Up</code> / <code>Down</code>、<code>PageUp</code> / <code>PageDown</code> — 移动（到边界即停，不循环）；</li>
+<li><code>Enter</code> — 选中；</li>
+<li><code>Esc</code> — 取消；<code>Ctrl+C</code> — 退出；</li>
+<li><code>Delete</code>，或搜索为空时的 <code>Backspace</code> — 删除会话（需确认，会删 JSONL 与其产物）；</li>
+<li>鼠标滚轮 / 左键点击 — 在全屏选择器中移动 / 选中；</li>
+<li>搜索支持跨 id / title / cwd / 首条消息 / 前缀文本 / 路径的多 token 匹配，暂停输入后还会并入 <code>history.db</code> 的提示历史匹配。</li>
+</ul>
+<p>这个界面上<strong>没有</strong>「重命名 / 排序 / 只看命名会话」之类的键。注册表里确实存在下面这些动作 ID，但 17.2.15 的会话选择器没有消费它们——绑了也不会生效：</p>
+<table>
+<thead>
+<tr>
+<th>动作 ID</th>
+<th>注册表默认键</th>
+<th>17.2.15 状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>app.session.togglePath</code></td>
+<td><code>Ctrl+P</code></td>
+<td>仅作为旧名 <code>toggleSessionNamedFilter</code> 的迁移目标</td>
+</tr>
+<tr>
+<td><code>app.session.toggleSort</code></td>
+<td><code>Ctrl+S</code></td>
+<td>已注册，无消费者</td>
+</tr>
+<tr>
+<td><code>app.session.rename</code></td>
+<td><code>Ctrl+R</code></td>
+<td>已注册，无消费者</td>
+</tr>
+<tr>
+<td><code>app.session.delete</code></td>
+<td><code>Ctrl+D</code></td>
+<td>已注册，无消费者（删除走 <code>Delete</code>）</td>
+</tr>
+<tr>
+<td><code>app.session.deleteNoninvasive</code></td>
+<td><code>Ctrl+Backspace</code></td>
+<td>已注册，无消费者</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>这些键在会话主界面另有归属（<code>Ctrl+P</code> 循环模型、<code>Ctrl+S</code> 打开 Agent Hub、<code>Ctrl+R</code> 搜索历史、<code>Ctrl+D</code> 退出），所以不要指望它们在列表里替你干活。</p>
+</blockquote>
+<h3 id="仪表板：-agents-与-extensions-是两套键位"><a href="#仪表板：-agents-与-extensions-是两套键位" class="headerlink" title="仪表板：/agents 与 /extensions 是两套键位"></a>仪表板：<code>/agents</code> 与 <code>/extensions</code> 是两套键位</h3><p>两者外观相似（全屏 overlay），但输入处理是分开的，<strong>不能互相套用</strong>。</p>
+<p><strong><code>/agents</code>（Agent 仪表板）</strong></p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Up</code> / <code>Down</code>、<code>j</code> / <code>k</code></td>
+<td>移动 agent 行</td>
+</tr>
+<tr>
+<td><code>Tab</code> / <code>→</code>、<code>Shift+Tab</code> / <code>←</code></td>
+<td>切换左侧过滤分组</td>
+</tr>
+<tr>
+<td><code>Space</code></td>
+<td>启用 / 禁用选中的 agent</td>
+</tr>
+<tr>
+<td><code>Enter</code></td>
+<td>编辑该 agent 的模型覆盖（输入 <code>provider/model</code> 或留空清除）</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>新建 agent（描述 → 生成规格 → 选择 project/user 落盘）</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>切换该 agent 的 prewalk（on / off / 跟随默认）</td>
+</tr>
+<tr>
+<td><code>Ctrl+R</code></td>
+<td>重新从磁盘扫描 agents</td>
+</tr>
+<tr>
+<td>直接输入字符</td>
+<td>搜索</td>
+</tr>
+<tr>
+<td><code>Backspace</code></td>
+<td>删除搜索字符</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>有搜索词时先清空；否则关闭</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>关闭</td>
+</tr>
+</tbody></table>
+<p>新建流程内部：<code>Tab</code> 切 project/user 作用域，<code>r</code> 重新生成规格，<code>Enter</code> 确认落盘，<code>Esc</code> 退出流程。</p>
+<p><strong><code>/extensions</code>（别名 <code>/status</code>）</strong></p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Up</code> / <code>k</code>、<code>Down</code> / <code>j</code></td>
+<td>移动高亮项</td>
+</tr>
+<tr>
+<td><code>Tab</code> / <code>→</code>、<code>Shift+Tab</code> / <code>←</code></td>
+<td>切换提供商分组标签</td>
+</tr>
+<tr>
+<td><code>Space</code> 或 <code>Enter</code></td>
+<td>启用 / 禁用选中项（MCP 项会同时写回配置）</td>
+</tr>
+<tr>
+<td>直接输入字符</td>
+<td>搜索</td>
+</tr>
+<tr>
+<td><code>Backspace</code></td>
+<td>删除搜索字符</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>有搜索词时先清空；否则关闭</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>关闭</td>
+</tr>
+</tbody></table>
+<p>右侧检查器是<strong>只读</strong>的（显示类型、来源、路径、状态与预览），不承载编辑，所以没有「保存编辑」的键。</p>
+<blockquote>
+<p><strong><code>/tree</code> 两套都不共用</strong>。会话树选择器有自己的一套（见上一节：<code>Alt+Up/Down</code> 跳回合、<code>Ctrl+O</code> 切筛选、<code>Shift+L</code> 打标签、<code>Shift+Enter</code> 总结后切换）。</p>
+</blockquote>
 <h2 id="十一、自定义快捷键"><a href="#十一、自定义快捷键" class="headerlink" title="十一、自定义快捷键"></a>十一、自定义快捷键</h2><h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>用户重映射位于 <strong><code>~/.omp/agent/keybindings.yml</code><strong>（注意：不是 <code>config.yml</code>，也没有嵌套的 <code>keybindings</code> 对象）。它是 YAML 映射：键是动作 ID，值是</strong>一个组合键字符串或字符串数组</strong>。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">app.model.cycleForward:</span> <span class="string">Ctrl+P</span></span><br><span class="line"><span class="attr">app.model.selectTemporary:</span> <span class="string">Alt+P</span></span><br><span class="line"><span class="attr">app.plan.toggle:</span> <span class="string">Alt+Shift+P</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">app.model.cycleForward:</span> <span class="string">Ctrl+P</span></span><br><span class="line"><span class="attr">app.model.selectTemporary:</span> <span class="string">Alt+P</span></span><br><span class="line"><span class="attr">app.plan.toggle:</span> <span class="string">Alt+Shift+P</span></span><br><span class="line"><span class="attr">app.session.tree:</span> <span class="string">Ctrl+Y</span>          <span class="comment"># 这个动作默认没绑键</span></span><br><span class="line"><span class="attr">app.clipboard.copyPrompt:</span> [<span class="string">Alt+Shift+C</span>, <span class="string">Ctrl+Shift+C</span>]</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>组合键写法与 UI 显示一致，<strong>大小写不敏感</strong>：<code>Ctrl+P</code>、<code>Alt+Shift+P</code>、<code>Shift+Enter</code>、<code>Ctrl+Backspace</code>；</li>
@@ -565,21 +966,65 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">app.history.search:</span> []</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>旧版未加命名空间的动作名会被自动迁移；<code>keybindings.json</code>、<code>keybindings.yaml</code> 也仍然接受并迁移到 <code>keybindings.yml</code>。</li>
+<li>旧版未加命名空间的动作名（<code>cycleModelForward</code>、<code>togglePlanMode</code> 等）会在加载时自动迁移；<code>keybindings.json</code>、<code>keybindings.yaml</code> 也仍然接受并迁移到 <code>keybindings.yml</code>。</li>
 </ul>
-<h3 id="命名-Profile-的合并规则"><a href="#命名-Profile-的合并规则" class="headerlink" title="命名 Profile 的合并规则"></a>命名 Profile 的合并规则</h3><p>使用命名 profile 时，先加载默认 profile 的 <code>agent/keybindings.*</code>，再由活动 profile 的 <code>keybindings.yml</code> <strong>按动作逐个覆盖</strong>（继承文件在启动期间只读）。快捷键描述的是「用户面前的终端/键盘」，不随 profile 切换而变化，因此用户级重映射在任意 profile 下都生效，除非该 profile 显式覆盖。</p>
+<h3 id="命名-Profile-的合并规则"><a href="#命名-Profile-的合并规则" class="headerlink" title="命名 Profile 的合并规则"></a>命名 Profile 的合并规则</h3><p>使用命名 profile（<code>omp --profile &lt;name&gt;</code>）时，先加载默认 profile 的 <code>agent/keybindings.*</code>，再由活动 profile 的 <code>keybindings.yml</code> <strong>按动作逐个覆盖</strong>（继承文件在启动期间只读）。快捷键描述的是「用户面前的终端/键盘」，不随 profile 切换而变化，因此用户级重映射在任意 profile 下都生效，除非该 profile 显式覆盖。</p>
 <h3 id="平台兼容性备忘"><a href="#平台兼容性备忘" class="headerlink" title="平台兼容性备忘"></a>平台兼容性备忘</h3><ul>
 <li>Windows Terminal：<code>Ctrl+V</code> 可能被终端粘贴命令截获 → 图片粘贴用 <code>Alt+V</code>；<code>Ctrl+Enter</code> 被吞 → 用 <code>Ctrl+Q</code>（若你的 <code>keybindings.yml</code> 已把 <code>Ctrl+Q</code> 分配给其他动作，用户重映射优先，<code>app.message.followUp</code> 就只保留 <code>Ctrl+Enter</code>）。</li>
+<li>Windows Terminal 里 <code>Shift+Enter</code> 与 <code>Enter</code> 无法区分，会被当作引导消息处理。</li>
 </ul>
 <h2 id="十二、扩展开发者的保留快捷键"><a href="#十二、扩展开发者的保留快捷键" class="headerlink" title="十二、扩展开发者的保留快捷键"></a>十二、扩展开发者的保留快捷键</h2><p>开发扩展 / 技能时，以下组合键是<strong>保留的</strong>，注册会静默忽略：<code>ctrl+c</code>、<code>ctrl+d</code>、<code>ctrl+z</code>、<code>ctrl+k</code>、<code>ctrl+p</code>、<code>ctrl+l</code>、<code>ctrl+o</code>、<code>ctrl+t</code>、<code>ctrl+g</code>、<code>ctrl+q</code>、<code>alt+m</code>、<code>shift+tab</code>、<code>shift+ctrl+p</code>、<code>alt+enter</code>、<code>escape</code>、<code>enter</code>。</p>
 <p>它们被内置动作占用（如 <code>Ctrl+P</code> 模型循环、<code>Ctrl+O</code> 工具展开、<code>Ctrl+T</code> 思考可见性、<code>Ctrl+G</code> 外部编辑器、<code>Ctrl+Q</code> 跟进消息、<code>Alt+M</code> 模型选择器、<code>Shift+Tab</code> 思考级别循环等），扩展不得抢占。</p>
+<h2 id="十三、默认未绑定的动作-ID"><a href="#十三、默认未绑定的动作-ID" class="headerlink" title="十三、默认未绑定的动作 ID"></a>十三、默认未绑定的动作 ID</h2><p>这些动作<strong>在注册表里存在、默认不带键位</strong>，需要自己绑。它们的价值在于把「本来只能输入斜杠命令」的操作变成一个键：</p>
+<table>
+<thead>
+<tr>
+<th>动作 ID</th>
+<th>含义</th>
+<th>对应命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>app.session.new</code></td>
+<td>新建会话（清空并开新会话）</td>
+<td><code>/new</code></td>
+</tr>
+<tr>
+<td><code>app.session.tree</code></td>
+<td>打开会话树</td>
+<td><code>/tree</code></td>
+</tr>
+<tr>
+<td><code>app.session.fork</code></td>
+<td>打开用户消息选择器，从某条 prompt 分出新会话文件</td>
+<td><code>/branch</code>（<code>doubleEscapeAction = branch</code> 时的行为）</td>
+</tr>
+<tr>
+<td><code>app.session.resume</code></td>
+<td>打开会话切换器</td>
+<td><code>/resume</code></td>
+</tr>
+<tr>
+<td><code>app.stt.toggle</code></td>
+<td>切换语音转文字（默认改为按住 Space）</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>推荐的一小组补绑（放在 <code>~/.omp/agent/keybindings.yml</code>）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">app.session.tree:</span> <span class="string">Ctrl+Y</span>      <span class="comment"># 随手翻历史分支</span></span><br><span class="line"><span class="attr">app.session.resume:</span> <span class="string">Ctrl+O</span>    <span class="comment"># 注意：会顶掉工具展开，换别的更安全</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上例第二行故意留个反例提醒：<code>Ctrl+O</code> 是内置高频键，绑会话切换器会顶掉「展开工具输出 / 树筛选循环」。挑键前先跑 <code>/hotkeys</code> 看占用。</p>
+</blockquote>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>高频必记：**<code>Ctrl+P</code><strong>（切模型）、</strong><code>Ctrl+O</code><strong>（展开工具输出）、</strong><code>Ctrl+T</code><strong>（思考块）、</strong><code>Shift+Tab</code><strong>（思考级别）、</strong><code>Alt+M</code><strong>（模型选择器）、</strong><code>Ctrl+Enter</code><strong>（排队跟进消息）、</strong><code>Alt+A</code><strong>（Agent Hub）、</strong><code>Alt+L</code><strong>（重置显示）、</strong><code>Ctrl+R</code>**（搜索历史）。</li>
+<li>高频必记：**<code>Ctrl+P</code><strong>（循环模型）、</strong><code>Alt+M</code><strong>（角色选择器）、</strong><code>Alt+A</code><strong>（Agent Hub）、</strong>双击 <code>Esc</code><strong>（会话树）、</strong><code>Ctrl+O</code><strong>（展开 / 切筛选）、</strong><code>Ctrl+T</code><strong>（思考块）、</strong><code>Shift+Tab</code><strong>（思考级别）、</strong><code>Ctrl+Enter</code><strong>（排队跟进消息）、</strong><code>Alt+L</code><strong>（重置显示）、</strong><code>Ctrl+R</code>**（搜索历史）。</li>
+<li>Agent Hub 里：<code>t</code> 切扁平 / 父子树，<code>Enter</code> 进去指挥，<code>r</code> 复活 parked，<code>x</code> 杀掉，<code>Esc</code> / 双击 <code>←</code> 退出。</li>
+<li>会话树里：<code>Alt+↑/↓</code> 跳回合，<code>Alt+D/T/U/L/A</code> 直接切筛选，<code>Shift+L</code> 打标签，<code>Shift+Enter</code> 总结后切换。</li>
 <li>记不住没关系：会话内运行 <strong><code>/hotkeys</code></strong> 随时查看当前生效的全部按键。</li>
-<li>全部按键都可通过 <code>~/.omp/agent/keybindings.yml</code> 重映射或禁用，动作 ID 以 <code>keybindings.md</code> 的 Common action IDs 表为准。</li>
+<li>全部按键都可通过 <code>~/.omp/agent/keybindings.yml</code> 重映射或禁用，动作 ID 以 <code>/hotkeys</code> 输出与 <code>keybindings.md</code> 的 Common action IDs 表为准。</li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/">https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/agent/">agent</a><a class="post-meta__tags" href="/tags/omp/">omp</a><a class="post-meta__tags" href="/tags/cli/">cli</a><a class="post-meta__tags" href="/tags/pi/">pi</a><a class="post-meta__tags" href="/tags/terminal/">terminal</a><a class="post-meta__tags" href="/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/">快捷键</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/08/11/Cursor%E4%B8%8EClaude-Code%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Agent%E4%B8%8D%E6%98%AF%E4%B8%80%E8%82%A1%E8%84%91%E5%A1%9E%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95/" title="Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」</div></div><div class="info-2"><div class="info-item-1">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」做过 Agent 开发的人，多半都踩过同一个认知坑：  和大模型对话时，如果想让它「记得」历史上下文，只能把之前的聊天内容一股脑丢回去。  这句话在 API 协议层是对的——Transformer 对话接口本质无状态。但若据此认为 Cursor、Claude Code 也在每轮把完整 transcript 原样塞进 prompt，那就错了。 协议层仍是重放；产品层早已是上下文工程（Context Engineering）。本文从无状态约束讲起，拆解 Cursor 与 Claude Code 的公开机制，并映射回 LangChain / LangGraph，方便自己做 Agent 时直接落地。  一、先分清两件事：无状态 API ≠ 全量聊天重放1.1 模型侧确实没有「会话内存」每次请求大致是： 1request_n = system +（你认为模型「该记得」的一切）+ 本轮输入  所谓「记得上一句」，只是 harness（编排层）又把上一句——或其压缩版——放进了这次 prompt...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/08/10/Warp%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9AAgentic-Development-Environment%E5%85%A8%E9%87%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Warp 中文文档：Agentic Development Environment 操作指南（十一章）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-10</div><div class="info-item-2">Warp 中文文档：Agentic Development Environment 操作指南（十一章）</div></div><div class="info-2"><div class="info-item-1">Warp 中文文档：Agentic Development Environment 操作指南 本文基于 Warp 官方文档 归纳整理为 11 章操作指南，方便上手与日常查阅。原文持续更新，细节与截图以官方为准。 Warp 是开源的 智能体开发环境（Agentic Development Environment）：高性能终端 + 内置/第三方 Agents；智能体能力由 Oz 编排，可本地交互，也可云端自动化。  目录导航 一、认识 Warp 与 Oz 二、安装、迁移与自定义 三、终端核心：Blocks 与输入编辑器 四、窗口、会话与外观 五、本地 Agents 与编程工作流 六、代码编辑与 Code Review 七、知识与协作：Warp Drive 八、Warp Agent CLI 九、Oz 平台与云端智能体 十、企业版与安全 十一、账单、隐私与排障   一、认识 Warp 与 Oz1.1 Warp 是什么Warp 把「现代终端」和「编码 Agent」放在同一产品里：    能力 作用    终端 / Agent 双模式 干净跑命令，或进入多轮对话让 Agent 写代码、调试、...</div></div></div></a><a class="pagination-related" href="/2026/09/08/Oh-My-Pi-omp-Advisor%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%99%E4%B8%BBAgent%E9%85%8D%E4%B8%80%E4%BD%8D%E6%97%81%E8%A7%82%E8%AF%84%E5%AE%A1/" title="Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="info-item-2">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审写代码的 Agent 越来越敢下刀：改文件、跑命令、开子代理——很快就能把仓库搅动起来。真正贵的往往不是「写得慢」，而是写偏了很久才发现。 omp 的 Advisor 想解决的正是这件事：再挂一个（或一组）独立评审模型，旁观主 Agent 的每一步，把遗漏需求、危险 API、验证薄弱、过度复杂之类的问题，在还能纠偏时塞回主会话。 官网 README 的说法很直白：  Pair a reviewer model to the advisor role and it reads every turn the main agent takes, injecting notes inline — a quiet aside, a concern, or a hard blocker.  主 Agent 是执行者；Advisor 是旁观者。两者各有上下文、各用各的模型，所以能抓住「干活的人赶着往前冲」时漏掉的东西。 本文按官方文档 omp.sh/docs/advisor 梳理：它是什么、怎么开、怎么定制、以及什...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：官方文档长文翻译</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：官方文档长文翻译 本文是 Pi 官方文档 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 pi.dev/docs/latest 为准。 Pi 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 @earendil-works/pi-coding-agent，命令 pi，数据目录 ~/.pi/agent/。 相关文章：操作指南 · 从零写 Extension 注意：本文讲官方 Pi，不是社区分支 Oh My Pi / omp。  目录导航 一、概览与快速开始 二、使用 Pi 三、提供商与认证 四、会话、树与压缩 五、设置 六、快捷键 七、定制：扩展 / Skills / 模板 / 主题 / 包 八、安全与容器化 九、程序化用法 十、设计原则与约定    一、概览与快速开始1.1 Pi 是什么Pi 是一个极简的终端编码 Agent 框架。它在终端里驱动大模型：读文件、改文件、跑命令；同时把「工作流差异」放到扩展...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到 ~/.omp/agent/sessions/。你可以恢复、派生、创建分支并分享它们。设置、凭...</div></div></div></a><a class="pagination-related" href="/2026/09/14/LangChain-1.x%E7%89%B9%E6%80%A7%E5%85%A8%E8%A7%A3%EF%BC%9A%E4%BB%8Ecreate_agent%E5%88%B01.4%E5%86%85%E7%BD%AEMCP/" title="LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-14</div><div class="info-item-2">LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP</div></div><div class="info-2"><div class="info-item-1">LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP2025 年 10 月，LangChain 发布了 1.0：第一次承诺到 2.0 之前不做破坏性变更。此后大约一年，框架沿着一条很清楚的线演进——把「造 Agent」做成一等公民，用中间件打开 harness，把模型能力、流式协议、MCP 工具生态逐个补齐。 截至 2026 年 9 月，Python 包最新稳定版是 langchain 1.4.0（2026-09-03），运行时依赖 langgraph &gt;= 1.2.11,&lt; 1.3.0。如果你还停在 0.x 的 LLMChain / AgentExecutor，这篇文章会把 1.x 该怎么用、每个小版本加了什么，一次讲清楚。 文中示例默认： 1pip install -U &quot;langchain[openai,anthropic,mcp]&quot; langgraph  模型字符串按官方文档写成 openai:gpt-5.5、anthropic:claude-sonnet-4-6 这类 provider:model ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">58</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97"><span class="toc-number">1.</span> <span class="toc-text">Oh My Pi (omp) 全量快捷键指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E5%AF%BC%E8%88%AA"><span class="toc-number">1.1.</span> <span class="toc-text">目录导航</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B"><span class="toc-number">1.2.</span> <span class="toc-text">一、快速上手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AE%A1%E5%88%92%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">二、模型与计划模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83%E5%9D%97%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%98%BE%E7%A4%BA"><span class="toc-number">1.4.</span> <span class="toc-text">三、思考块与工具显示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8E%E6%B6%88%E6%81%AF"><span class="toc-number">1.5.</span> <span class="toc-text">四、编辑器与消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%89%AA%E8%B4%B4%E6%9D%BF%E4%B8%8E%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA"><span class="toc-number">1.6.</span> <span class="toc-text">五、剪贴板与终端显示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%AF%AD%E9%9F%B3"><span class="toc-number">1.7.</span> <span class="toc-text">六、语音</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Agent-Hub"><span class="toc-number">1.8.</span> <span class="toc-text">七、Agent Hub</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%EF%BC%9A%E4%B8%AD%E6%96%AD%E3%80%81%E9%80%80%E5%87%BA%E4%B8%8E%E6%8C%82%E8%B5%B7"><span class="toc-number">1.9.</span> <span class="toc-text">八、进程控制：中断、退出与挂起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81Tree-%E4%BC%9A%E8%AF%9D%E6%A0%91%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">1.10.</span> <span class="toc-text">九、Tree 会话树选择器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E4%BC%9A%E8%AF%9D%E5%88%87%E6%8D%A2%E5%99%A8"><span class="toc-number">1.11.</span> <span class="toc-text">十、会话切换器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.12.</span> <span class="toc-text">十一、自定义快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.12.1.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E5%90%8D-Profile-%E7%9A%84%E5%90%88%E5%B9%B6%E8%A7%84%E5%88%99"><span class="toc-number">1.12.2.</span> <span class="toc-text">命名 Profile 的合并规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%8F%B0%E5%85%BC%E5%AE%B9%E6%80%A7%E5%A4%87%E5%BF%98"><span class="toc-number">1.12.3.</span> <span class="toc-text">平台兼容性备忘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84%E4%BF%9D%E7%95%99%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.13.</span> <span class="toc-text">十二、扩展开发者的保留快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.14.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/12/Aider%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%88%E7%AB%AF%E9%87%8C%E7%9A%84AI%E7%BB%93%E5%AF%B9%E7%BC%96%E7%A8%8B/" title="Aider 入门：终端里的 AI 结对编程">Aider 入门：终端里的 AI 结对编程</a><time datetime="2026-10-12T04:30:00.000Z" title="发表于 2026-10-12 12:30:00">2026-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/21/AI%E6%97%B6%E4%BB%A3%E7%9A%84TDD%EF%BC%9A%E8%AE%A9Agent%E6%8C%89%E7%BA%A2%E7%BB%BF%E9%87%8D%E6%9E%84%E5%86%99%E4%BB%A3%E7%A0%81/" title="AI 时代的 TDD：让 Agent 按红绿重构写代码">AI 时代的 TDD：让 Agent 按红绿重构写代码</a><time datetime="2026-09-21T02:30:00.000Z" title="发表于 2026-09-21 10:30:00">2026-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/14/LangChain-1.x%E7%89%B9%E6%80%A7%E5%85%A8%E8%A7%A3%EF%BC%9A%E4%BB%8Ecreate_agent%E5%88%B01.4%E5%86%85%E7%BD%AEMCP/" title="LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP">LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP</a><time datetime="2026-09-14T05:50:00.000Z" title="发表于 2026-09-14 13:50:00">2026-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/08/Oh-My-Pi-omp-Advisor%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%99%E4%B8%BBAgent%E9%85%8D%E4%B8%80%E4%BD%8D%E6%97%81%E8%A7%82%E8%AF%84%E5%AE%A1/" title="Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审</a><time datetime="2026-09-08T07:10:00.000Z" title="发表于 2026-09-08 15:10:00">2026-09-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/02/Paperclip%E5%85%A5%E9%97%A8%EF%BC%9A%E7%94%A8%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E7%AE%A1%E7%90%86AI-Agent%E5%9B%A2%E9%98%9F/" title="Paperclip 入门：用组织架构管理 AI Agent 团队">Paperclip 入门：用组织架构管理 AI Agent 团队</a><time datetime="2026-09-02T09:40:00.000Z" title="发表于 2026-09-02 17:40:00">2026-09-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/">https://qngolg.github.io/2026/08/13/Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/agent/">agent</a><a class="post-meta__tags" href="/tags/omp/">omp</a><a class="post-meta__tags" href="/tags/cli/">cli</a><a class="post-meta__tags" href="/tags/pi/">pi</a><a class="post-meta__tags" href="/tags/terminal/">terminal</a><a class="post-meta__tags" href="/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/">快捷键</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/08/11/Cursor%E4%B8%8EClaude-Code%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Agent%E4%B8%8D%E6%98%AF%E4%B8%80%E8%82%A1%E8%84%91%E5%A1%9E%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95/" title="Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」</div></div><div class="info-2"><div class="info-item-1">Cursor 与 Claude Code 的上下文工程：为什么 Agent 不是「一股脑塞聊天记录」做过 Agent 开发的人，多半都踩过同一个认知坑：  和大模型对话时，如果想让它「记得」历史上下文，只能把之前的聊天内容一股脑丢回去。  这句话在 API 协议层是对的——Transformer 对话接口本质无状态。但若据此认为 Cursor、Claude Code 也在每轮把完整 transcript 原样塞进 prompt，那就错了。 协议层仍是重放；产品层早已是上下文工程（Context Engineering）。本文从无状态约束讲起，拆解 Cursor 与 Claude Code 的公开机制，并映射回 LangChain / LangGraph，方便自己做 Agent 时直接落地。  一、先分清两件事：无状态 API ≠ 全量聊天重放1.1 模型侧确实没有「会话内存」每次请求大致是： 1request_n = system +（你认为模型「该记得」的一切）+ 本轮输入  所谓「记得上一句」，只是 harness（编排层）又把上一句——或其压缩版——放进了这次 prompt...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/08/10/Warp%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9AAgentic-Development-Environment%E5%85%A8%E9%87%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Warp 中文文档：Agentic Development Environment 操作指南（十一章）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-10</div><div class="info-item-2">Warp 中文文档：Agentic Development Environment 操作指南（十一章）</div></div><div class="info-2"><div class="info-item-1">Warp 中文文档：Agentic Development Environment 操作指南 本文基于 Warp 官方文档 归纳整理为 11 章操作指南，方便上手与日常查阅。原文持续更新，细节与截图以官方为准。 Warp 是开源的 智能体开发环境（Agentic Development Environment）：高性能终端 + 内置/第三方 Agents；智能体能力由 Oz 编排，可本地交互，也可云端自动化。  目录导航 一、认识 Warp 与 Oz 二、安装、迁移与自定义 三、终端核心：Blocks 与输入编辑器 四、窗口、会话与外观 五、本地 Agents 与编程工作流 六、代码编辑与 Code Review 七、知识与协作：Warp Drive 八、Warp Agent CLI 九、Oz 平台与云端智能体 十、企业版与安全 十一、账单、隐私与排障   一、认识 Warp 与 Oz1.1 Warp 是什么Warp 把「现代终端」和「编码 Agent」放在同一产品里：    能力 作用    终端 / Agent 双模式 干净跑命令，或进入多轮对话让 Agent 写代码、调试、...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。 配套阅读：全量快捷键指南 · models 配置全解：角色与选择器 · Advisor 入门  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到...</div></div></div></a><a class="pagination-related" href="/2026/09/08/Oh-My-Pi-omp-Advisor%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%99%E4%B8%BBAgent%E9%85%8D%E4%B8%80%E4%BD%8D%E6%97%81%E8%A7%82%E8%AF%84%E5%AE%A1/" title="Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="info-item-2">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审写代码的 Agent 越来越敢下刀：改文件、跑命令、开子代理——很快就能把仓库搅动起来。真正贵的往往不是「写得慢」，而是写偏了很久才发现。 omp 的 Advisor 想解决的正是这件事：再挂一个（或一组）独立评审模型，旁观主 Agent 的每一步，把遗漏需求、危险 API、验证薄弱、过度复杂之类的问题，在还能纠偏时塞回主会话。 官网 README 的说法很直白：  Pair a reviewer model to the advisor role and it reads every turn the main agent takes, injecting notes inline — a quiet aside, a concern, or a hard blocker.  主 Agent 是执行者；Advisor 是旁观者。两者各有上下文、各用各的模型，所以能抓住「干活的人赶着往前冲」时漏掉的东西。 本文按官方文档 omp.sh/docs/advisor 梳理：它是什么、怎么开、怎么定制、以及什...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：官方文档长文翻译</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：官方文档长文翻译 本文是 Pi 官方文档 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 pi.dev/docs/latest 为准。 Pi 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 @earendil-works/pi-coding-agent，命令 pi，数据目录 ~/.pi/agent/。 相关文章：操作指南 · 从零写 Extension 注意：本文讲官方 Pi，不是社区分支 Oh My Pi / omp。  目录导航 一、概览与快速开始 二、使用 Pi 三、提供商与认证 四、会话、树与压缩 五、设置 六、快捷键 七、定制：扩展 / Skills / 模板 / 主题 / 包 八、安全与容器化 九、程序化用法 十、设计原则与约定    一、概览与快速开始1.1 Pi 是什么Pi 是一个极简的终端编码 Agent 框架。它在终端里驱动大模型：读文件、改文件、跑命令；同时把「工作流差异」放到扩展...</div></div></div></a><a class="pagination-related" href="/2026/06/23/LangGraph%E5%85%A5%E9%97%A8%EF%BC%9A%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E4%B8%8E%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/" title="LangGraph 入门：核心组件与架构详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-23</div><div class="info-item-2">LangGraph 入门：核心组件与架构详解</div></div><div class="info-2"><div class="info-item-1">LangGraph 入门：核心组件与架构详解如果你已经用 LangChain 写过 RAG 或 Agent，大概率会遇到这样的困境：对话轮次一多，状态管理变得混乱；多 Agent 协作时，流程难以控制；关键操作需要人工审批，却没有优雅的暂停/恢复机制。 LangGraph 是 LangChain 团队推出的有状态图编排框架，专门用于构建可持久化、可中断、可观测的 Agent 工作流。它把 Agent 的执行过程建模为一张有向图：节点负责执行业务逻辑，边负责路由决策，全局 State 在各节点之间流转。 本文将系统梳理 LangGraph 的各个核心组件，并配合代码示例说明它们如何协同工作。 一、LangGraph 是什么？在传统的 Chain 中，数据通常是单向流水线传递的：A 的输出作为 B 的输入，很难表达循环、分支和共享状态。 LangGraph 的核心思路是： 1State（共享状态） ←→ Node（计算单元） ←→ Edge（路由规则）     对比维度 传统 Chain LangGraph    状态管理 隐式传递 显式共享 State   控制流 线性为主 支持循...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Oh-My-Pi-omp-%E5%85%A8%E9%87%8F%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%8C%87%E5%8D%97"><span class="toc-number">1.</span> <span class="toc-text">Oh My Pi (omp) 全量快捷键指南</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E5%AF%BC%E8%88%AA"><span class="toc-number">1.1.</span> <span class="toc-text">目录导航</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B"><span class="toc-number">1.2.</span> <span class="toc-text">一、快速上手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AE%A1%E5%88%92%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">二、模型与计划模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83%E5%9D%97%E4%B8%8E%E5%B7%A5%E5%85%B7%E6%98%BE%E7%A4%BA"><span class="toc-number">1.4.</span> <span class="toc-text">三、思考块与工具显示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%8E%E6%B6%88%E6%81%AF"><span class="toc-number">1.5.</span> <span class="toc-text">四、编辑器与消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%89%AA%E8%B4%B4%E6%9D%BF%E4%B8%8E%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA"><span class="toc-number">1.6.</span> <span class="toc-text">五、剪贴板与终端显示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%AF%AD%E9%9F%B3"><span class="toc-number">1.7.</span> <span class="toc-text">六、语音</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Agent-Hub%EF%BC%9A%E5%AD%90%E4%BB%A3%E7%90%86%E5%90%8D%E5%86%8C%E4%B8%8E%E6%8E%A7%E5%88%B6%E5%8F%B0"><span class="toc-number">1.8.</span> <span class="toc-text">七、Agent Hub：子代理名册与控制台</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="toc-number">1.8.1.</span> <span class="toc-text">打开方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8D%E5%86%8C%EF%BC%88roster%EF%BC%89%E9%94%AE%E4%BD%8D"><span class="toc-number">1.8.2.</span> <span class="toc-text">名册（roster）键位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E4%B8%8E%E6%8C%87%E6%8C%A5%E4%B8%80%E4%B8%AA%E5%AD%90%E4%BB%A3%E7%90%86"><span class="toc-number">1.8.3.</span> <span class="toc-text">读与指挥一个子代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%B9%E7%95%8C"><span class="toc-number">1.8.4.</span> <span class="toc-text">边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E9%82%BB%E8%A1%A8%E9%9D%A2%EF%BC%88%E5%88%AB%E6%B7%B7%E6%B7%86%EF%BC%89"><span class="toc-number">1.8.5.</span> <span class="toc-text">相邻表面（别混淆）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%EF%BC%9A%E4%B8%AD%E6%96%AD%E3%80%81%E9%80%80%E5%87%BA%E4%B8%8E%E6%8C%82%E8%B5%B7"><span class="toc-number">1.9.</span> <span class="toc-text">八、进程控制：中断、退出与挂起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81Tree-%E4%BC%9A%E8%AF%9D%E6%A0%91%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">1.10.</span> <span class="toc-text">九、Tree 会话树选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%89%93%E5%BC%80"><span class="toc-number">1.10.1.</span> <span class="toc-text">怎么打开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E5%B1%80%E4%B8%8E%E6%B8%B2%E6%9F%93"><span class="toc-number">1.10.2.</span> <span class="toc-text">布局与渲染</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%AE%E4%BD%8D"><span class="toc-number">1.10.3.</span> <span class="toc-text">键位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%9B%E9%80%89%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.10.4.</span> <span class="toc-text">筛选模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E8%AF%AD%E4%B9%89"><span class="toc-number">1.10.5.</span> <span class="toc-text">搜索语义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%AD%E4%B9%8B%E5%90%8E%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.10.6.</span> <span class="toc-text">选中之后会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E6%8D%A2%E6%97%B6%E6%80%BB%E7%BB%93"><span class="toc-number">1.10.7.</span> <span class="toc-text">切换时总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E7%9B%B8%E9%82%BB%E6%93%8D%E4%BD%9C%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.10.8.</span> <span class="toc-text">与相邻操作的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E5%BA%8F%E5%88%97"><span class="toc-number">1.10.9.</span> <span class="toc-text">三个常用操作序列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E4%BC%9A%E8%AF%9D%E5%88%87%E6%8D%A2%E5%99%A8%E4%B8%8E%E4%BB%AA%E8%A1%A8%E6%9D%BF"><span class="toc-number">1.11.</span> <span class="toc-text">十、会话切换器与仪表板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%9A%E8%AF%9D%E9%80%89%E6%8B%A9-%E6%9C%80%E8%BF%91%E4%BC%9A%E8%AF%9D%EF%BC%88-resume%E3%80%81omp-r%EF%BC%89"><span class="toc-number">1.11.1.</span> <span class="toc-text">会话选择 &#x2F; 最近会话（&#x2F;resume、omp -r）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%AA%E8%A1%A8%E6%9D%BF%EF%BC%9A-agents-%E4%B8%8E-extensions-%E6%98%AF%E4%B8%A4%E5%A5%97%E9%94%AE%E4%BD%8D"><span class="toc-number">1.11.2.</span> <span class="toc-text">仪表板：&#x2F;agents 与 &#x2F;extensions 是两套键位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.12.</span> <span class="toc-text">十一、自定义快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.12.1.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E5%90%8D-Profile-%E7%9A%84%E5%90%88%E5%B9%B6%E8%A7%84%E5%88%99"><span class="toc-number">1.12.2.</span> <span class="toc-text">命名 Profile 的合并规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%8F%B0%E5%85%BC%E5%AE%B9%E6%80%A7%E5%A4%87%E5%BF%98"><span class="toc-number">1.12.3.</span> <span class="toc-text">平台兼容性备忘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84%E4%BF%9D%E7%95%99%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.13.</span> <span class="toc-text">十二、扩展开发者的保留快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E9%BB%98%E8%AE%A4%E6%9C%AA%E7%BB%91%E5%AE%9A%E7%9A%84%E5%8A%A8%E4%BD%9C-ID"><span class="toc-number">1.14.</span> <span class="toc-text">十三、默认未绑定的动作 ID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.15.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/07/Oh-My-Pi-omp-models%E9%85%8D%E7%BD%AE%E5%85%A8%E8%A7%A3%EF%BC%9A%E8%A7%92%E8%89%B2%E3%80%81%E9%80%89%E6%8B%A9%E5%99%A8%E4%B8%8E%E5%85%A8%E9%83%A8%E9%80%89%E9%A1%B9/" title="Oh My Pi（omp）models 配置全解：角色、选择器与全部选项">Oh My Pi（omp）models 配置全解：角色、选择器与全部选项</a><time datetime="2026-11-07T03:30:00.000Z" title="发表于 2026-11-07 11:30:00">2026-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/12/Aider%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%88%E7%AB%AF%E9%87%8C%E7%9A%84AI%E7%BB%93%E5%AF%B9%E7%BC%96%E7%A8%8B/" title="Aider 入门：终端里的 AI 结对编程">Aider 入门：终端里的 AI 结对编程</a><time datetime="2026-10-12T04:30:00.000Z" title="发表于 2026-10-12 12:30:00">2026-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/21/AI%E6%97%B6%E4%BB%A3%E7%9A%84TDD%EF%BC%9A%E8%AE%A9Agent%E6%8C%89%E7%BA%A2%E7%BB%BF%E9%87%8D%E6%9E%84%E5%86%99%E4%BB%A3%E7%A0%81/" title="AI 时代的 TDD：让 Agent 按红绿重构写代码">AI 时代的 TDD：让 Agent 按红绿重构写代码</a><time datetime="2026-09-21T02:30:00.000Z" title="发表于 2026-09-21 10:30:00">2026-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/14/LangChain-1.x%E7%89%B9%E6%80%A7%E5%85%A8%E8%A7%A3%EF%BC%9A%E4%BB%8Ecreate_agent%E5%88%B01.4%E5%86%85%E7%BD%AEMCP/" title="LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP">LangChain 1.x 特性全解：从 create_agent 到 1.4 内置 MCP</a><time datetime="2026-09-14T05:50:00.000Z" title="发表于 2026-09-14 13:50:00">2026-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/08/Oh-My-Pi-omp-Advisor%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%99%E4%B8%BBAgent%E9%85%8D%E4%B8%80%E4%BD%8D%E6%97%81%E8%A7%82%E8%AF%84%E5%AE%A1/" title="Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审</a><time datetime="2026-09-08T07:10:00.000Z" title="发表于 2026-09-08 15:10:00">2026-09-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
 
