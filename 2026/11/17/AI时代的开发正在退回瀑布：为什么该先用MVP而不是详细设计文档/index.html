@@ -1,0 +1,605 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档 | 个人博客</title><meta name="author" content="菜鸟程序员"><meta name="copyright" content="菜鸟程序员"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="用 Agent 写代码之后，流程反而退回了瀑布：先把需求、数据模型、接口、目录结构写成详细设计，再开始 loop 代码。这篇拆清楚为什么会这样、AI 瀑布为什么比传统瀑布更危险，以及怎么把垂直切片、一页纸规格、可运行反馈环塞回日常开发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档">
+<meta property="og:url" content="https://qngolg.github.io/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="用 Agent 写代码之后，流程反而退回了瀑布：先把需求、数据模型、接口、目录结构写成详细设计，再开始 loop 代码。这篇拆清楚为什么会这样、AI 瀑布为什么比传统瀑布更危险，以及怎么把垂直切片、一页纸规格、可运行反馈环塞回日常开发。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://qngolg.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-11-17T01:40:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T01:40:00.000Z">
+<meta property="article:author" content="菜鸟程序员">
+<meta property="article:tag" content="coding-agent">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="敏捷开发">
+<meta property="article:tag" content="mvp">
+<meta property="article:tag" content="spec-driven-development">
+<meta property="article:tag" content="方法论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://qngolg.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档",
+  "url": "https://qngolg.github.io/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/",
+  "image": "https://qngolg.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-11-17T01:40:00.000Z",
+  "dateModified": "2026-11-17T01:40:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "菜鸟程序员",
+      "url": "https://qngolg.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://qngolg.github.io/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const start = 6
+              const end = 18
+              const isNight =
+                start < end
+                    ? hour < start || hour >= end
+                    : hour >= start || hour < end
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">69</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-17T01:40:00.000Z" title="发表于 2026-11-17 09:40:00">2026-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-17T01:40:00.000Z" title="更新于 2026-11-17 09:40:00">2026-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI/">AI</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="AI-时代的开发正在退回瀑布：为什么该先用-MVP-而不是详细设计文档"><a href="#AI-时代的开发正在退回瀑布：为什么该先用-MVP-而不是详细设计文档" class="headerlink" title="AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档"></a>AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档</h1><p>标题不是夸张。过去一年我见到的「AI 开发流程」，绝大多数长这样：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">一句话需求</span><br><span class="line">   ↓</span><br><span class="line">Agent 生成 PRD（用户角色、场景、验收标准）</span><br><span class="line">   ↓</span><br><span class="line">Agent 生成技术设计（数据模型、接口、错误码、目录结构）</span><br><span class="line">   ↓</span><br><span class="line">Agent 拆任务清单</span><br><span class="line">   ↓</span><br><span class="line">Agent 按清单一次性实现 3000 行</span><br><span class="line">   ↓</span><br><span class="line">人审不动，看测试是绿的，合并</span><br></pre></td></tr></table></figure>
+
+<p>这就是瀑布。只不过 1970 年代的瀑布靠人写文档，今天的瀑布靠模型写文档；以前的文档要花一周，现在的文档要花三十秒。</p>
+<p><strong>问题不在文档多，而在反馈晚。</strong></p>
+<hr>
+<h2 id="一、先承认：AI-瀑布不是蠢，它有很强的诱因"><a href="#一、先承认：AI-瀑布不是蠢，它有很强的诱因" class="headerlink" title="一、先承认：AI 瀑布不是蠢，它有很强的诱因"></a>一、先承认：AI 瀑布不是蠢，它有很强的诱因</h2><p>把「为什么大家又回到瀑布」拆开，五个机制都在推着人往那边走。</p>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>具体表现</th>
+<th>真实性质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一次生成的心理</td>
+<td>「上下文喂全它才能做对」</td>
+<td>Agent 确实擅长一次吃完整上下文，人于是倾向于前置消灭不确定性</td>
+</tr>
+<tr>
+<td>修改成本被感知放大</td>
+<td>改 AI 写的代码要先读懂才能改</td>
+<td>比自己写的代码贵，于是宁可前置设计换「一次做对」</td>
+</tr>
+<tr>
+<td>文档成本塌陷</td>
+<td>详细设计从人天变成分钟</td>
+<td>成本趋零 → 供给爆炸 → <strong>审查成为新瓶颈</strong></td>
+</tr>
+<tr>
+<td>工具在推</td>
+<td>Kiro 的 requirements / design / tasks 三件套、GitHub Spec Kit 的 <code>/specify → /plan → /tasks → /implement</code></td>
+<td>spec-driven 被做成了默认路径，不是可选项</td>
+</tr>
+<tr>
+<td>demo 是完整的</td>
+<td>演示要闭环，闭环要「做全」</td>
+<td>展示需求压倒了验证需求</td>
+</tr>
+</tbody></table>
+<p>第一条和第三条是核心。</p>
+<p>以前你写一份详细设计要三天，所以你会克制：只写关键决策，其余留白，边做边定。现在写一份详细设计要三十秒，<strong>克制消失了</strong>。设计文档从「压缩后的决策」膨胀成「模型对需求的全部想象」，然后人开始审它。</p>
+<p>一个 2000 行的 spec 交给你，你会逐条看吗？现实是滑到底、看结构像样、批准。审批动作还在，审批功能已经失效。</p>
+<hr>
+<h2 id="二、伪瀑布：看起来严谨，实际是一堆未验证的猜测"><a href="#二、伪瀑布：看起来严谨，实际是一堆未验证的猜测" class="headerlink" title="二、伪瀑布：看起来严谨，实际是一堆未验证的猜测"></a>二、伪瀑布：看起来严谨，实际是一堆未验证的猜测</h2><p>传统瀑布虽然僵硬，但至少需求来自真实访谈、真实流程、真实数据。AI 时代的瀑布连这个都不成立。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统瀑布</th>
+<th>AI 时代的瀑布</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规格来源</td>
+<td>用户访谈、现有流程、真实数据</td>
+<td>模型根据一句话需求补齐</td>
+</tr>
+<tr>
+<td>文档成本</td>
+<td>高，所以克制</td>
+<td>接近零，所以膨胀</td>
+</tr>
+<tr>
+<td>审查方式</td>
+<td>逐条对需求</td>
+<td>读不下去，直接批准</td>
+</tr>
+<tr>
+<td>错误的发现时机</td>
+<td>集成测试 / 上线</td>
+<td>同样晚，但错误更多</td>
+</tr>
+<tr>
+<td>变更代价</td>
+<td>文档链全废</td>
+<td>文档链全废，且没人记得为什么这么写</td>
+</tr>
+</tbody></table>
+<p>模型在 spec 里补出来的东西是什么：字段名、状态机、边界条件、错误文案、「预留的扩展点」。<strong>这些不是需求，是模型的先验。</strong></p>
+<p>你批准它，等于把一堆猜测升格成合同；后面每一行代码都在这个猜测上叠加，而且因为有「设计文档」背书，猜错的地方反而没人质疑。</p>
+<p>三个技术层面的放大效应：</p>
+<ol>
+<li><strong>长文档稀释注意力。</strong> 上下文里 80% 是设计文档、20% 是真实代码，Agent 越写越偏。这个机制在 <a href="/2026/08/11/Cursor%E4%B8%8EClaude-Code%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Agent%E4%B8%8D%E6%98%AF%E4%B8%80%E8%82%A1%E8%84%91%E5%A1%9E%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95/">Cursor 与 Claude Code 的上下文工程</a> 里写过：塞进去的不等于用上的。</li>
+<li><strong>批次过大导致审查退化。</strong> 一次 20 个文件、3000 行 Diff，人审不动，只剩「测试绿了没」这一个信号。绿只证明代码和自己一致，不证明行为和需求一致。</li>
+<li><strong>错误被结构化了。</strong> 单个幻觉好发现；一整套自洽的、带章节编号的、有术语表的幻觉，看起来就是专业方案。</li>
+</ol>
+<p>所以判断很直接：<strong>AI 没有让瀑布变好，它只是让瀑布变便宜了。而便宜的错误更危险，因为它会被大量生产。</strong></p>
+<hr>
+<h2 id="三、敏捷在-AI-时代反而更划算"><a href="#三、敏捷在-AI-时代反而更划算" class="headerlink" title="三、敏捷在 AI 时代反而更划算"></a>三、敏捷在 AI 时代反而更划算</h2><p>先算瀑布的心理账。人不是喜欢写文档，人是怕返工：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">一次迭代的固定成本很高</span><br><span class="line">   （脚手架、环境、样板代码、写测试、部署、联调）</span><br><span class="line">        ↓</span><br><span class="line">多迭代几轮很贵</span><br><span class="line">        ↓</span><br><span class="line">本能地想减少轮次</span><br><span class="line">        ↓</span><br><span class="line">把不确定性前置，写详细设计</span><br><span class="line">        ↓</span><br><span class="line">瀑布</span><br></pre></td></tr></table></figure>
+
+<p>AI 把这张账改了，但只改了一半：</p>
+<table>
+<thead>
+<tr>
+<th>成本项</th>
+<th>传统</th>
+<th>AI 时代</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>写第一版</td>
+<td>人天</td>
+<td>小时</td>
+<td>大幅下降</td>
+</tr>
+<tr>
+<td>改第二版</td>
+<td>人天</td>
+<td>小时（切片够小、上下文干净时）</td>
+<td>大幅下降</td>
+</tr>
+<tr>
+<td>验证需求对不对</td>
+<td>要人等真实用户</td>
+<td>还是要人等真实用户</td>
+<td><strong>一分没降</strong></td>
+</tr>
+<tr>
+<td>判断「做对了吗」</td>
+<td>要人读代码 / 看结果</td>
+<td>还是要人看结果</td>
+<td><strong>一分没降</strong></td>
+</tr>
+</tbody></table>
+<p>结论就一句：<strong>实现变便宜了，但验证没变便宜。所以省下来的时间应该投到缩短反馈环，而不是投到提前写更多文档。</strong></p>
+<p>以前想省一次返工，你得花三天写设计文档，赌自己猜对了。现在花三小时上一个能点的 MVP，让人直接告诉你哪里不对——后者的信息量高一个数量级，而且不消耗你对需求的想象力。</p>
+<hr>
+<h2 id="四、怎么落地：六个动作"><a href="#四、怎么落地：六个动作" class="headerlink" title="四、怎么落地：六个动作"></a>四、怎么落地：六个动作</h2><h3 id="4-1-用垂直切片代替水平蓝图"><a href="#4-1-用垂直切片代替水平蓝图" class="headerlink" title="4.1 用垂直切片代替水平蓝图"></a>4.1 用垂直切片代替水平蓝图</h3><p>瀑布的形状是水平的：先建所有表，再写所有 service，再写所有 controller。做完之前，什么都跑不起来。</p>
+<p>敏捷的形状是垂直的：<strong>一条能点通的窄路径</strong>——一个页面 → 一个接口 → 一张表 → 一条真实数据。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">水平切片（瀑布）              垂直切片（敏捷）</span><br><span class="line">┌──────────────────────┐     ┌─────┐</span><br><span class="line">│ 全部表                │     │ 页面 │  ← 第一刀就能点</span><br><span class="line">├──────────────────────┤     ├─────┤</span><br><span class="line">│ 全部 service          │     │ 接口 │</span><br><span class="line">├──────────────────────┤     ├─────┤</span><br><span class="line">│ 全部 controller       │     │ 表  │</span><br><span class="line">└──────────────────────┘     └─────┘</span><br><span class="line">   跑不起来，直到最后            每一步都可运行</span><br></pre></td></tr></table></figure>
+
+<p>第一刀要选<strong>最不确定</strong>的那条路径，不是最简单的那条。简单的那条切通了不提供任何信息；不确定的那条切不通，能提前三周告诉你这个方案不行。</p>
+<h3 id="4-2-规格写到「下一个可验证点」就停"><a href="#4-2-规格写到「下一个可验证点」就停" class="headerlink" title="4.2 规格写到「下一个可验证点」就停"></a>4.2 规格写到「下一个可验证点」就停</h3><p>一页纸，四个字段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">目标：一句用户能感知的话（不是功能清单）</span><br><span class="line">验收：怎么判断成了（命令 / 能点的路径 / 一条断言）</span><br><span class="line">不做：明确划掉的范围</span><br><span class="line">未知：哪些是猜的，需要验证</span><br></pre></td></tr></table></figure>
+
+<p>超过一页，它就不再是规格，而是设计。设计应该写在代码里——代码是唯一不会过期的设计文档。</p>
+<h3 id="4-3-文档降级：ADR-替代设计书"><a href="#4-3-文档降级：ADR-替代设计书" class="headerlink" title="4.3 文档降级：ADR 替代设计书"></a>4.3 文档降级：ADR 替代设计书</h3><table>
+<thead>
+<tr>
+<th>该写</th>
+<th>不该写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>选了什么、为什么、什么条件下该推翻</td>
+<td>每个类怎么组织、每个方法什么签名</td>
+</tr>
+<tr>
+<td>不可逆的决策（见第六节）</td>
+<td>未来可能用到但还没用到的扩展点</td>
+</tr>
+<tr>
+<td>踩过的坑与结论</td>
+<td>需求复述</td>
+</tr>
+</tbody></table>
+<p>详细设计一旦写出来就开始过期，而且没人读第二遍。可执行的契约——类型定义、schema、契约测试——比散文可靠得多，因为它们是会被编译和运行的。</p>
+<h3 id="4-4-把反馈环工程化"><a href="#4-4-把反馈环工程化" class="headerlink" title="4.4 把反馈环工程化"></a>4.4 把反馈环工程化</h3><p>每轮结束必须满足三条，否则这一轮不算完成：</p>
+<ol>
+<li><strong>可运行</strong>：能启动、能点、能跑测试。</li>
+<li><strong>有门禁</strong>：typecheck / lint / 相关测试 / 一个 smoke 脚本。</li>
+<li><strong>可审</strong>：Diff 能在 15 分钟内读完。</li>
+</ol>
+<p>第三点最容易被忽略。人审不动的时候，流程里所有的「评审」都会退化成点头。批次大小决定质量上限。</p>
+<p>演示优于文档评审：让 Agent 把启动命令给你，自己点一遍。点不动的东西，写成多漂亮的文档都是不存在的。</p>
+<h3 id="4-5-计划性返工"><a href="#4-5-计划性返工" class="headerlink" title="4.5 计划性返工"></a>4.5 计划性返工</h3><p>第一版就是用来扔的。这句话得写进流程，不能只是心理建设：</p>
+<ul>
+<li>明确告诉 Agent：<strong>这一版只验证 X</strong>，其它一律可以丑、可以硬编码、可以只支持一个用例。</li>
+<li>预算按轮次分，比如 30 / 40 / 30，而不是一轮 100。</li>
+<li>第一版不抠命名、不抠抽象、不抠错误码文案——这些是可逆的，留到方向确定之后。</li>
+</ul>
+<p>怕返工的人写瀑布；把返工预算显式排进计划的人才能敏捷。</p>
+<h3 id="4-6-每轮重置上下文"><a href="#4-6-每轮重置上下文" class="headerlink" title="4.6 每轮重置上下文"></a>4.6 每轮重置上下文</h3><p>新 loop 从干净的上下文开始：喂<strong>当前代码 + 本轮目标</strong>，不喂全部聊天历史。</p>
+<p>上一轮留下的约束还有效的，压缩成五行写进本轮提示；已经失效的文档直接删掉，不要留在仓库里当噪音。留着一份过期设计文档，比没有设计文档更糟——下一轮 Agent 会认真执行它。</p>
+<hr>
+<h2 id="五、两种模式对照"><a href="#五、两种模式对照" class="headerlink" title="五、两种模式对照"></a>五、两种模式对照</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>AI 瀑布</th>
+<th>AI 敏捷</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>起点</td>
+<td>一句话需求 → 完整设计文档</td>
+<td>一句话需求 → 最不确定的那条路径</td>
+</tr>
+<tr>
+<td>第一个交付物</td>
+<td>设计评审通过</td>
+<td>能点的东西</td>
+</tr>
+<tr>
+<td>规格粒度</td>
+<td>全量、预测性</td>
+<td>增量、可验证</td>
+</tr>
+<tr>
+<td>批次</td>
+<td>一次全量实现</td>
+<td>垂直切片，小 PR</td>
+</tr>
+<tr>
+<td>验证方式</td>
+<td>文档评审 + 最后集成</td>
+<td>每轮可跑 + 人点一下</td>
+</tr>
+<tr>
+<td>需求变化</td>
+<td>文档链全废</td>
+<td>下一切片换方向</td>
+</tr>
+<tr>
+<td>主要风险</td>
+<td>错误的规格被高效执行</td>
+<td>局部返工</td>
+</tr>
+<tr>
+<td>人的时间花在</td>
+<td>审文档、点头</td>
+<td>定验收、看演示、砍范围</td>
+</tr>
+</tbody></table>
+<p>最后一行是全部差别的浓缩：<strong>AI 瀑布把人的时间花在审文档上，AI 敏捷把人的时间花在看结果上。</strong></p>
+<p>而人的时间是这套流程里唯一没被 AI 降价的资源。</p>
+<hr>
+<h2 id="六、什么时候必须写详细设计"><a href="#六、什么时候必须写详细设计" class="headerlink" title="六、什么时候必须写详细设计"></a>六、什么时候必须写详细设计</h2><p>说清楚边界，不然这篇就成了反对设计的口号。</p>
+<p>区分标准只有一条：<strong>不可逆还是可逆。</strong></p>
+<table>
+<thead>
+<tr>
+<th>必须详细设计（不可逆）</th>
+<th>可以边做边定（可逆）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据模型与迁移（改一次要停机 / 回填）</td>
+<td>内部函数与模块边界</td>
+</tr>
+<tr>
+<td>对外 API 契约（有第三方消费者）</td>
+<td>UI 布局与交互细节</td>
+</tr>
+<tr>
+<td>权限与安全边界</td>
+<td>日志、指标、文案</td>
+</tr>
+<tr>
+<td>钱、账、审计</td>
+<td>配置结构</td>
+</tr>
+<tr>
+<td>跨团队 / 跨仓库契约</td>
+<td>缓存策略（能回滚）</td>
+</tr>
+<tr>
+<td>合规要求</td>
+<td>内部工具与脚本</td>
+</tr>
+</tbody></table>
+<p>一句话：<strong>为不可逆的部分写文档，为可逆的部分写代码。</strong></p>
+<p>大多数功能里，不可逆的部分只占 10%——一张表的结构、一个对外接口的形状。为这 10% 认真写，剩下 90% 让代码自己说话。把 100% 都写成文档，等于把 90% 的可逆空间提前锁死成猜测。</p>
+<hr>
+<h2 id="七、和-TDD-那篇矛盾吗"><a href="#七、和-TDD-那篇矛盾吗" class="headerlink" title="七、和 TDD 那篇矛盾吗"></a>七、和 TDD 那篇矛盾吗</h2><p>不矛盾，但要分清楚两件事。</p>
+<p><a href="/2026/09/21/AI%E6%97%B6%E4%BB%A3%E7%9A%84TDD%EF%BC%9A%E8%AE%A9Agent%E6%8C%89%E7%BA%A2%E7%BB%BF%E9%87%8D%E6%9E%84%E5%86%99%E4%BB%A3%E7%A0%81/">AI 时代的 TDD</a> 里说「先写失败测试，再让 Agent 实现」。这篇说「别先写详细设计」。区别在<strong>可执行性</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>失败测试</th>
+<th>详细设计文档</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性质</td>
+<td>行为契约，可执行</td>
+<td>对实现的预测，不可执行</td>
+</tr>
+<tr>
+<td>写错的后果</td>
+<td>直接红灯，当场发现</td>
+<td>被后续所有代码继承</td>
+</tr>
+<tr>
+<td>需求变了</td>
+<td>删用例、改断言，代价明确</td>
+<td>文档链作废，且没人知道该改哪段</td>
+</tr>
+<tr>
+<td>谁在验证</td>
+<td>测试运行器</td>
+<td>人的耐心</td>
+</tr>
+</tbody></table>
+<p>详细设计预测<strong>怎么做</strong>，失败测试定义<strong>做对了是什么样</strong>。前者制造瀑布，后者恰恰是敏捷需要的东西——它是每个切片最小的验收锚点。</p>
+<p>所以正确的组合是：<strong>一页纸规格 + 一个能点的切片 + 几条验收测试。</strong> 不需要设计书。</p>
+<hr>
+<h2 id="八、一轮-loop-的可复制协议"><a href="#八、一轮-loop-的可复制协议" class="headerlink" title="八、一轮 loop 的可复制协议"></a>八、一轮 loop 的可复制协议</h2><p>把上面所有东西压成一段，直接对 Cursor / Claude Code / omp 说：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">目标：&lt;一句用户能感知的话&gt;</span><br><span class="line">验收：&lt;怎么判断成了：命令 / 能点的路径 / 断言&gt;</span><br><span class="line">不做：&lt;明确划掉的范围&gt;</span><br><span class="line">未知：&lt;哪些是猜的，需要我验证&gt;</span><br><span class="line">约束：&lt;已有技术栈、目录、不可改的契约&gt;</span><br><span class="line"></span><br><span class="line">要求：</span><br><span class="line">1. 只做这条窄路径。可以硬编码、可以丑、只支持一个用例。</span><br><span class="line">2. 改完必须能启动，给出启动和验证命令。</span><br><span class="line">3. 不要顺手加抽象、错误处理、配置项；留到下一轮。</span><br><span class="line">4. 列出这一版你做了哪些假设，我要逐条验证。</span><br><span class="line">5. Stop，等我确认。</span><br></pre></td></tr></table></figure>
+
+<p>三个细节值得单独拎出来：</p>
+<ul>
+<li><strong>「可以硬编码、可以丑」</strong> 要明确写。不写，模型会自带工程洁癖，把原型当产品做，第一轮就给你整套抽象。</li>
+<li><strong>「列出假设」</strong> 是替代设计评审的关键动作。设计文档的隐藏价值是暴露假设，这件事一行清单就能做到，不需要 2000 行。</li>
+<li><strong>「Stop」</strong> 是边界，不是客气。不写 Stop，Agent 会把 Red 和 Green 一口气吞掉，你连插话的机会都没有。</li>
+</ul>
+<p>节奏建议：一天 2–3 轮，每轮 30–90 分钟。<strong>超过 90 分钟还没有东西能跑，就是切片切大了</strong>——回去切小，而不是补文档。</p>
+<hr>
+<h2 id="九、小结"><a href="#九、小结" class="headerlink" title="九、小结"></a>九、小结</h2><p>四句话：</p>
+<ol>
+<li>AI 让写文档变便宜，不等于让文档变正确。</li>
+<li>瀑布的根因不是爱写文档，是怕返工；AI 把返工变便宜了——前提是切片够小、上下文干净。</li>
+<li>先上一个能点的 MVP，用真实反馈替换模型猜测。</li>
+<li>只为不可逆的东西写详细设计。</li>
+</ol>
+<p>你不是在给 AI 写需求说明书。你是在用它把「下一个能验证的东西」更快做出来。</p>
+<p>顺序反过来，工具再强也只是把错误执行得更快。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://qngolg.github.io">菜鸟程序员</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://qngolg.github.io/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">https://qngolg.github.io/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://qngolg.github.io" target="_blank">个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/coding-agent/">coding-agent</a><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">敏捷开发</a><a class="post-meta__tags" href="/tags/mvp/">mvp</a><a class="post-meta__tags" href="/tags/spec-driven-development/">spec-driven-development</a><a class="post-meta__tags" href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/11/10/%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E8%A7%84%E5%88%92%EF%BC%9A%E6%8A%8A%E7%9F%AD%E5%91%A8%E6%9C%9F%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E7%BB%83%E6%88%90%E5%8F%AF%E4%BA%A4%E4%BB%98%E8%83%BD%E5%8A%9B/" title="我的技术规划：把「短时间出方案」练成可交付的能力"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">我的技术规划：把「短时间出方案」练成可交付的能力</div></div><div class="info-2"><div class="info-item-1">我的技术规划：把「短时间出方案」练成可交付的能力前阵子拿一个问题去问豆包：作为一个技术咨询，如何在短暂接触一个项目后给出一个比较好的技术方案，这个能力怎么训练？ 它给的答案骨架是对的——信息采集、区分确定/假设/未知、抓主链路、先定原则再选型、风险与路线图、按听众分版本。但那是通用方法论，抄一遍没有意义。真正的问题是：放在我身上，差距在哪、怎么练、练到什么程度算过关。 这篇是我自己的版本。不是行业通识，是一份带验收标准的个人计划。  一、先盘清我站在哪诚实盘点，不看简历看实际产出：    维度 现状 判断    技术纵深 后端为主，Java / Python 两个栈，读过也写过不少中间件与框架的东西 够用，不是瓶颈   技术广度 近一年大半时间在 AI 编码 Agent 上：omp / Pi / Cursor / Claude Code、LangChain / LangGraph、RAG 有广度，但偏「读懂并讲清」   方案能力 博客里几十篇是「解释某个东西怎么工作」，几乎没有「在约束下做取舍并承担结果」 主要缺口   约束压力 长期在明确需求下做落地；预算、人力、上线时间、存量...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E9%95%BF%E6%96%87%E7%BF%BB%E8%AF%91/" title="Pi 中文文档：官方文档长文翻译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：官方文档长文翻译</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：官方文档长文翻译 本文是 Pi 官方文档 的中文长文翻译/整理，便于中文读者系统查阅。原文持续更新，若有出入请以 pi.dev/docs/latest 为准。 Pi 是 Earendil 出品的极简终端编码 harness：核心保持小，通过 TypeScript 扩展、Skills、Prompt 模板、主题与 Pi Packages 扩展。npm 包 @earendil-works/pi-coding-agent，命令 pi，数据目录 ~/.pi/agent/。 相关文章：操作指南 · 从零写 Extension 注意：本文讲官方 Pi，不是社区分支 Oh My Pi / omp。  目录导航 一、概览与快速开始 二、使用 Pi 三、提供商与认证 四、会话、树与压缩 五、设置 六、快捷键 七、定制：扩展 / Skills / 模板 / 主题 / 包 八、安全与容器化 九、程序化用法 十、设计原则与约定    一、概览与快速开始1.1 Pi 是什么Pi 是一个极简的终端编码 Agent 框架。它在终端里驱动大模型：读文件、改文件、跑命令；同时把「工作流差异」放到扩展...</div></div></div></a><a class="pagination-related" href="/2026/09/08/Oh-My-Pi-omp-Advisor%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%99%E4%B8%BBAgent%E9%85%8D%E4%B8%80%E4%BD%8D%E6%97%81%E8%A7%82%E8%AF%84%E5%AE%A1/" title="Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="info-item-2">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）Advisor 入门：给主 Agent 配一位旁观评审写代码的 Agent 越来越敢下刀：改文件、跑命令、开子代理——很快就能把仓库搅动起来。真正贵的往往不是「写得慢」，而是写偏了很久才发现。 omp 的 Advisor 想解决的正是这件事：再挂一个（或一组）独立评审模型，旁观主 Agent 的每一步，把遗漏需求、危险 API、验证薄弱、过度复杂之类的问题，在还能纠偏时塞回主会话。 官网 README 的说法很直白：  Pair a reviewer model to the advisor role and it reads every turn the main agent takes, injecting notes inline — a quiet aside, a concern, or a hard blocker.  主 Agent 是执行者；Advisor 是旁观者。两者各有上下文、各用各的模型，所以能抓住「干活的人赶着往前冲」时漏掉的东西。 本文按官方文档 omp.sh/docs/advisor 梳理：它是什么、怎么开、怎么定制、以及什...</div></div></div></a><a class="pagination-related" href="/2026/08/13/Pi%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%BC%96%E7%A0%81-Agent-%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97/" title="Pi 中文文档：终端编码 Agent 操作指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-13</div><div class="info-item-2">Pi 中文文档：终端编码 Agent 操作指南</div></div><div class="info-2"><div class="info-item-1">Pi 中文文档：终端编码 Agent 操作指南 本文基于 Pi 官方文档 归纳为操作指南，方便中文读者上手与日常查阅。原文持续更新，细节以官方为准。 Pi 是一个极简的终端编码 Agent 框架（coding harness）：核心保持小而稳，通过 TypeScript 扩展、Skills、Prompt 模板、主题和 Pi Packages 按需扩展。包名 @earendil-works/pi-coding-agent，可执行文件为 pi，配置与会话默认在 ~/.pi/agent/。 说明：社区有基于 Pi 的分支产品（如 Oh My Pi / omp）。本文讲的是官方 Pi（pi.dev），不是 omp。 延伸阅读：官方文档长文翻译 · 从零写 Extension  目录导航 一、认识 Pi 二、安装与首次认证 三、日常交互与斜杠命令 四、会话、分支与压缩 五、模型与提供商 六、设置与快捷键 七、扩展、Skills、模板与包 八、安全与隔离 九、CLI 速查   一、认识 Pi1.1 Pi 是什么Pi 把「在终端里驱动大模型改代码」做成一套小核心 + 可插拔资源的工具：    ...</div></div></div></a><a class="pagination-related" href="/2026/09/21/AI%E6%97%B6%E4%BB%A3%E7%9A%84TDD%EF%BC%9A%E8%AE%A9Agent%E6%8C%89%E7%BA%A2%E7%BB%BF%E9%87%8D%E6%9E%84%E5%86%99%E4%BB%A3%E7%A0%81/" title="AI 时代的 TDD：让 Agent 按红绿重构写代码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-21</div><div class="info-item-2">AI 时代的 TDD：让 Agent 按红绿重构写代码</div></div><div class="info-2"><div class="info-item-1">AI 时代的 TDD：让 Agent 按红绿重构写代码AI 写代码很快。快到一种错觉：TDD 是上个时代给人用的，Agent 直接实现、人审 Diff 就行。 审过几轮「看起来对、跑起来不对」的补丁之后，结论会反过来—— 在 AI 时代，TDD 不是过时了，而是更必要。失败测试是 Agent 没法假装完成的合同。 Kent Beck 后来把这个组合叫过 superpower：人定规格，机器填实现。循环没变，变的是谁写实现、以及你如何防止它作弊。 本文按「为什么还要 TDD → 给 AI 用的红绿重构 → 三层约束怎么落地 → 常见作弊 → 多 Agent 怎么拆」来写。工具用 Cursor、Claude Code 或 omp 都可以；工具选择不如循环纪律重要。 选手差异可对照前文 2026 流行 Coding Agent 能力对比。  一、为什么 vibe coding 过不了关默认让 AI「实现这个功能」，它会同时写代码和测试。常见结果不是不会写，而是自己给自己出卷、自己批改：    症状 实际发生了什么    测的是实现细节 断言绑在私有函数、内部字段上，重构即红   断言太...</div></div></div></a><a class="pagination-related" href="/2026/08/04/Oh-My-Pi-omp-%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" title="Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-04</div><div class="info-item-2">Oh My Pi（omp）中文文档：终端里的编码 Agent 完整指南</div></div><div class="info-2"><div class="info-item-1">Oh My Pi（omp）中文文档 本文是 omp 官方文档 的中文翻译，便于中文读者查阅。原文持续更新，若有出入请以 omp.sh/docs 与 GitHub 仓库 为准。 omp（读作 “oh-em-pi”，可执行文件名 omp）是基于 Mario Zechner 的 Pi 打造的终端编码 Agent：读代码、跑命令、改文件、调调试器、拉起子代理，并把 IDE 能力（LSP/DAP）接进同一套工具面。 配套阅读：全量快捷键指南 · models 配置全解：角色与选择器 · Advisor 入门  目录导航 一、入门 二、会话与日常操作 三、能力与工具 四、模型与凭据 五、扩展与定制 六、记忆 七、程序化接入 八、参考手册    一、入门 概览omp 是什么omp（读作“oh-em-pi”，二进制文件为 omp）是 Mario Zechner 的 Pi 的一个分支。它以单个 Bun 进程运行，可驱动你拥有凭据的任何模型提供商，并提供扁平化工具接口，供模型读取代码、运行命令、编辑文件、驱动调试器，以及生成可通过进程内 IRC 总线协调的子代理。 会话会以 JSONL 格式持久化到...</div></div></div></a><a class="pagination-related" href="/2026/11/10/%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E8%A7%84%E5%88%92%EF%BC%9A%E6%8A%8A%E7%9F%AD%E5%91%A8%E6%9C%9F%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E7%BB%83%E6%88%90%E5%8F%AF%E4%BA%A4%E4%BB%98%E8%83%BD%E5%8A%9B/" title="我的技术规划：把「短时间出方案」练成可交付的能力"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="info-item-2">我的技术规划：把「短时间出方案」练成可交付的能力</div></div><div class="info-2"><div class="info-item-1">我的技术规划：把「短时间出方案」练成可交付的能力前阵子拿一个问题去问豆包：作为一个技术咨询，如何在短暂接触一个项目后给出一个比较好的技术方案，这个能力怎么训练？ 它给的答案骨架是对的——信息采集、区分确定/假设/未知、抓主链路、先定原则再选型、风险与路线图、按听众分版本。但那是通用方法论，抄一遍没有意义。真正的问题是：放在我身上，差距在哪、怎么练、练到什么程度算过关。 这篇是我自己的版本。不是行业通识，是一份带验收标准的个人计划。  一、先盘清我站在哪诚实盘点，不看简历看实际产出：    维度 现状 判断    技术纵深 后端为主，Java / Python 两个栈，读过也写过不少中间件与框架的东西 够用，不是瓶颈   技术广度 近一年大半时间在 AI 编码 Agent 上：omp / Pi / Cursor / Claude Code、LangChain / LangGraph、RAG 有广度，但偏「读懂并讲清」   方案能力 博客里几十篇是「解释某个东西怎么工作」，几乎没有「在约束下做取舍并承担结果」 主要缺口   约束压力 长期在明确需求下做落地；预算、人力、上线时间、存量...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">菜鸟程序员</div><div class="author-info-description">这个人很懒，不想写的太详细</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">69</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这个人很懒，不想写的太详细</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#AI-%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8-MVP-%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3"><span class="toc-number">1.</span> <span class="toc-text">AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E6%89%BF%E8%AE%A4%EF%BC%9AAI-%E7%80%91%E5%B8%83%E4%B8%8D%E6%98%AF%E8%A0%A2%EF%BC%8C%E5%AE%83%E6%9C%89%E5%BE%88%E5%BC%BA%E7%9A%84%E8%AF%B1%E5%9B%A0"><span class="toc-number">1.1.</span> <span class="toc-text">一、先承认：AI 瀑布不是蠢，它有很强的诱因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BC%AA%E7%80%91%E5%B8%83%EF%BC%9A%E7%9C%8B%E8%B5%B7%E6%9D%A5%E4%B8%A5%E8%B0%A8%EF%BC%8C%E5%AE%9E%E9%99%85%E6%98%AF%E4%B8%80%E5%A0%86%E6%9C%AA%E9%AA%8C%E8%AF%81%E7%9A%84%E7%8C%9C%E6%B5%8B"><span class="toc-number">1.2.</span> <span class="toc-text">二、伪瀑布：看起来严谨，实际是一堆未验证的猜测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%95%8F%E6%8D%B7%E5%9C%A8-AI-%E6%97%B6%E4%BB%A3%E5%8F%8D%E8%80%8C%E6%9B%B4%E5%88%92%E7%AE%97"><span class="toc-number">1.3.</span> <span class="toc-text">三、敏捷在 AI 时代反而更划算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%8E%E4%B9%88%E8%90%BD%E5%9C%B0%EF%BC%9A%E5%85%AD%E4%B8%AA%E5%8A%A8%E4%BD%9C"><span class="toc-number">1.4.</span> <span class="toc-text">四、怎么落地：六个动作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%94%A8%E5%9E%82%E7%9B%B4%E5%88%87%E7%89%87%E4%BB%A3%E6%9B%BF%E6%B0%B4%E5%B9%B3%E8%93%9D%E5%9B%BE"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 用垂直切片代替水平蓝图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E8%A7%84%E6%A0%BC%E5%86%99%E5%88%B0%E3%80%8C%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%AF%E9%AA%8C%E8%AF%81%E7%82%B9%E3%80%8D%E5%B0%B1%E5%81%9C"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 规格写到「下一个可验证点」就停</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%96%87%E6%A1%A3%E9%99%8D%E7%BA%A7%EF%BC%9AADR-%E6%9B%BF%E4%BB%A3%E8%AE%BE%E8%AE%A1%E4%B9%A6"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 文档降级：ADR 替代设计书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%8A%8A%E5%8F%8D%E9%A6%88%E7%8E%AF%E5%B7%A5%E7%A8%8B%E5%8C%96"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 把反馈环工程化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E8%AE%A1%E5%88%92%E6%80%A7%E8%BF%94%E5%B7%A5"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 计划性返工</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E6%AF%8F%E8%BD%AE%E9%87%8D%E7%BD%AE%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">1.4.6.</span> <span class="toc-text">4.6 每轮重置上下文</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%E5%AF%B9%E7%85%A7"><span class="toc-number">1.5.</span> <span class="toc-text">五、两种模式对照</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%BF%85%E9%A1%BB%E5%86%99%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.6.</span> <span class="toc-text">六、什么时候必须写详细设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%92%8C-TDD-%E9%82%A3%E7%AF%87%E7%9F%9B%E7%9B%BE%E5%90%97"><span class="toc-number">1.7.</span> <span class="toc-text">七、和 TDD 那篇矛盾吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E4%B8%80%E8%BD%AE-loop-%E7%9A%84%E5%8F%AF%E5%A4%8D%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.8.</span> <span class="toc-text">八、一轮 loop 的可复制协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%B0%8F%E7%BB%93"><span class="toc-number">1.9.</span> <span class="toc-text">九、小结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/AI%E6%97%B6%E4%BB%A3%E7%9A%84%E5%BC%80%E5%8F%91%E6%AD%A3%E5%9C%A8%E9%80%80%E5%9B%9E%E7%80%91%E5%B8%83%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%A5%E5%85%88%E7%94%A8MVP%E8%80%8C%E4%B8%8D%E6%98%AF%E8%AF%A6%E7%BB%86%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/" title="AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档">AI 时代的开发正在退回瀑布：为什么该先用 MVP 而不是详细设计文档</a><time datetime="2026-11-17T01:40:00.000Z" title="发表于 2026-11-17 09:40:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/10/%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E8%A7%84%E5%88%92%EF%BC%9A%E6%8A%8A%E7%9F%AD%E5%91%A8%E6%9C%9F%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E7%BB%83%E6%88%90%E5%8F%AF%E4%BA%A4%E4%BB%98%E8%83%BD%E5%8A%9B/" title="我的技术规划：把「短时间出方案」练成可交付的能力">我的技术规划：把「短时间出方案」练成可交付的能力</a><time datetime="2026-11-10T15:40:00.000Z" title="发表于 2026-11-10 23:40:00">2026-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/07/Oh-My-Pi-omp-models%E9%85%8D%E7%BD%AE%E5%85%A8%E8%A7%A3%EF%BC%9A%E8%A7%92%E8%89%B2%E3%80%81%E9%80%89%E6%8B%A9%E5%99%A8%E4%B8%8E%E5%85%A8%E9%83%A8%E9%80%89%E9%A1%B9/" title="Oh My Pi（omp）models 配置全解：角色、选择器与全部选项">Oh My Pi（omp）models 配置全解：角色、选择器与全部选项</a><time datetime="2026-11-07T03:30:00.000Z" title="发表于 2026-11-07 11:30:00">2026-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/12/Aider%E5%85%A5%E9%97%A8%EF%BC%9A%E7%BB%88%E7%AB%AF%E9%87%8C%E7%9A%84AI%E7%BB%93%E5%AF%B9%E7%BC%96%E7%A8%8B/" title="Aider 入门：终端里的 AI 结对编程">Aider 入门：终端里的 AI 结对编程</a><time datetime="2026-10-12T04:30:00.000Z" title="发表于 2026-10-12 12:30:00">2026-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/21/AI%E6%97%B6%E4%BB%A3%E7%9A%84TDD%EF%BC%9A%E8%AE%A9Agent%E6%8C%89%E7%BA%A2%E7%BB%BF%E9%87%8D%E6%9E%84%E5%86%99%E4%BB%A3%E7%A0%81/" title="AI 时代的 TDD：让 Agent 按红绿重构写代码">AI 时代的 TDD：让 Agent 按红绿重构写代码</a><time datetime="2026-09-21T02:30:00.000Z" title="发表于 2026-09-21 10:30:00">2026-09-21</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 菜鸟程序员</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"placeholder":"随便说点啥，欢迎吐槽","lang":"zh-cn","pageSize":10,"meta":["nick","mail","link"]}
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'RBktCJpf9bBbPYKcrP7auUPW-9Nh9j0Va',
+      appKey: 'qsPlalDJdtYgh4AFO3oiFAox',
+      avatar: 'mm',
+      serverURLs: 'https://rbktcjpf9bbbpypcrp7aupw.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine@1.5.3/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
